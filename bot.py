@@ -864,7 +864,7 @@ select url from songs where artist || title like ? or title || artist like ?
                         self.db.commit()
                     else:
                         await message.channel.send(
-                                'The _profanity_filter_ level must be between 0 and 3.')
+                                'The _profanity\_filter_ level must be between 0 and 3.')
                         return
 
                 else:
