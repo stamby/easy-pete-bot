@@ -105,7 +105,7 @@ class BotClient(discord.Client):
                         reason='Cleaning up unused role')
 
     async def on_message(self, message):
-        if message.author == self.user:
+        if message.author.id == self.user.id:
             return
 
         if self.profanity_filter_regex.search(message.content):
