@@ -1,7 +1,7 @@
-# This unit should be copied to `/etc/systemd/system`
+# This unit should be copied to `/etc/systemd/system'
 
 # Once that has been done, the bot may be run by means of:
-# `systemctl start discord-bot`
+# `systemctl start discord-bot'
 
 [Unit]
 Description=Discord Bot
