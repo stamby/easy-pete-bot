@@ -1,0 +1,16 @@
+[Unit]
+Description=Discord Bot
+DefaultDependencies=python3
+Conflicts=shutdown.target
+Requires=network-online.target
+After=network-online.target
+Before=shutdown.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -u /srv/discord_bot/bot.py
+StandardOutput=journal+console
+SyslogIdentifier=discord-bot
+
+[Install]
+WantedBy=network-online.target

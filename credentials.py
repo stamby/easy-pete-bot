@@ -1,0 +1,6 @@
+BOT_NAME = 'Easy Pete'
+BOT_NAME_REGEX = '[Pp][Ee][Tt][Ee]'
+BOT_USER_ID = 700307494580256768
+MEME_DIR = None
+OWNER_ID = None
+TOKEN = None
