@@ -1,5 +1,5 @@
-EASY PETE
-=========
+EASY PETE BOT
+=============
 
 A general-purpose bot for Discord with the following commands:
 
