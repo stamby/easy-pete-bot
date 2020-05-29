@@ -1,7 +1,7 @@
 EASY PETE
 =========
 
-General-purpose bot with the following commands:
+A general-purpose bot for Discord with the following commands:
 
 **.iam** (role name): Assign yourself a role. If the role doesn't exist, it may be created depending on settings.
 
