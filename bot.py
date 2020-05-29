@@ -182,7 +182,7 @@ More commands for admins. It shows help on how to manage the bot's features.
 
                 if not c_iam or not c_meme or not c_song or not someone:
                     description += '''
-More commands can be enabled. Admins may add them by use of_.enable_ and _.set,_ described in _.admin._
+More commands can be enabled. Admins may add them by use of _.enable_ and _.set,_ described in _.admin._
 '''
 
                 embed=discord.Embed(
