@@ -3,6 +3,9 @@
 # Once that has been done, the bot may be run by means of:
 # `systemctl start discord-bot'
 
+# If the bot is intended to run from anywhere other than `/srv/discord_bot',
+# that should be changed here wherever it appears
+
 [Unit]
 Description=Discord Bot
 DefaultDependencies=python3
