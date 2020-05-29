@@ -18,6 +18,7 @@ Before=shutdown.target
 Type=simple
 ExecStart=/usr/bin/python3 -u /srv/discord_bot/bot.py
 StandardOutput=journal+console
+StandardError=journal+console
 SyslogIdentifier=discord-bot
 
 [Install]
