@@ -17,3 +17,7 @@ General-purpose bot with the following commands:
 Example: _.prune @a user I don't like 100_
 
 All features can be enabled, disabled or customized with the help of _.enable,_ _.disable_ and _.set._ Additionally, the bot can welcome users, clean up unused roles (which can be coupled with the _.iam_ command) and filter profanity.
+
+If you are a Discord user, the bot can be added by means of this link:
+
+[Add bot](https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot)
