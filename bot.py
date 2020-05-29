@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# TODO: Bot is fully working, time to divide all of this into multiple files.
+
 from datetime import datetime
 import discord
 import os
