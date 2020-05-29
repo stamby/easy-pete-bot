@@ -319,7 +319,7 @@ title || '" <em>(' || genre || ')</em></li>'
 from songs order by genre, artist, title
                             ''')
 
-                    file_ = 'discord_bot_all_songs%d.html' \
+                    file_ = '/tmp/discord_bot_all_songs_%d.html' \
                             % random.randrange(65536)
 
                     print(
