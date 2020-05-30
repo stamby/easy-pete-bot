@@ -166,7 +166,7 @@ Optionally:
 **@someone**: Randomly mention someone on the server.
 '''
                 description += '''
-**.invite**: Add this bot to your server of choice.
+**.links**: Show the links to invite the bot to a new server and to contact the devs in case there is an issue, or if you would like to suggest an improvement.
 
 **.admin**: More commands for admins. It shows help on how to manage the bot's features.
 '''
@@ -219,7 +219,7 @@ Example: _.set role\_create 0_
 0: Take no action; 1: Drop a warning; 2: Warn, then remove message; 3: Remove message. Default value: 1.
 Example: _.set profanity\_filter 3_
 
-To report an issue, message <@!%d>.
+To report an issue, please run _.links._
                 ''' % credentials.OWNER_ID))
 
             elif message.content == '.meme':
@@ -761,7 +761,7 @@ select url from songs where artist || title like ? or title || artist like ?
 
                     if not fetched:
                         await message.channel.send(
-                                'Uh-oh - server not added to the list. This is because the bot was not running it was allowed it to join this server. Please kick the bot and readd it through the link provided by the _.invite_ command.')
+                                'Uh-oh - server not added to the list. This is because the bot was not running it was allowed it to join this server. Please kick the bot and readd it through the link provided by the _.links command.')
 
                     i = 0
                     message_body = ''
@@ -861,11 +861,20 @@ select url from songs where artist || title like ? or title || artist like ?
                 await message.channel.send(
                         'OK')
 
-            elif message.content == '.invite':
+            elif message.content == '.links':
                 await message.channel.send(
                         embed=discord.Embed(
+                            title='LINKS',
                             colour=discord.Colour.gold(),
-                            description='https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot'))
+                            description='''
+Invite the bot to your server of choice via this link:
+
+https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot
+
+To report an issue or suggest a new feature for this bot, we encourage you to do it through this site:
+
+https://github.com/stamby/easy-pete-bot/issues/new/choose
+                            '''))
 
             if message.author.id == credentials.OWNER_ID:
                 if message.content.startswith('.status'):
