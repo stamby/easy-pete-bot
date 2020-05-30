@@ -9,7 +9,7 @@ A general-purpose bot for Discord with the following commands:
 
 **.meme**: Send a random meme, straight from our repositories.
 
-**.song**: Send a good song for your happy ears.
+**.song**: Send a random song from our list of boomer songs.
 
 **@someone**: Randomly mention someone on the server.
 
