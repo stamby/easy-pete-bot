@@ -228,7 +228,6 @@ To report an issue, message <@!%d>.
                         'select c_meme from servers where s_id = ?',
                         (message.guild.id,))
                 channel = c.fetchone()[0]
-                c.close()
 
                 if not channel:
                     await message.channel.send(
@@ -303,7 +302,7 @@ title || '" <em>(' || genre || ')</em></li>'
 from songs order by genre, artist, title
                             ''')
 
-                    file_ = 'discord_bot_all_songs%d.html' \
+                    file_ = '/tmp/discord_bot_all_songs_%d.html' \
                             % random.randrange(65536)
 
                     print(
@@ -342,6 +341,8 @@ from songs order by genre, artist, title
 The attached file contains all my songs.
 
 You can add to these songs by running _.song add (Youtube URL)_ and search them through _.song search (artist, title or both)._
+
+This list changes often. It is up to date as of this very moment.
                                     '''),
                                 file=discord.File(
                                     fp=f,
@@ -448,7 +449,6 @@ select url from songs where artist || title like ? or title || artist like ?
                         'select c_iam, role_create from servers where s_id = ?',
                         (message.guild.id,))
                 c_iam, role_create = c.fetchone()
-                c.close()
 
                 # Parse message
                 command, trailing_space, requested_role_name = re.findall(
@@ -586,17 +586,17 @@ select url from songs where artist || title like ? or title || artist like ?
                         'select max_deletions from servers where s_id = ?',
                         (message.guild.id,))
                 max_deletions = c.fetchone()[0]
-                c.close()
-                if max_deletions == 0:
-                    await message.channel.send(
-                            'The _.prune_ command has been disabled. An admin may type _.set max\_deletions (number)_ to change this.')
-                    return
 
                 # Check whether the user has the appropriate permissions
                 if not message.channel.permissions_for(
                         message.author).manage_messages:
                     await message.channel.send(
                             'The _.prune_ command has to come from someone having the _Manage Messages_ permission for this channel.')
+                    return
+
+                if max_deletions == 0:
+                    await message.channel.send(
+                            'The _.prune_ command has been disabled. An admin may type _.set max\_deletions (number)_ to change this.')
                     return
 
                 if requested_amount_str != '':
@@ -655,14 +655,13 @@ select url from songs where artist || title like ? or title || artist like ?
                         await message.channel.send(
                                 'The command _%s_ is not valid. Please type _.admin_ to see which commands may be enabled.' \
                                         % command)
-                        c.close()
                         return
 
                 commands_str = ''
 
                 for command in commands:
                     c.execute(
-                            'update servers set c_%s = %s where s_id = %s' \
+                            'update servers set c_%s = %s where s_id = %d' \
                                     % (
                                         command,
                                         message.channel.id,
@@ -670,7 +669,6 @@ select url from songs where artist || title like ? or title || artist like ?
                     commands_str += ', %s' % command
 
                 self.db.commit()
-                c.close()
 
                 await message.channel.send(
                         'The following commands have been reserved for this channel: _%s._' \
@@ -701,27 +699,23 @@ select url from songs where artist || title like ? or title || artist like ?
                         await message.channel.send(
                                 '_%s_ is not valid. Please type _.admin_ to see which commands may be disabled.' \
                                         % command)
-                        c.close()
                         return
 
                 commands_str = ''
 
                 for command in commands:
                     c.execute(
-                            'update servers set c_%s = null where s_id = %s' \
+                            'update servers set c_%s = null where s_id = %d' \
                                     % (
                                         command,
                                         message.guild.id))
                     commands_str += ', %s' % command
 
                 self.db.commit()
-                c.close()
-
-                commands_str = commands_str[2:]
 
                 await message.channel.send(
                         'The following commands have been disabled: _%s._' \
-                                % commands_str)
+                                % commands_str[2:])
 
             elif message.content.startswith('.set'):
                 # Check whether the user has the appropriate permissions
@@ -799,7 +793,7 @@ select url from songs where artist || title like ? or title || artist like ?
 
                 if command in ('welcome', 'farewell'):
                     c.execute(
-                            'update servers set %s = %s where s_id = %s' \
+                            'update servers set %s = %s where s_id = %d' \
                                     % (
                                         command,
                                         value,
@@ -824,7 +818,7 @@ select url from songs where artist || title like ? or title || artist like ?
                         'meme_filter'):
                     if re.match('^[01]$', value):
                         c.execute(
-                                'update servers set %s = %s where s_id = %s' \
+                                'update servers set %s = %s where s_id = %d' \
                                         % (command, int(value), message.guild.id))
                         self.db.commit()
 
@@ -1002,7 +996,6 @@ select url from songs where artist || title like ? or title || artist like ?
                 'select c_greeting, welcome from servers where s_id = ?',
                 (member.guild.id,))
         c_greeting, welcome = c.fetchone()
-        c.close()
 
         if c_greeting:
             await member.guild.get_channel(c_greeting).send(
@@ -1017,7 +1010,6 @@ select url from songs where artist || title like ? or title || artist like ?
                 'select c_greeting, farewell, role_cleanup from servers where s_id = ?',
                 (member.guild.id,))
         c_greeting, farewell, role_cleanup = c.fetchone()
-        c.close()
 
         if role_cleanup == 1:
             for role in member.roles:
