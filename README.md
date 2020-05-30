@@ -16,7 +16,7 @@ A general-purpose bot for Discord with the following commands:
 **.prune** (amount) or **.prune** (user) (amount): Requires _Manage Messages_ permission. Delete messages from a channel, starting by the latest. If a user precedes the amount, delete messages from that user only.
 Example: _.prune @a user I don't like 100_
 
-All features can be enabled, disabled or customized with the help of _.enable,_ _.disable_ and _.set._ Additionally, the bot can welcome users, clean up unused roles (which can be coupled with the _.iam_ command) and filter profanity.
+All features can be enabled, disabled or customized with the help of _.enable,_ _.disable_ and _.set._ Additionally, the bot can welcome users and clean up unused roles (which may be coupled with the _.iam_ command).
 
 ## More links
 
