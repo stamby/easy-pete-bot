@@ -799,11 +799,9 @@ select url from songs where artist || title like ? or title || artist like ?
 
                 if command in ('welcome', 'farewell'):
                     c.execute(
-                            'update servers set %s = %s where s_id = %d' \
-                                    % (
-                                        command,
-                                        value,
-                                        message.guild.id))
+                            'update servers set %s = ? where s_id = ?' \
+                                    % command,
+                                    (value, message.guild.id))
                     self.db.commit()
 
                 elif command == 'max_deletions':
@@ -874,6 +872,8 @@ https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=26
 To report an issue or suggest a new feature for this bot, we encourage you to do it through this site:
 
 https://github.com/stamby/easy-pete-bot/issues/new/choose
+
+A server is also available for help and suggestions: https://discord.gg/shvcbR2
                             '''))
 
             if message.author.id == credentials.OWNER_ID:
