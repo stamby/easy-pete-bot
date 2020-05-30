@@ -108,17 +108,16 @@ class BotClient(discord.Client):
         if message.author.id == self.user.id:
             return
 
-        if self.profanity_filter_regex.search(message.content):
-            c = self.db.cursor()
-            c.execute(
-                    'select profanity_filter from servers where s_id = ?',
-                    (message.guild.id,))
+        c = self.db.cursor()
 
-            profanity_filter = c.fetchone()[0]
+        c.execute(
+                'select profanity_filter from servers where s_id = ?',
+                (message.guild.id,))
 
-            if profanity_filter == 0:
-                return
+        profanity_filter = c.fetchone()[0]
 
+        if profanity_filter != 0 \
+                and self.profanity_filter_regex.search(message.content):
             if profanity_filter == 3:
                 await message.delete()
                 return
@@ -137,7 +136,6 @@ class BotClient(discord.Client):
 
         elif message.content.startswith('.'):
             if message.content == '.help':
-                c = self.db.cursor()
                 c.execute(
                         'select c_iam, c_meme, c_song, someone from servers where s_id = ?',
                         (message.guild.id,))
@@ -145,21 +143,17 @@ class BotClient(discord.Client):
                 description = ''
                 if c_iam:
                     description += '''
-**.iam** (role name)
-Assign yourself a role. If the role doesn't exist, it may be created depending on settings.
+**.iam** (role name): Assign yourself a role. If the role doesn't exist, it may be created depending on settings.
 
-**.iamnot** (role name)
-Remove a role from your user. If no users have the role anymore, the role may be removed depending on settings.
+**.iamnot** (role name): Remove a role from your user. If no users have the role anymore, the role may be removed depending on settings.
 '''
                 if c_meme:
                     description += '''
-**.meme**
-Send a random meme, straight from our repositories.
+**.meme**: Send a random meme, straight from our repositories.
 '''
                 if c_meme:
                     description += '''
-**.song**
-Send a good song for your happy ears. 
+**.song**: Send a good song for your happy ears. 
 
 Optionally:
 **.song search** (artist and/or title)
@@ -169,15 +163,12 @@ Optionally:
 '''
                 if someone:
                     description += '''
-**@someone**
-Randomly mention someone on the server.
+**@someone**: Randomly mention someone on the server.
 '''
                 description += '''
-**.invite**
-Add this bot to your server of choice.
+**.invite**: Add this bot to your server of choice.
 
-**.admin**
-More commands for admins. It shows help on how to manage the bot's features.
+**.admin**: More commands for admins. It shows help on how to manage the bot's features.
 '''
 
                 if not c_iam or not c_meme or not c_song or not someone:
@@ -199,14 +190,12 @@ More commands can be enabled. Admins may add them by use of _.enable_ and _.set,
                             title='FOR ADMINS ONLY',
                             colour=discord.Colour.gold(),
                             description='''
-**.prune** (amount) or **.prune** (user) (amount)
-Requires _Manage Messages_ permission. Delete messages from a channel, starting by the latest. If a user precedes the amount, delete messages from that user only.
+**.prune** (amount) or **.prune** (user) (amount): Requires _Manage Messages_ permission. Delete messages from a channel, starting by the latest. If a user precedes the amount, delete messages from that user only.
 Example: _.prune @a user I don't like 100_
 
 **SETTING UP THE BOT**
 
-**.enable** or **.disable** (commands)
-Requires _Manage Channels_ permission. Enable or disable one or more commands for the current channel. Valid commands:
+**.enable** or **.disable** (commands): Requires _Manage Channels_ permission. Enable or disable one or more commands for the current channel. Valid commands:
 **greeting**: To send greeting messages to this channel.
 **iam**: To reply to _.iam_ and _.iamnot_ on this channel.
 **song**: Likewise for _.song._
@@ -214,8 +203,7 @@ Requires _Manage Channels_ permission. Enable or disable one or more commands fo
 All of them are disabled by default. Note that this means that they will not work, unless enabled.
 Example: _.enable greeting iam_
 
-**.set** (property) (value) or **.set**
-Requires _Manage Server_ permission. Define properties that change the way the bot behaves. If no property is given, show current values. Valid properties:
+**.set** (property) (value) or **.set**: Requires _Manage Server_ permission. Define properties that change the way the bot behaves. If no property is given, show current values. Valid properties:
 **welcome**: A greeting for when a user joins. Writing _@@USER@@_ in it will mention the user in question.
 Example: _.set welcome Welcome, @@USER@@!_ (default)
 **farewell**: Likewise when someone leaves.
@@ -236,7 +224,6 @@ To report an issue, message <@!%d>.
 
             elif message.content == '.meme':
                 # Check whether it is enabled for this channel
-                c = self.db.cursor()
                 c.execute(
                         'select c_meme from servers where s_id = ?',
                         (message.guild.id,))
@@ -254,7 +241,6 @@ To report an issue, message <@!%d>.
                                     % channel)
                     return
 
-                c = self.db.cursor()
                 c.execute(
                         'select meme_filter from servers where s_id = ?',
                         (message.guild.id,))
@@ -271,7 +257,6 @@ To report an issue, message <@!%d>.
 
             elif message.content.startswith('.song'):
                 # Check whether it is enabled for this channel
-                c = self.db.cursor()
                 c.execute(
                         'select c_song from servers where s_id = ?',
                         (message.guild.id,))
@@ -310,8 +295,6 @@ To report an issue, message <@!%d>.
                         c.fetchone()[0])
 
                 elif command == 'all':
-                    c = self.db.cursor()
-
                     c.execute(
                             '''
 select '<li><strong>' || artist || '</strong>, "' ||
@@ -319,7 +302,7 @@ title || '" <em>(' || genre || ')</em></li>'
 from songs order by genre, artist, title
                             ''')
 
-                    file_ = '/tmp/discord_bot_all_songs_%d.html' \
+                    file_ = 'discord_bot_all_songs%d.html' \
                             % random.randrange(65536)
 
                     print(
@@ -460,7 +443,6 @@ select url from songs where artist || title like ? or title || artist like ?
 
             elif message.content.startswith('.iam'):
                 # Check whether it is enabled for this channel
-                c = self.db.cursor()
                 c.execute(
                         'select c_iam, role_create from servers where s_id = ?',
                         (message.guild.id,))
@@ -599,7 +581,6 @@ select url from songs where artist || title like ? or title || artist like ?
                     # Ignore non-command
                     return
 
-                c = self.db.cursor()
                 c.execute(
                         'select max_deletions from servers where s_id = ?',
                         (message.guild.id,))
@@ -664,8 +645,6 @@ select url from songs where artist || title like ? or title || artist like ?
                             'Which command would you like to enable?')
                     return
 
-                c = self.db.cursor()
-
                 for command in commands:
                     if command not in (
                             'greeting',
@@ -712,8 +691,6 @@ select url from songs where artist || title like ? or title || artist like ?
                             'Which command would you like to disable?')
                     return
 
-                c = self.db.cursor()
-
                 for command in commands:
                     if command not in (
                             'greeting',
@@ -756,8 +733,6 @@ select url from songs where artist || title like ? or title || artist like ?
                 trailing_space, command, value = re.findall(
                         '^\.set( *)((?:[^ ]+)?) *(.*)$',
                         message.content)[0]
-
-                c = self.db.cursor()
 
                 if trailing_space == '':
                     if command != '':
@@ -851,6 +826,7 @@ select url from songs where artist || title like ? or title || artist like ?
                                 'update servers set %s = %s where s_id = %s' \
                                         % (command, int(value), message.guild.id))
                         self.db.commit()
+
                     else:
                         await message.channel.send(
                                 'Value must be either 1 (true) or 0 (false).')
@@ -861,11 +837,20 @@ select url from songs where artist || title like ? or title || artist like ?
                         c.execute(
                                 'update servers set profanity_filter = ?',
                                 (int(value),))
+
                         self.db.commit()
+
                     else:
                         await message.channel.send(
                                 'The _profanity\_filter_ level must be between 0 and 3.')
                         return
+
+                elif command in ('greeting', 'iam', 'meme', 'song'):
+                    await message.channel.send(
+                            'Whoops. Did you mean to write _.enable %s?_' \
+                                    % command)
+                    return
+
 
                 else:
                     await message.channel.send(
@@ -888,7 +873,6 @@ select url from songs where artist || title like ? or title || artist like ?
                     if status == '':
                         status = None
 
-                    c = self.db.cursor()
                     c.execute(
                             'update bot set status = ?',
                             (status,))
@@ -920,7 +904,6 @@ select url from songs where artist || title like ? or title || artist like ?
 
         elif message.content.startswith('@someone'):
             # Check whether it is enabled
-            c = self.db.cursor()
             c.execute(
                     'select someone from servers where s_id = ?',
                     (message.guild.id,))
