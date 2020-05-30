@@ -500,7 +500,7 @@ select url from songs where artist || title like ? or title || artist like ?
 
                 # Remember whether we had 'not' in the command
                 if command == 'not':
-                    if existing_role is None:
+                    if not existing_role:
                         await message.channel.send(
                                 'The role _%s_ does not exist. Maybe check your spelling?' \
                                         % requested_role_name) 
@@ -509,6 +509,12 @@ select url from songs where artist || title like ? or title || artist like ?
                     if existing_role not in message.author.roles:
                         await message.channel.send(
                                 'The role _%s_ has not been assigned to you.' \
+                                        % existing_role.name) 
+                        return
+
+                    elif existing_role >= own_role:
+                        await message.channel.send(
+                                'The role _%s_ is too high on the list for me to remove it. I would need mine to be higher than the role that is to be removed.' \
                                         % existing_role.name) 
                         return
 
@@ -529,7 +535,7 @@ select url from songs where artist || title like ? or title || artist like ?
                         return
 
                     # If the role doesn't exist
-                    if existing_role is None:
+                    if not existing_role:
                         # Check whether we are allowed to create it
                         if role_create == 0:
                             await message.channel.send(
