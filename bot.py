@@ -105,7 +105,7 @@ class BotClient(discord.Client):
                         reason='Cleaning up unused role')
 
     async def on_message(self, message):
-        if message.author.id == self.user.id:
+        if message.author.id == self.user.id or not message.guild:
             return
 
         c = self.db.cursor()
