@@ -16,44 +16,6 @@ class BotClient(discord.Client):
     def __init__(self):
         discord.Client.__init__(self)
 
-        print('Compiling regular expressions...')
-
-        self.call_someone_something_regex = re.compile(
-                '(<@!%d>|%s)? *(call *<@!?[0-9]+> *|tell *<@!?[0-9]+> *s?he\'?s? *)(an? )? *([A-Za-z0-9 \*@#!\']+)$' \
-                        % (
-                            credentials.BOT_USER_ID,
-                            credentials.BOT_NAME_REGEX))
-
-        self.thanks_regex = re.compile(
-                '(<@!%d>|%s) *[Tt][Hh][Aa][Nn][Kk]([Ss]| *([Yy][Oo])?[Uu])|[Tt][Hh][Aa][Nn][Kk]([Ss]| *([Yy][Oo])?[Uu]) *([Ff][Oo][Rr] .+)? *(<@!%d>|%s)' \
-                        % (
-                            credentials.BOT_USER_ID,
-                            credentials.BOT_NAME_REGEX,
-                            credentials.BOT_USER_ID,
-                            credentials.BOT_NAME_REGEX))
-
-        self.your_regex = re.compile(
-                '(^| )[Yy][Oo][Uu][Rr] *([Aa][Nn]? |[Ww][Ee][Ll][Cc][Oo][Mm][Ee])')
-
-        self.salt_regex = re.compile(
-                'YOU|DON\'?T|STFU|STOP|^NO+ *!*$|NEVER|^stop$|[Kk][Nn][Oo][Cc][Kk] *[Ii][Tt] *[Oo][Ff]{2}|^end it$|END IT|be quiet|^([<@!>A-Z!@\']+ +){2,}[<@!>A-Z!@\']+$')
-
-        self.flirting_regex = re.compile(
-                '^([Ii] *[Ll][Oo][Vv][Ee] *(<@!%d>|%s)|(<@!%d>|%s) *[Ii]? *[Ll][OoUu][Vv][Ee]? ([Yy][Oo])?[Uu] *(<@!%d>|%s)?)$' \
-                        % (
-                            credentials.BOT_USER_ID,
-                            credentials.BOT_NAME_REGEX,
-                            credentials.BOT_USER_ID,
-                            credentials.BOT_NAME_REGEX,
-                            credentials.BOT_USER_ID,
-                            credentials.BOT_NAME_REGEX))
-
-        self.istanbul_regex = re.compile(
-                '[Tt][Aa][Kk][Ee] *[Mm][Ee] *[Bb][Aa][Cc][Kk] *[Tt][Oo] *[Cc][Oo][Nn][Ss][Tt][Aa][Nn][Tt][Ii][Nn][Oo][Pp][Ll][Ee]')
-
-        self.profanity_filter_regex = re.compile(
-                '[Ss][Uu][Cc][CcKk][Ee][Rr]|([Ss][Uu][Cc][Kk].*[Dd]|d)[Ii][Cc][Kk]|[Dd][Ii][Cc][Kk][Hh][Ee][Aa][Dd]|[Ff][Uu][Cc][CcKk]|[Ff][Aa][Gg]{2}[Oo][Tt]|[Nn][Ii][Gg]{2}([Aa]|[Ee][Rr])|[Rr][Ee][Tt][Aa][Rr][Dd]|[Ii][Dd][Ii][Oo][Tt]|[Ss][Tt][Uu][Pp][Ii][Dd]|(^|[^a-z])[Aa][Ss]{2}|(^|[^a-z])[Aa][Rr][Ss][Ee]|(^|[^a-z])[Aa][Nn][Uu][Ss]|(^|[^a-z])[Cc][Oo][Cc][CcKk]|[Dd][Aa][RrMm][Nn]|[Cc][Uu][Nn][Tt]|[Cc][Rr][Aa][Pp]|[Bb][Uu][Gg]{2}[Ee][Rr]|[Bb][Ii][Tt][Cc][Hh]|[Bb][Uu][Ll]{2}[Ss][Hh][Ii][Tt]|[Pp][Rr][Ii][Cc][Kk]|[Pp][Uu][Nn]{1,2}[Aa][Nn][IiYy]|[Pp][Uu][Ss]{2}[Yy]|[Ss][Nn][Aa][Tt][Cc][Hh]|[Ss][Hh][Aa][Gg]|[Hh][Oo][Ee]|[Ww][Hh][Oo][Rr][Ee]')
-
         print('Opening database...')
 
         DB_FILE = os.path.join(
@@ -108,33 +70,9 @@ class BotClient(discord.Client):
         if message.author.id == self.user.id or not message.guild:
             return
 
-        c = self.db.cursor()
+        if message.content.startswith('.'):
+            c = self.db.cursor()
 
-        c.execute(
-                'select profanity_filter from servers where s_id = ?',
-                (message.guild.id,))
-
-        profanity_filter = c.fetchone()[0]
-
-        if profanity_filter != 0 \
-                and self.profanity_filter_regex.search(message.content):
-            if profanity_filter == 3:
-                await message.delete()
-                return
-
-            await message.channel.send(
-                    random.choice((
-                        '<@!%d>, we like all kinds of debauchery here but not swear words! Please be nice.' \
-                                % message.author.id,
-                        '<@!%d>: Please adhere to our server\'s Victorian values by avoiding undisguised, foul language.' \
-                                % message.author.id,
-                        'Hey <@!%d>, watch your language!' \
-                                % message.author.id)))
-
-            if profanity_filter == 2:
-                await message.delete()
-
-        elif message.content.startswith('.'):
             if message.content == '.help':
                 c.execute(
                         'select c_iam, c_meme, c_song, someone from servers where s_id = ?',
@@ -215,9 +153,6 @@ Example: _.set role\_create 0_
 **role\_cleanup**: Whether the bot should remove any unused roles. Value should be 1 or 0. Default value: 1.
 **someone**: Whether _@someone_ is allowed. Default value: 1.
 **meme\_filter**: Filter memes sent by _.meme._ Default value: 1.
-**profanity\_filter**: Limit swearing. Valid levels:
-0: Take no action; 1: Drop a warning; 2: Warn, then remove message; 3: Remove message. Default value: 1.
-Example: _.set profanity\_filter 3_
 
 To report an issue, please run _.links._
                     '''))
@@ -831,19 +766,6 @@ select url from songs where artist || title like ? or title || artist like ?
                                 'Value must be either 1 (true) or 0 (false).')
                         return
 
-                elif command == 'profanity_filter':
-                    if re.match('^[0-3]$', value):
-                        c.execute(
-                                'update servers set profanity_filter = ?',
-                                (int(value),))
-
-                        self.db.commit()
-
-                    else:
-                        await message.channel.send(
-                                'The _profanity\_filter_ level must be between 0 and 3.')
-                        return
-
                 elif command in ('greeting', 'iam', 'meme', 'song'):
                     await message.channel.send(
                             'Whoops. Did you mean to write _.enable %s?_' \
@@ -913,6 +835,8 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                     await self.close()
 
         elif message.content.startswith('@someone'):
+            c = self.db.cursor()
+
             # Check whether it is enabled
             c.execute(
                     'select someone from servers where s_id = ?',
@@ -942,60 +866,7 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                                     '（✿ ͡◕ ᴗ◕)つ━━✫・o。')),
                                 random_member.name))
 
-        elif self.call_someone_something_regex.match(message.content):
-            id_list = re.findall(
-                    '<@![0-9]+>', message.content)
-            if id_list[0] == '<@!%d>' % self.user.id:
-                someone = id_list[1]
-            else:
-                someone = id_list[0]
-            article, something = re.findall(
-                    '((?:an? )?) *([^ ]+)$',
-                    message.content)[0]
-            await message.channel.send(
-                    random.choice((
-                        'Stop being %s%s, %s.' \
-                                % (article, something, someone),
-                        '%s: You are %s%s.' \
-                                % (someone, article, something),
-                        '%s %s.' \
-                                % (someone, something.capitalize()))))
-
-        elif self.flirting_regex.match(message.content):
-            await message.channel.send(
-                    'Just to be clear: I am not to be flirted with, or lusted after, ever. I am an Internet bot, and that\'s final.')
-
-        elif self.thanks_regex.match(message.content):
-            await message.channel.send(
-                    random.choice((
-                        '<@!%d>: No problem, my friend.' % message.author.id,
-                        '<@!%d>: Anytime.' % message.author.id,
-                        '<@!%d>: The pleasure is all mine.' % message.author.id,
-                        '<@!%d>: You\'re welcome.' % message.author.id)))
-
-        elif self.your_regex.search(message.content):
-            await message.channel.send(
-                    '<@!%d>: Excuse me sir/madam, it\'s "you\'re."' \
-                            % message.author.id)
-
-        elif self.salt_regex.match(message.content):
-            await message.channel.send(
-                    random.choice((
-                        ':salt:',
-                        '<@!%d>: :salt:' % message.author.id,
-                        '<@!%d>: Salty, already?' % message.author.id,
-                        '<@!%d>: Mad?' % message.author.id,
-                        'Who\'s salty now?')))
-
-        elif self.istanbul_regex.match(message.content):
-            await message.channel.send(
-                    random.choice((
-                        'No, you can\'t go back to Constantinople.',
-                        'Now it\'s Istanbul.',
-                        'Constantinople\'s been a long time gone.')))
-
-        elif message.content == '<@!%d>' % credentials.BOT_USER_ID \
-                or re.match(credentials.BOT_NAME_REGEX, message.content):
+        elif message.content == '<@!%d>' % credentials.BOT_USER_ID:
             await message.channel.send(
                     random.choice((
                         '<@!%d>: What is your command?' % message.author.id,
