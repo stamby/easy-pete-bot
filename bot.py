@@ -166,9 +166,9 @@ Optionally:
 **@someone**: Randomly mention someone on the server.
 '''
                 description += '''
-**.links**: Show the links to invite the bot to a new server and to contact the devs in case there is an issue, or if you would like to suggest an improvement.
-
 **.admin**: More commands for admins. It shows help on how to manage the bot's features.
+
+**.links**: Show the links to invite the bot to a new server and to contact the devs in case there is an issue, or if you would like to suggest an improvement.
 '''
 
                 if not c_iam or not c_meme or not c_song or not someone:
@@ -220,7 +220,7 @@ Example: _.set role\_create 0_
 Example: _.set profanity\_filter 3_
 
 To report an issue, please run _.links._
-                ''' % credentials.OWNER_ID))
+                    '''))
 
             elif message.content == '.meme':
                 # Check whether it is enabled for this channel
@@ -864,7 +864,7 @@ select url from songs where artist || title like ? or title || artist like ?
             elif message.content == '.links':
                 await message.channel.send(
                         embed=discord.Embed(
-                            title='LINKS',
+                            title='ALL LINKS',
                             colour=discord.Colour.gold(),
                             description='''
 Invite the bot to your server of choice via this link:
