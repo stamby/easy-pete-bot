@@ -512,7 +512,7 @@ select url from songs where artist || title like ? or title || artist like ?
                                         % existing_role.name) 
                         return
 
-                    elif existing_role >= own_role:
+                    elif existing_role > own_role:
                         await message.channel.send(
                                 'The role _%s_ is too high on the list for me to remove it. I would need mine to be higher than the role that is to be removed.' \
                                         % existing_role.name) 
@@ -563,10 +563,10 @@ select url from songs where artist || title like ? or title || artist like ?
                                         % existing_role.name)
                         return
 
-                    elif existing_role >= own_role:
+                    elif existing_role > own_role:
                         # If the role can't be changed due to its position in the hierarchy
                         await message.channel.send(
-                                'The role _%s_ is above or at the same level on the list than the one that allows me to manage other roles. I would need mine to be higher so I can add you the one you requested. Please ask an admin for assistance.' \
+                                'The role _%s_ is higher on the list than the one that allows me to manage other roles. I would need mine to be higher so I can add you the one you requested. Please ask an admin for assistance.' \
                                         % existing_role.name)
                         return
 
