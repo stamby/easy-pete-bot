@@ -246,10 +246,11 @@ To report an issue, message <@!%d>.
                         (message.guild.id,))
                 meme_filter = c.fetchone()[0]
 
-                file_ = random.choice(os.listdir(credentials.MEME_DIR))
-                if meme_filter:
-                    while file_.startswith('SPOILER_'):
-                        file_ = random.choice(os.listdir(credentials.MEME_DIR))
+                while True:
+                    file_ = random.choice(os.listdir(credentials.MEME_DIR))
+
+                    if not meme_filter or not file_.startswith('SPOILER_'):
+                        break
 
                 with open(os.path.join(credentials.MEME_DIR, file_), 'rb') as f:
                     await message.channel.send(
@@ -910,12 +911,14 @@ select url from songs where artist || title like ? or title || artist like ?
             if c.fetchone()[0] == 0:
                 return
 
-            random_member = random.choice(
-                    message.guild.members)
-            while random_member.id == message.id \
-                    or random_member.bot:
+            while True:
                 random_member = random.choice(
                         message.guild.members)
+
+                if random_member.id != message.id \
+                        or not random_member.bot:
+                    break
+
             await message.channel.send(
                     '<@!%d> %s ***(%s)***' \
                             % (
