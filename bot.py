@@ -16,14 +16,15 @@ class BotClient(discord.Client):
 
         print('Opening database...')
 
-        DB_FILE = os.path.join(
+        db_file = os.path.join(
                 os.path.dirname(sys.argv[0]), 'db')
 
-        if not os.path.exists(DB_FILE):
+        if not os.path.exists(db_file):
             print('Fatal: Database not found.')
             exit(1)
 
-        self.db = sqlite3.connect(DB_FILE)
+        self.db = sqlite3.connect(db_file)
+
         print('Starting client...')
 
     async def on_connect(self):
@@ -52,6 +53,7 @@ class BotClient(discord.Client):
     async def on_member_update(self, before, after):
         # Check whether it is enabled
         c = self.db.cursor()
+
         c.execute(
                 'select role_cleanup from servers where s_id = ?',
                 (before.guild.id,))
@@ -76,7 +78,9 @@ class BotClient(discord.Client):
                         'select c_iam, c_meme, c_song, someone from servers where s_id = ?',
                         (message.guild.id,))
                 c_iam, c_meme, c_song, someone = c.fetchone()
+
                 description = ''
+
                 if c_iam:
                     description += '''
 **.iam** (role name): Assign yourself a role. If the role doesn't exist, it may be created depending on settings.
@@ -149,8 +153,8 @@ Example: _.set max\_deletions 100_
 **role\_create**: Whether _.iam_ should create a non-existing role. If disabled, it has no effect. Value should be 1 (true) or 0 (false). Default value: 1.
 Example: _.set role\_create 0_
 **role\_cleanup**: Whether the bot should remove any unused roles. Value should be 1 or 0. Default value: 1.
-**someone**: Whether _@someone_ is allowed. Default value: 1.
-**meme\_filter**: Filter memes sent by _.meme._ Default value: 1.
+**someone**: Whether _@someone_ is allowed. Value should be 1 or 0. Default value: 1.
+**meme\_filter**: Filter memes sent by _.meme._ Value should be 1 or 0. Default value: 1.
 
 To report an issue, please run _.links._
                     '''))
@@ -176,23 +180,33 @@ To report an issue, please run _.links._
                 c.execute(
                         'select meme_filter from servers where s_id = ?',
                         (message.guild.id,))
+
                 meme_filter = c.fetchone()[0]
 
                 while True:
-                    file_ = random.choice(os.listdir(credentials.MEME_DIR))
+                    file_ = random.choice(
+                            os.listdir(
+                                credentials.MEME_DIR))
 
                     if not meme_filter or not file_.startswith('SPOILER_'):
                         break
 
-                with open(os.path.join(credentials.MEME_DIR, file_), 'rb') as f:
+                with open(
+                        os.path.join(
+                            credentials.MEME_DIR,
+                            file_),
+                        'rb') as f:
                     await message.channel.send(
-                            file=discord.File(fp=f, filename=file_))
+                            file=discord.File(
+                                fp=f,
+                                filename=file_))
 
             elif message.content.startswith('.song'):
                 # Check whether it is enabled for this channel
                 c.execute(
                         'select c_song from servers where s_id = ?',
                         (message.guild.id,))
+
                 channel = c.fetchone()[0]
 
                 if not channel:
@@ -208,7 +222,7 @@ To report an issue, please run _.links._
 
                 # Parse the message
                 trailing_space, command, extra_chars = re.findall(
-                        '^\.song( *)((?:all$|add +https://www\.youtube\.com/watch\?v=[A-Za-z0-9_-]+$|search .+|genre(?: .+|$))?)(.*)',
+                        '^\.song( *)((?:all$|add +(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[A-Za-z0-9_-]+$|search .+|genre(?: .+|$))?)(.*)',
                         message.content)[0]
 
                 if trailing_space == '' and command == '':
@@ -330,6 +344,7 @@ This list changes often. It is up to date as of this very moment.
                 elif command.startswith('search'):
                     like = '%%%s%%' % re.sub(
                             '[^A-Za-z0-9_-]+', '%', command[7:])
+
                     c.execute(
                             '''
 select url from songs where artist || title like ? or title || artist like ?
@@ -337,9 +352,11 @@ select url from songs where artist || title like ? or title || artist like ?
                             (like, like))
 
                     match = c.fetchall()
+
                     if match:
                         await message.channel.send(
                                 random.choice(match)[0])
+
                     else:
                         await message.channel.send(
                                 'No matches. Submit a URL by typing _.song add (Youtube URL)._')
@@ -350,10 +367,14 @@ select url from songs where artist || title like ? or title || artist like ?
                     if requested_genre == '':
                         c.execute(
                                 'select distinct genre from songs order by 1')
+
                         available_genres = c.fetchall()
+
                         available_genres_str = ''
+
                         for genre in available_genres:
                             available_genres_str += ', %s' % genre
+
                         await message.channel.send(
                                 'The available genres are _%s._' \
                                         % available_genres_str[2:])
@@ -364,9 +385,11 @@ select url from songs where artist || title like ? or title || artist like ?
                             (requested_genre,))
 
                     match = c.fetchall()
+
                     if match:
                         await message.channel.send(
                                 random.choice(match)[0])
+
                     else:
                         await message.channel.send(
                                 'No matches. Type _.song genre_ to see all available music genres.')
@@ -381,6 +404,7 @@ select url from songs where artist || title like ? or title || artist like ?
                 c.execute(
                         'select c_iam, role_create from servers where s_id = ?',
                         (message.guild.id,))
+
                 c_iam, role_create = c.fetchone()
 
                 # Parse message
@@ -507,6 +531,7 @@ select url from songs where artist || title like ? or title || artist like ?
                             existing_role,
                             reason='Self-assigned',
                             atomic=True)
+
                     await message.channel.send(
                             '_%s_ assigned.' \
                                     % existing_role.name)
@@ -524,6 +549,7 @@ select url from songs where artist || title like ? or title || artist like ?
                 c.execute(
                         'select max_deletions from servers where s_id = ?',
                         (message.guild.id,))
+
                 max_deletions = c.fetchone()[0]
 
                 # Check whether the user has the appropriate permissions
@@ -540,26 +566,38 @@ select url from songs where artist || title like ? or title || artist like ?
 
                 if requested_amount_str != '':
                     requested_amount = int(requested_amount_str)
+
                     if requested_amount > max_deletions:
                         effective_amount = max_deletions
+
                     else:
                         effective_amount = requested_amount
+
                     count = 0
+
                     if user_str == '':
                         async for line in message.channel.history():
                             await line.delete()
+
                             count += 1
+
                             if count > effective_amount:
                                 break
+
                     else:
                         user = int(re.findall('[0-9]+', user_str)[0])
+
                         await message.delete()
+
                         async for line in message.channel.history():
                             if user == line.author.id:
                                 await line.delete()
+
                                 count += 1
+
                                 if count >= effective_amount:
                                     break
+
                     if requested_amount > max_deletions:
                         await message.channel.send(
                                 'For security reasons, only up to %d messages may be deleted. Type _.set max\_deletions (number)_ to change this.' \
@@ -605,6 +643,7 @@ select url from songs where artist || title like ? or title || artist like ?
                                         command,
                                         message.channel.id,
                                         message.guild.id))
+
                     commands_str += ', %s' % command
 
                 self.db.commit()
@@ -648,6 +687,7 @@ select url from songs where artist || title like ? or title || artist like ?
                                     % (
                                         command,
                                         message.guild.id))
+
                     commands_str += ', %s' % command
 
                 self.db.commit()
@@ -681,6 +721,7 @@ select url from songs where artist || title like ? or title || artist like ?
                             c.fetchone()[0])
 
                     fields_str = ''
+
                     for field in fields:
                         fields_str += ', %s' % field
 
@@ -697,21 +738,26 @@ select url from songs where artist || title like ? or title || artist like ?
                                 'Uh-oh - server not added to the list. This is because the bot was not running it was allowed it to join this server. Please kick the bot and readd it through the link provided by the _.links_ command.')
 
                     i = 0
+
                     message_body = ''
+
                     while i < len(fields):
                         if fields[i] == 'id' or fields[i].startswith('s_'):
                             pass
+
                         elif fields[i].startswith('c_'):
                             if fetched[i]:
-                                message_body += '\n**%s**: <#%d>' \
+                                message_body += '**%s**: <#%d>\n' \
                                         % (
                                                 fields[i][2:],
                                                 fetched[i])
+
                             else:
-                                message_body += '\n**%s**: Disabled' \
+                                message_body += '**%s**: Disabled\n' \
                                         % fields[i][2:]
+
                         else:
-                            message_body += '\n**%s**: _%s_' \
+                            message_body += '**%s**: _%s_\n' \
                                     % (
                                             fields[i],
                                             str(fetched[i]))
@@ -722,7 +768,7 @@ select url from songs where artist || title like ? or title || artist like ?
                                 title='ALL PROPERTIES',
                                 colour=discord.Colour.gold(),
                                 description=message_body + \
-                                        '\n\nRefer to _.admin_ to see how to change them.'))
+                                        '\nRefer to _.admin_ to see how to change them.'))
                     return
 
                 if value == '':
@@ -735,6 +781,7 @@ select url from songs where artist || title like ? or title || artist like ?
                             'update servers set %s = ? where s_id = ?' \
                                     % command,
                                     (value, message.guild.id))
+
                     self.db.commit()
 
                 elif command == 'max_deletions':
@@ -742,7 +789,9 @@ select url from songs where artist || title like ? or title || artist like ?
                         c.execute(
                                 'update servers set max_deletions = ? where s_id = ?',
                                 (int(value), message.guild.id))
+
                         self.db.commit()
+
                     else:
                         await message.channel.send(
                                 'Invalid amount.')
@@ -757,6 +806,7 @@ select url from songs where artist || title like ? or title || artist like ?
                         c.execute(
                                 'update servers set %s = %s where s_id = %d' \
                                         % (command, int(value), message.guild.id))
+
                         self.db.commit()
 
                     else:
@@ -839,6 +889,7 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
             c.execute(
                     'select someone from servers where s_id = ?',
                     (message.guild.id,))
+
             if c.fetchone()[0] == 0:
                 return
 
@@ -876,9 +927,11 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
 
     async def on_member_join(self, member):
         c = self.db.cursor()
+
         c.execute(
                 'select c_greeting, welcome from servers where s_id = ?',
                 (member.guild.id,))
+
         c_greeting, welcome = c.fetchone()
 
         if c_greeting:
@@ -890,9 +943,11 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
 
     async def on_member_remove(self, member):
         c = self.db.cursor()
+
         c.execute(
                 'select c_greeting, farewell, role_cleanup from servers where s_id = ?',
                 (member.guild.id,))
+
         c_greeting, farewell, role_cleanup = c.fetchone()
 
         if role_cleanup == 1:
@@ -912,7 +967,9 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
         c.execute(
                 'insert into servers (s_id, s_owner) values (?, ?)',
                 (guild.id, guild.owner.id))
+
         self.db.commit()
+
         print(
                 'Joined \'%s\' (%d): %d members, %d channels.' \
                         % (
@@ -923,10 +980,13 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
 
     async def on_guild_remove(self, guild):
         c = self.db.cursor()
+
         c.execute(
                 'delete from servers where s_id = ?',
                 (guild.id,))
+
         self.db.commit()
+
         print(
                 'Leaving \'%s\' (%d).' \
                         % (guild, guild.id))
@@ -934,37 +994,26 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
     async def on_guild_update(self, before, after):
         if before.owner.id != after.owner.id:
             c = self.db.cursor()
+
             c.execute(
                     'update servers set s_owner = ? where s_id = ?',
                     (after.owner.id, after.id))
+
             self.db.commit()
 
     async def on_guild_channel_delete(self, channel):
         c = self.db.cursor()
-        c.execute(
-                '''
-update servers set c_greeting = null
-where s_id = ? and c_greeting = ?
-                ''',
-                (channel.guild.id, channel.id))
-        c.execute(
-                '''
-update servers set c_iam = null
-where s_id = ? and c_iam = ?
-                ''',
-                (channel.guild.id, channel.id))
-        c.execute(
-                '''
-update servers set c_meme = null
-where s_id = ? and c_meme = ?
-                ''',
-                (channel.guild.id, channel.id))
-        c.execute(
-                '''
-update servers set c_song = null
-where s_id = ? and c_song = ?
-                ''',
-                (channel.guild.id, channel.id))
+
+        for field in (
+                'c_greeting',
+                'c_iam',
+                'c_meme',
+                'c_song'):
+            c.execute('''
+update servers set %s = null where s_id = %d and c_greeting = %s
+''' \
+                    % (field, channel.guild.id, channel.id))
+
         self.db.commit()
 
 client = BotClient()
