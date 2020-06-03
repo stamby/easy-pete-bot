@@ -176,7 +176,7 @@ To report an issue, please run _.links._
                 if message.channel.id != c_meme:
                     await message.channel.send(
                             'Memes go in <#%d>.' \
-                                    % channel)
+                                    % c_meme)
                     return
 
                 c.execute(
@@ -225,7 +225,7 @@ To report an issue, please run _.links._
                 if message.channel.id != c_song:
                     await message.channel.send(
                             'Songs will be sent on <#%d>.' \
-                                    % channel)
+                                    % c_song)
                     return
 
                 # Parse the message
