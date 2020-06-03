@@ -40,8 +40,10 @@ class BotClient(discord.Client):
         print('%s has connected to Discord!' % self.user)
 
         c = self.db.cursor()
+
         c.execute(
                 'select status from bot')
+
         status = c.fetchone()
 
         if status:
@@ -77,6 +79,7 @@ class BotClient(discord.Client):
                 c.execute(
                         'select c_iam, c_meme, c_song, someone from servers where s_id = ?',
                         (message.guild.id,))
+
                 c_iam, c_meme, c_song, someone = c.fetchone()
 
                 description = ''
@@ -116,13 +119,11 @@ Optionally:
 More commands can be enabled. Admins may add them by use of _.enable_ and _.set,_ described in _.admin._
 '''
 
-                embed=discord.Embed(
-                        title='ALL COMMANDS',
-                        colour=discord.Colour.gold(),
-                        description=description)
-
                 await message.channel.send(
-                        embed=embed)
+                        embed=discord.Embed(
+                            title='ALL COMMANDS',
+                            colour=discord.Colour.gold(),
+                            description=description))
 
             elif message.content == '.admin':
                 await message.channel.send(
@@ -164,14 +165,15 @@ To report an issue, please run _.links._
                 c.execute(
                         'select c_meme from servers where s_id = ?',
                         (message.guild.id,))
-                channel = c.fetchone()[0]
 
-                if not channel:
+                c_meme = c.fetchone()[0]
+
+                if not c_meme:
                     await message.channel.send(
                             'To enable this command, type _.enable meme._')
                     return
 
-                if message.channel.id != channel:
+                if message.channel.id != c_meme:
                     await message.channel.send(
                             'Memes go in <#%d>.' \
                                     % channel)
@@ -182,6 +184,12 @@ To report an issue, please run _.links._
                         (message.guild.id,))
 
                 meme_filter = c.fetchone()[0]
+
+                if not meme_filter:
+                    if not message.channel.nsfw:
+                        # Channel was not marked as NSFW, therefore
+                        # force filtering
+                        meme_filter = 1
 
                 while True:
                     file_ = random.choice(
@@ -207,14 +215,14 @@ To report an issue, please run _.links._
                         'select c_song from servers where s_id = ?',
                         (message.guild.id,))
 
-                channel = c.fetchone()[0]
+                c_song = c.fetchone()[0]
 
-                if not channel:
+                if not c_song:
                     await message.channel.send(
                             'Please enable this command by means of _.enable song._')
                     return
 
-                if message.channel.id != channel:
+                if message.channel.id != c_song:
                     await message.channel.send(
                             'Songs will be sent on <#%d>.' \
                                     % channel)
@@ -716,6 +724,7 @@ select url from songs where artist || title like ? or title || artist like ?
                     # Just print everything
                     c.execute(
                             "select sql from sqlite_master where type = 'table' and name = 'servers'")
+
                     fields = re.findall(
                             '([a-z_]+) +(?:integer|text)',
                             c.fetchone()[0])
@@ -809,6 +818,22 @@ select url from songs where artist || title like ? or title || artist like ?
                                         % (command, int(value), message.guild.id))
 
                         self.db.commit()
+
+                        if value == '0' and command[0] == 'm':
+                            # We are setting meme_filter to 0, so validate that the
+                            # meme channel is set to NSFW
+                            c.execute(
+                                    'select c_meme from servers where s_id = ?',
+                                    (message.guild.id,))
+
+                            c_meme = c.fetchone()[0]
+
+                            if c_meme:
+                                if not message.guild.get_channel(c_meme).nsfw:
+                                    await message.channel.send(
+                                            'Setting saved; however, because <#%d> has not been marked as NSFW, the meme filter will still take effect until this changes.',
+                                            (c_meme,))
+                                    return
 
                     else:
                         await message.channel.send(
@@ -965,6 +990,7 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
 
     async def on_guild_join(self, guild):
         c = self.db.cursor()
+
         c.execute(
                 'insert into servers (s_id, s_owner) values (?, ?)',
                 (guild.id, guild.owner.id))
