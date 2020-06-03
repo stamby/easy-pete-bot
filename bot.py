@@ -69,7 +69,7 @@ class BotClient(discord.Client):
                         reason='Cleaning up unused role')
 
     async def on_message(self, message):
-        if message.author.id == self.user.id or not message.guild:
+        if message.author.bot or not message.guild:
             return
 
         if message.content.startswith('.'):
