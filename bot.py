@@ -581,22 +581,19 @@ select url from songs where artist || title like ? or title || artist like ?
                     else:
                         effective_amount = requested_amount
 
-                    count = 0
-
                     if user_str == '':
+                        effective_amount += 1
+
                         async for line in message.channel.history(
-                                limit=max_deletions):
+                                limit=effective_amount):
                             await line.delete()
-
-                            count += 1
-
-                            if count > effective_amount:
-                                break
 
                     else:
                         user = int(re.findall('[0-9]+', user_str)[0])
 
                         await message.delete()
+
+                        count = 0
 
                         async for line in message.channel.history():
                             if user == line.author.id:
