@@ -584,7 +584,8 @@ select url from songs where artist || title like ? or title || artist like ?
                     count = 0
 
                     if user_str == '':
-                        async for line in message.channel.history():
+                        async for line in message.channel.history(
+                                limit=max_deletions):
                             await line.delete()
 
                             count += 1
@@ -896,9 +897,6 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                                 'Status cleared.')
 
                 elif message.content == '.stop':
-                    if message.author.id != credentials.OWNER_ID:
-                        return
-
                     print(
                             'Stop requested through "%s" (%d), stopping.' \
                                     % (
