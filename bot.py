@@ -831,8 +831,8 @@ select url from songs where artist || title like ? or title || artist like ?
                             if c_meme:
                                 if not message.guild.get_channel(c_meme).nsfw:
                                     await message.channel.send(
-                                            'Setting saved; however, because <#%d> has not been marked as NSFW, the meme filter will still take effect until this changes.',
-                                            (c_meme,))
+                                            'Setting saved; however, because <#%d> has not been marked as NSFW, the meme filter will still take effect until this changes.' \
+                                                    % c_meme)
                                     return
 
                     else:
