@@ -736,6 +736,7 @@ select url from songs where artist || title like ? or title || artist like ?
                     if not fetched:
                         await message.channel.send(
                                 'Uh-oh - server not added to the list. This is because the bot was not running it was allowed it to join this server. Please kick the bot and readd it through the link provided by the _.links_ command.')
+                        return
 
                     i = 0
 
