@@ -1,13 +1,13 @@
 # This unit should be copied to `/etc/systemd/system'
 
 # Once that has been done, the bot may be run by means of:
-# `systemctl start discord-bot'
+# `systemctl start easy-pete-bot'
 
-# If the bot is intended to run from anywhere other than `/srv/discord_bot',
+# If the bot is intended to run from anywhere other than `/srv/easy_pete_bot',
 # that should be changed here wherever it appears
 
 [Unit]
-Description=Discord Bot
+Description=Easy Pete Bot
 DefaultDependencies=python3
 Conflicts=shutdown.target
 Requires=network-online.target
@@ -17,10 +17,10 @@ Before=shutdown.target
 [Service]
 Type=simple
 User=www-data
-ExecStart=/usr/bin/python3 -u /srv/discord_bot/bot.py
+ExecStart=/usr/bin/python3 -u /srv/easy_pete_bot/bot.py
 StandardOutput=journal+console
 StandardError=journal+console
-SyslogIdentifier=discord-bot
+SyslogIdentifier=easy-pete-bot
 
 [Install]
 WantedBy=network-online.target
