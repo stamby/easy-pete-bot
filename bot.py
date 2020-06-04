@@ -793,7 +793,7 @@ select url from songs where artist || title like ? or title || artist like ?
                     self.db.commit()
 
                 elif command == 'max_deletions':
-                    if re.match('^1?[0-9]{2}$', value):
+                    if re.match('^([0-9]{1,2}|100)$', value):
                         c.execute(
                                 'update servers set max_deletions = ? where s_id = ?',
                                 (int(value), message.guild.id))
