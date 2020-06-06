@@ -882,9 +882,9 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
 
             if message.author.id == credentials.OWNER_ID:
                 if message.content.startswith('.update'):
-                    announcement = message.content[8:]
+                    description = message.content[8:]
 
-                    if announcement == '':
+                    if description == '':
                         return
 
                     c.execute(
@@ -902,9 +902,9 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
 
                         await channel.send(
                                 embed=discord.Embed(
-                                    title='UPDATE',
+                                    title='ANNOUNCEMENT',
                                     colour=discord.Colour.gold(),
-                                    description=announcement))
+                                    description=description))
 
                 elif message.content.startswith('.status'):
                     status = message.content[8:]
