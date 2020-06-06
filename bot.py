@@ -90,11 +90,13 @@ class BotClient(discord.Client):
 
 **.iamnot** (role name): Remove a role from your user. If no users have the role anymore, the role may be removed depending on settings.
 '''
+
                 if c_meme:
                     description += '''
 **.meme**: Send a random meme, straight from our repositories.
 '''
-                if c_meme:
+
+                if c_song:
                     description += '''
 **.song**: Send a good song for your happy ears. 
 
@@ -104,6 +106,7 @@ Optionally:
 **.song add** (Youtube URL)
 **.song all**
 '''
+
                 if someone:
                     description += '''
 **@someone**: Randomly mention someone on the server.
