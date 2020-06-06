@@ -144,6 +144,7 @@ Example: _.prune @a user I don't like 100_
 **iam**: To reply to _.iam_ and _.iamnot_ on this channel.
 **song**: Likewise for _.song._
 **meme**: Likewise for _.meme._
+**updates**: Updates about the bot.
 All of them are disabled by default. Note that this means that they will not work, unless enabled.
 Example: _.enable greeting iam_
 
@@ -632,12 +633,15 @@ select url from songs where artist || title like ? or title || artist like ?
                             'Which command would you like to enable?')
                     return
 
+                c.execute(
+                        "select sql from sqlite_master where type = 'table' and name = 'servers'")
+                
+                c_fields = re.findall(
+                        'c_([^ ]+)',
+                        c.fetchone()[0])
+
                 for command in commands:
-                    if command not in (
-                            'greeting',
-                            'iam',
-                            'song',
-                            'meme'):
+                    if command not in c_fields:
                         await message.channel.send(
                                 'The command _%s_ is not valid. Please type _.admin_ to see which commands may be enabled.' \
                                         % command)
@@ -677,12 +681,15 @@ select url from songs where artist || title like ? or title || artist like ?
                             'Which command would you like to disable?')
                     return
 
+                c.execute(
+                        "select sql from sqlite_master where type = 'table' and name = 'servers'")
+                
+                c_fields = re.findall(
+                        'c_([^ ]+)',
+                        c.fetchone()[0])
+
                 for command in commands:
-                    if command not in (
-                            'greeting',
-                            'iam',
-                            'song',
-                            'meme'):
+                    if command not in c_fields:
                         await message.channel.send(
                                 '_%s_ is not valid. Please type _.admin_ to see which commands may be disabled.' \
                                         % command)
@@ -841,7 +848,7 @@ select url from songs where artist || title like ? or title || artist like ?
                                 'Value must be either 1 (true) or 0 (false).')
                         return
 
-                elif command in ('greeting', 'iam', 'meme', 'song'):
+                elif command in c_fields:
                     await message.channel.send(
                             'Whoops. Did you mean to write _.enable %s?_' \
                                     % command)
@@ -874,7 +881,32 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                             '''))
 
             if message.author.id == credentials.OWNER_ID:
-                if message.content.startswith('.status'):
+                if message.content.startswith('.update'):
+                    announcement = message.content[8:]
+
+                    if announcement == '':
+                        return
+
+                    c.execute(
+                            'select s_id, c_updates from servers where c_updates is not null')
+
+                    while True:
+                        s_id_and_c_updates = c.fetchone()
+
+                        if not s_id_and_c_updates:
+                            break
+
+                        channel = self.get_guild(
+                                s_id_and_c_updates[0]).get_channel(
+                                        s_id_and_c_updates[1])
+
+                        await channel.send(
+                                embed=discord.Embed(
+                                    title='UPDATE',
+                                    colour=discord.Colour.gold(),
+                                    description=announcement))
+
+                elif message.content.startswith('.status'):
                     status = message.content[8:]
 
                     if status == '':
@@ -1029,15 +1061,18 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
     async def on_guild_channel_delete(self, channel):
         c = self.db.cursor()
 
-        for field in (
-                'c_greeting',
-                'c_iam',
-                'c_meme',
-                'c_song'):
+        c.execute(
+                "select sql from sqlite_master where type = 'table' and name = 'servers'")
+
+        c_fields = re.findall(
+                'c_[^ ]+',
+                c.fetchone()[0])
+
+        for field in c_fields:
             c.execute('''
-update servers set %s = null where s_id = %d and c_greeting = %s
+update servers set %s = null where s_id = %d
 ''' \
-                    % (field, channel.guild.id, channel.id))
+                    % (field, channel.guild.id))
 
         self.db.commit()
 
