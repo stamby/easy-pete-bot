@@ -48,7 +48,9 @@ class BotClient(discord.Client):
 
         if status:
             await self.change_presence(
-                    activity=discord.Game(status[0]))
+                    activity=discord.Activity(
+                        type=discord.ActivityType.listening,
+                        name=status[0]))
 
             print('Status set to \'%s\'.' % status[0])
 
@@ -907,7 +909,9 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                     self.db.commit()
 
                     await self.change_presence(
-                            activity=discord.Game(status))
+                            activity=discord.Activity(
+                                type=discord.ActivityType.listening,
+                                name=status[0]))
 
                     if status:
                         print(
