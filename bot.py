@@ -911,7 +911,7 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                     await self.change_presence(
                             activity=discord.Activity(
                                 type=discord.ActivityType.listening,
-                                name=status[0]))
+                                name=status))
 
                     if status:
                         print(
