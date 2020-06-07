@@ -848,13 +848,6 @@ select url from songs where artist || title like ? or title || artist like ?
                                 'Value must be either 1 (true) or 0 (false).')
                         return
 
-                elif command in c_fields:
-                    await message.channel.send(
-                            'Whoops. Did you mean to write _.enable %s?_' \
-                                    % command)
-                    return
-
-
                 else:
                     await message.channel.send(
                             'Please type _.admin_ to see how to run this command.')
@@ -881,12 +874,7 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                             '''))
 
             if message.author.id == credentials.OWNER_ID:
-                if message.content.startswith('.update'):
-                    description = message.content[8:]
-
-                    if description == '':
-                        return
-
+                if message.content.startswith('.update '):
                     c.execute(
                             'select s_id, c_updates from servers where c_updates is not null')
 
@@ -904,7 +892,7 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                                 embed=discord.Embed(
                                     title='ANNOUNCEMENT',
                                     colour=discord.Colour.gold(),
-                                    description=description))
+                                    description=message.content[8:]))
 
                 elif message.content.startswith('.status'):
                     status = message.content[8:]
