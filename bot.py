@@ -95,7 +95,7 @@ class BotClient(discord.Client):
 
                 if c_meme:
                     description += '''
-**.meme**: Send a random meme, straight from our repositories.
+**.meme**: Send a random meme, straight from our repositories. Submit a meme by writing _.meme submit._
 '''
 
                 if c_song:
@@ -113,6 +113,7 @@ Optionally:
                     description += '''
 **@someone**: Randomly mention someone on the server.
 '''
+
                 description += '''
 **.admin**: More commands for admins. It shows help on how to manage the bot's features.
 
@@ -131,6 +132,16 @@ More commands can be enabled. Admins may add them by use of _.enable_ and _.set,
                             description=description))
 
             elif message.content == '.admin':
+                permissions = message.channel.permissions_for(
+                        message.author)
+
+                if not permissions.manage_channels \
+                        and not permissions.manage_messages \
+                        and not permissions.manage_guild:
+                    await message.channel.send(
+                            'The _.admin_ message is directed towards people who have _Manage Channels, Manage Messages_ or _Manage Server_ permission.')
+                    return
+
                 await message.channel.send(
                         embed=discord.Embed(
                             title='FOR ADMINS ONLY',
@@ -166,13 +177,13 @@ Example: _.set role\_create 0_
 To report an issue, please run _.links._
                     '''))
 
-            elif message.content == '.meme':
+            elif message.content.startswith('.meme'):
                 # Check whether it is enabled for this channel
                 c.execute(
-                        'select c_meme from servers where s_id = ?',
+                        'select c_meme, meme_filter from servers where s_id = ?',
                         (message.guild.id,))
 
-                c_meme = c.fetchone()[0]
+                c_meme, meme_filter = c.fetchone()
 
                 if not c_meme:
                     await message.channel.send(
@@ -185,35 +196,78 @@ To report an issue, please run _.links._
                                     % c_meme)
                     return
 
-                c.execute(
-                        'select meme_filter from servers where s_id = ?',
-                        (message.guild.id,))
+                # Parse the message
+                trailing_space, command, extra_chars = re.findall(
+                        '^\.meme( *)((?:submit$)?)(.*)',
+                        message.content)[0]
 
-                meme_filter = c.fetchone()[0]
-
-                if not meme_filter:
-                    if not message.channel.nsfw:
-                        # Channel was not marked as NSFW, therefore
-                        # force filtering
-                        meme_filter = 1
-
-                while True:
-                    file_ = random.choice(
-                            os.listdir(
-                                credentials.MEME_DIR))
-
-                    if not meme_filter or not file_.startswith('SPOILER_'):
-                        break
-
-                with open(
-                        os.path.join(
-                            credentials.MEME_DIR,
-                            file_),
-                        'rb') as f:
+                if extra_chars != '':
+                    if trailing_space == '':
+                        # Ignore non-command
+                        return
+                    
                     await message.channel.send(
-                            file=discord.File(
-                                fp=f,
-                                filename=file_))
+                            'The only valid option to the _.meme_ command is the word _submit._')
+                    return
+
+                if command == 'submit':
+                    if len(message.attachments) == 0:
+                        await message.channel.send(
+                                'A submission requires an attachment. Please try again.')
+                        return
+
+                    if len(message.attachments) != 1:
+                        await message.channel.send(
+                                'Only one attachment allowed per submission.')
+                        return
+
+                    if not message.attachments[0].height:
+                        await message.channel.send(
+                                'A valid attachment must be either an image or video.')
+                        return
+
+                    if message.attachments[0].size > 8388608:
+                        await message.channel.send(
+                                'The size of the attachment needs not to exceed 8 MB.')
+                        return
+
+                    with open(
+                            os.path.join(
+                                credentials.MEME_SUBMISSIONS,
+                                '%d_%s' \
+                                    % (
+                                        message.attachments[0].id,
+                                        message.attachments[0].filename)),
+                            'wb') as f:
+                        await message.attachments[0].save(f)
+
+                    await message.channel.send(
+                            'Submitted for review.')
+
+                else:
+                    if not meme_filter:
+                        if not message.channel.nsfw:
+                            # Channel was not marked as NSFW, therefore
+                            # force filtering
+                            meme_filter = 1
+
+                    while True:
+                        file_ = random.choice(
+                                os.listdir(
+                                    credentials.MEME_DIR))
+
+                        if not meme_filter or not file_.startswith('SPOILER_'):
+                            break
+
+                    with open(
+                            os.path.join(
+                                credentials.MEME_DIR,
+                                file_),
+                            'rb') as f:
+                        await message.channel.send(
+                                file=discord.File(
+                                    fp=f,
+                                    filename=file_))
 
             elif message.content.startswith('.song'):
                 # Check whether it is enabled for this channel
