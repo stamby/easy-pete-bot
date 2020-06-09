@@ -468,13 +468,6 @@ select url from songs where artist || title like ? or title || artist like ?
                             'An invalid command has been supplied. Please type _.help_ to see valid options to the _.song_ command.')
 
             elif message.content.startswith('.iam'):
-                # Check whether it is enabled for this channel
-                c.execute(
-                        'select c_iam, role_create from servers where s_id = ?',
-                        (message.guild.id,))
-
-                c_iam, role_create = c.fetchone()
-
                 # Parse message
                 command, trailing_space, requested_role_name = re.findall(
                         '^\.iam((?:not)?)( *)(.*)',
@@ -483,6 +476,13 @@ select url from songs where artist || title like ? or title || artist like ?
                 if trailing_space == '' and requested_role_name != '':
                     # Ignore non-command
                     return
+
+                # Check whether it is enabled for this channel
+                c.execute(
+                        'select c_iam, role_create from servers where s_id = ?',
+                        (message.guild.id,))
+
+                c_iam, role_create = c.fetchone()
 
                 if not c_iam:
                     await message.channel.send(
@@ -494,12 +494,6 @@ select url from songs where artist || title like ? or title || artist like ?
                     await message.channel.send(
                             'This command is to be run on <#%d>.' \
                                     % c_iam)
-                    return
-
-                if requested_role_name == '':
-                    await message.channel.send(
-                            'Please write _.iam%s_ followed by the role name.' \
-                                    % command)
                     return
 
                 # Get the role that gives us the 'manage roles' permission
@@ -520,6 +514,12 @@ select url from songs where artist || title like ? or title || artist like ?
                 if not own_role:
                     await message.channel.send(
                             'Insufficient permissions. Namely, this command requires me to have _Manage Roles_ permission.')
+                    return
+
+                if requested_role_name == '':
+                    await message.channel.send(
+                            'Please write _.iam%s_ followed by the role name.' \
+                                    % command)
                     return
 
                 requested_role_name_lower = requested_role_name.lower()
@@ -1118,6 +1118,7 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
         c.execute(
                 "select sql from sqlite_master where type = 'table' and name = 'servers'")
 
+        # When a channel is removed, remove it from the database
         c_fields = re.findall(
                 'c_[^ ]+',
                 c.fetchone()[0])
