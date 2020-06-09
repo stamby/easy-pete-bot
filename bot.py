@@ -245,24 +245,24 @@ To report an issue, please run _.links._
                             'Submitted for review.')
 
                 else:
-                    if not meme_filter:
-                        if not message.channel.nsfw:
-                            # Channel was not marked as NSFW, therefore
-                            # force filtering
-                            meme_filter = 1
+                    if not meme_filter and not message.channel.nsfw:
+                        # Channel was not marked as NSFW, therefore
+                        # force filtering
+                        meme_filter = 1
 
-                    while True:
-                        file_ = random.choice(
-                                os.listdir(
-                                    credentials.MEME_DIR))
+                    if meme_filter:
+                        dir_ = credentials.MEME_DIR_ALL_AUDIENCES
 
-                        if not meme_filter or not file_.startswith('SPOILER_'):
-                            break
+                    else:
+                        dir_ = random.choice((
+                            credentials.MEME_DIR_ALL_AUDIENCES,
+                            credentials.MEME_DIR_OVER_EIGHTEEN))
+
+                    file_ = random.choice(
+                            os.listdir(dir_))
 
                     with open(
-                            os.path.join(
-                                credentials.MEME_DIR,
-                                file_),
+                            os.path.join(dir_, file_),
                             'rb') as f:
                         await message.channel.send(
                                 file=discord.File(
