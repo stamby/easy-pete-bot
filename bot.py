@@ -307,7 +307,7 @@ To report an issue, please run _.links._
                             (random.randrange(1, c.fetchone()[0]),))
 
                     await message.channel.send(
-                        c.fetchone()[0])
+                            c.fetchone()[0])
 
                 elif command == 'all':
                     c.execute(
@@ -496,22 +496,30 @@ select url from songs where artist || title like ? or title || artist like ?
                                     % c_iam)
                     return
 
-                # Get the role that gives us the 'manage roles' permission
-                own_role = None
-                for role in message.guild.get_member(
-                        credentials.BOT_USER_ID).roles:
-                    if role.permissions.manage_roles:
-                        own_role = role
-
-                if not own_role:
-                    await message.channel.send(
-                            'Insufficient permissions. Namely, this command requires me to have _Manage Roles_ permission.')
-                    return
-
                 if requested_role_name == '':
                     await message.channel.send(
                             'Please write _.iam%s_ followed by the role name.' \
                                     % command)
+                    return
+
+                # Get the role that gives us the 'manage roles' permission
+                own_role = None
+
+                roles = message.guild.get_member(
+                    credentials.BOT_USER_ID).roles
+
+                i = len(roles) - 1
+
+                while i >= 0:
+                    if roles[i].permissions.manage_roles:
+                        own_role = roles[i]
+                        break
+
+                    i -= 1
+
+                if not own_role:
+                    await message.channel.send(
+                            'Insufficient permissions. Namely, this command requires me to have _Manage Roles_ permission.')
                     return
 
                 requested_role_name_lower = requested_role_name.lower()
