@@ -34,5 +34,5 @@ if __name__ == '__main__':
     guild_client_process.start()
     role_cleanup_client_process.start()
 
-launch_message_client()
+    launch_message_client()
 
