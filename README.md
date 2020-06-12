@@ -1,9 +1,11 @@
 EASY PETE BOT
 =============
 
-<a href="https://top.gg/bot/700307494580256768" align="center">
-  <img src="https://top.gg/api/widget/700307494580256768.svg" alt="Easy Pete" />
+
+<a href="https://top.gg/bot/700307494580256768">
+  <img align="center" src="https://top.gg/api/widget/700307494580256768.svg" alt="Easy Pete" />
 </a>
+
 
 A general-purpose bot for Discord with the following commands:
 
