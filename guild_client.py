@@ -44,7 +44,7 @@ class GuildClient(BaseClient):
         c = self.db.cursor()
 
         c.execute(
-                'insert into servers (s_id, s_owner) values (%s, %s)',
+                'insert into servers (s_id, s_owner_id) values (%s, %s)',
                 (guild.id, guild.owner.id))
 
         self.db.commit()
