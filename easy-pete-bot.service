@@ -3,7 +3,7 @@
 # Once that has been done, the bot may be run by means of:
 # `systemctl start easy-pete-bot'
 
-# If the bot is intended to run from anywhere other than `/srv/easy_pete_bot',
+# If the bot is intended to run from anywhere other than `/srv/easy-pete-bot',
 # that should be changed here wherever it appears
 
 [Unit]
@@ -16,8 +16,8 @@ Before=shutdown.target
 
 [Service]
 Type=simple
-User=www-data
-ExecStart=/usr/bin/python3 -u /srv/easy_pete_bot/bot.py
+User=bot
+ExecStart=/usr/bin/python3 -u /srv/easy-pete-bot/bot.py
 StandardOutput=journal+console
 StandardError=journal+console
 SyslogIdentifier=easy-pete-bot
