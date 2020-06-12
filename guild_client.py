@@ -1,7 +1,27 @@
 import re
 from dbl import DBLClient
+from requests import post
 
 from base_client import BaseClient
+
+TOKEN_TOP_GG = None
+
+TOKEN_BOTS_ON_DISCORD = None
+
+class BotsOnDiscordHandler:
+    def __init__(self):
+        self.url = None
+        
+        self.headers = {
+                'Authorization': TOKEN_BOTS_ON_DISCORD
+        }
+
+    async def set_id(self, id_):
+        self.url = 'https://bots.ondiscord.xyz/bot-api/bots/%d/guilds' \
+                % id_
+
+    async def post_guild_count(self):
+        post(self.url, headers=self.headers)
 
 class GuildClient(BaseClient):
     def __init__(self):
@@ -9,10 +29,12 @@ class GuildClient(BaseClient):
 
         self.top_gg = DBLClient(
                 self,
-                '',
+                TOKEN_TOP_GG,
                 webhook_path='/dblwebhook',
                 webhook_auth='password',
                 webhook_port=5000)
+
+        self.bots_on_discord = BotsOnDiscordHandler()
 
     async def on_ready(self):
         print("'%s' has connected to Discord!" \
@@ -21,6 +43,12 @@ class GuildClient(BaseClient):
         await self.top_gg.post_guild_count()
 
         print("Server count sent to 'top.gg'.")
+
+        await self.bots_on_discord.set_id(self.user.id)
+
+        await self.bots_on_discord.post_guild_count()
+
+        print("Server count sent to 'bots.ondiscord.xyz'.")
 
     async def on_member_join(self, member):
         c = self.db.cursor()
@@ -75,6 +103,10 @@ class GuildClient(BaseClient):
 
         print("Server count sent to 'top.gg'.")
 
+        await self.bots_on_discord.post_guild_count()
+
+        print("Server count sent to 'bots.ondiscord.xyz'.")
+
     async def on_guild_remove(self, guild):
         print(
                 'Leaving \'%s\' (%d).' \
@@ -94,3 +126,6 @@ class GuildClient(BaseClient):
 
         print("Server count sent to 'top.gg'.")
 
+        await self.bots_on_discord.post_guild_count()
+
+        print("Server count sent to 'bots.ondiscord.xyz'.")

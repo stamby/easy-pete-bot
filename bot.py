@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-TOKEN = ''
+TOKEN = None
 
 from multiprocessing import Process
 from os import nice

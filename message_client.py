@@ -493,7 +493,7 @@ select url from songs where artist || title like %s or title || artist like %s
                 if not c_iam:
                     await message.channel.send(
                             'The command _.iam%s_ is not available. An admin may enable it by entering _.enable iam._' \
-                                    % command)
+                                    % command.lower())
                     return
 
                 if message.channel.id != c_iam:
@@ -762,8 +762,7 @@ select url from songs where artist || title like %s or title || artist like %s
                     c.execute('''
 update servers set c_{} = null where s_id = %s
                             '''.format(command),
-                            (
-                                message.guild.id))
+                            (message.guild.id,))
 
                     commands_str += ', %s' % command
 

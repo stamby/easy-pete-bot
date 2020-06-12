@@ -2,18 +2,19 @@ import discord
 import psycopg2
 
 class BaseClient(discord.Client):
-    def __init__(self, name):
+    def __init__(self, name, load_status=False):
         discord.Client.__init__(self)
 
         self.name = name
+        self.load_status = load_status
 
         print("Creating a database connection for client '%s'..." \
                 % name)
 
         self.db = psycopg2.connect(
-                dbname='postgres',
-                user='bot',
-                password='HardPete69')
+                dbname=None,
+                user=None,
+                password=None)
 
         print(
                 "Starting '%s'..." \
