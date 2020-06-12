@@ -84,7 +84,9 @@ and column_name like 'c_%'
         if message.content.startswith('.'):
             c = self.db.cursor()
 
-            if message.content == '.help':
+            if re.match(
+                    '^\.[Hh][Ee][Ll][Pp]( |$)',
+                    message.content):
                 c.execute(
                         'select c_iam, c_meme, c_song, someone from servers where s_id = %s',
                         (message.guild.id,))
@@ -138,7 +140,9 @@ More commands can be enabled. Admins may add them by use of _.enable_ and _.set,
                             colour=discord.Colour.gold(),
                             description=description))
 
-            elif message.content == '.admin':
+            elif re.match(
+                    '^\.[Aa][Dd][Mm][Ii][Nn]( |$)',
+                    message.content):
                 permissions = message.channel.permissions_for(
                         message.author)
 
@@ -184,7 +188,10 @@ Example: _.set role\_create false_
 To report an issue, please run _.links._
                     '''))
 
-            elif message.content.startswith('.meme'):
+            elif re.match(
+                    '^\.[Mm][Ee][Mm][Ee]( |$)',
+                    message.content):
+
                 # Check whether it is enabled for this channel
                 c.execute(
                         'select c_meme, meme_filter from servers where s_id = %s',
@@ -205,14 +212,10 @@ To report an issue, please run _.links._
 
                 # Parse the message
                 trailing_space, command, extra_chars = re.findall(
-                        '^\.meme( *)((?:submit$)?)(.*)',
-                        message.content)[0]
+                        '^\.....( *)((?:submit$)?)(.*)',
+                        message.content.lower())[0]
 
                 if extra_chars != '':
-                    if trailing_space == '':
-                        # Ignore non-command
-                        return
-                    
                     await message.channel.send(
                             'The only valid option to the _.meme_ command is the word _submit._')
                     return
@@ -276,7 +279,9 @@ To report an issue, please run _.links._
                                     fp=f,
                                     filename=file_))
 
-            elif message.content.startswith('.song'):
+            elif re.match(
+                    '^\.[Ss][Oo][Nn][Gg]( |$)',
+                    message.content):
                 # Check whether it is enabled for this channel
                 c.execute(
                         'select c_song from servers where s_id = %s',
@@ -297,14 +302,10 @@ To report an issue, please run _.links._
 
                 # Parse the message
                 trailing_space, command, extra_chars = re.findall(
-                        '^\.song( *)((?:all$|add +(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[A-Za-z0-9_-]+$|search .+|genre(?: .+|$))?)(.*)',
-                        message.content)[0]
+                        '^\.....( *)((?:all$|add +(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[A-Za-z0-9_-]+$|search .+|genre(?: .+|$))?)(.*)',
+                        message.content.lower())[0]
 
                 if trailing_space == '' and command == '':
-                    if extra_chars != '':
-                        # Ignore non-command
-                        return
-
                     # No command is being provided, therefore send a random song from the DB
                     c.execute(
                             'select count(*) from songs')
@@ -474,15 +475,13 @@ select url from songs where artist || title like %s or title || artist like %s
                     await message.channel.send(
                             'An invalid command has been supplied. Please type _.help_ to see valid options to the _.song_ command.')
 
-            elif message.content.startswith('.iam'):
+            elif re.match(
+                    '^\.[Ii][Aa][Mm]([Nn][Oo][Tt])?( |$)',
+                    message.content):
                 # Parse message
                 command, trailing_space, requested_role_name = re.findall(
-                        '^\.iam((?:not)?)( *)(.*)',
+                        '^\.[Ii][Aa][Mm]((?:[Nn][Oo][Tt])?)( *)(.*)',
                         message.content)[0]
-
-                if trailing_space == '' and requested_role_name != '':
-                    # Ignore non-command
-                    return
 
                 # Check whether it is enabled for this channel
                 c.execute(
@@ -526,7 +525,7 @@ select url from songs where artist || title like %s or title || artist like %s
                 if requested_role_name == '':
                     await message.channel.send(
                             'Please write _.iam%s_ followed by the role name.' \
-                                    % command)
+                                    % command.lower())
                     return
 
                 requested_role_name_lower = requested_role_name.lower()
@@ -539,7 +538,7 @@ select url from songs where artist || title like %s or title || artist like %s
                         break
 
                 # Remember whether we had 'not' in the command
-                if command == 'not':
+                if command != '':
                     if not existing_role:
                         await message.channel.send(
                                 'The role _%s_ does not exist. Maybe check your spelling?' \
@@ -619,15 +618,13 @@ select url from songs where artist || title like %s or title || artist like %s
                             '_%s_ assigned.' \
                                     % existing_role.name)
 
-            elif message.content.startswith('.prune'):
+            elif re.match(
+                    '^\.[Pp][Rr][Uu][Nn][Ee]( |$)',
+                    message.content):
                 # Parse the message
                 trailing_space, user_str, requested_amount_str, extra_chars = re.findall(
-                        '^\.prune( *)((?:<@![0-9]+>)?) *((?:[0-9]+$)?)(.*)',
+                        '^\......( *)((?:<@![0-9]+>)?) *((?:[0-9]+$)?)(.*)',
                         message.content)[0]
-
-                if trailing_space == '' and extra_chars != '':
-                    # Ignore non-command
-                    return
 
                 c.execute(
                         'select max_deletions from servers where s_id = %s',
@@ -688,7 +685,9 @@ select url from songs where artist || title like %s or title || artist like %s
                     await message.channel.send(
                             'Invalid syntax for the _.prune_ command.')
 
-            elif message.content.startswith('.enable'):
+            elif re.match(
+                    '^\.[Ee][Nn][Aa][Bb][Ll][Ee]( |$)',
+                    message.content):
                 # Check whether the user has the appropriate permissions
                 if not message.channel.permissions_for(
                         message.author).manage_channels:
@@ -730,7 +729,9 @@ select url from songs where artist || title like %s or title || artist like %s
                         'The following commands have been reserved for this channel: _%s._' \
                                 % commands_str[2:])
 
-            elif message.content.startswith('.disable'):
+            elif re.match(
+                    '^\.[Dd][Ii][Ss][Aa][Bb][Ll][Ee]( |$)',
+                    message.content):
                 # Check whether the user has the appropriate permissions
                 if not message.channel.permissions_for(
                         message.author).manage_channels:
@@ -772,7 +773,9 @@ update servers set c_{} = null where s_id = %s
                         'The following commands have been disabled: _%s._' \
                                 % commands_str[2:])
 
-            elif message.content.startswith('.set'):
+            elif re.match(
+                    '^\.[Ss][Ee][Tt]( |$)',
+                    message.content):
                 # Check whether the user has the appropriate permissions
                 if not message.channel.permissions_for(
                         message.author).manage_guild:
@@ -781,14 +784,10 @@ update servers set c_{} = null where s_id = %s
                     return
 
                 trailing_space, command, value = re.findall(
-                        '^\.set( *)((?:[^ ]+)?) *(.*)$',
-                        message.content)[0]
+                        '^\....( *)((?:[^ ]+)?) *(.*)$',
+                        message.content.lower())[0]
 
                 if trailing_space == '':
-                    if command != '':
-                        # Ignore non-command
-                        return
-
                     # Just print everything
                     fields = await self.get_all_fields()
 
@@ -851,7 +850,7 @@ update servers set c_{} = null where s_id = %s
 
                 if command in ('welcome', 'farewell'):
                     c.execute(
-                            'update servers set %s = %s where s_id = %s'.format(command),
+                            'update servers set {} = %s where s_id = %s'.format(command),
                             (
                                 value,
                                 message.guild.id))
@@ -859,7 +858,7 @@ update servers set c_{} = null where s_id = %s
                     self.db.commit()
 
                     await message.channel.send(
-                            'Message saved. Remember to enable it on the desired channel by writing _.enable greting._')
+                            'Message saved. Remember to enable it on the desired channel by writing _.enable greeting._')
                     return
 
                 elif command == 'max_deletions':
@@ -927,7 +926,7 @@ update servers set {} = %s where s_id = %s
                             title='ALL LINKS',
                             colour=discord.Colour.gold(),
                             description='''
-Invite the bot to your server of choice via this link:
+Invite:
 
 https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot
 
@@ -993,7 +992,9 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                     self.db.close()
                     await self.close()
 
-        elif message.content.startswith('@someone'):
+        elif re.match(
+                '@[Ss][Oo][Mm][Ee][Oo][Nn][Ee]',
+                message.content):
             c = self.db.cursor()
 
             # Check whether it is enabled
@@ -1026,7 +1027,7 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                                     '（✿ ͡◕ ᴗ◕)つ━━✫・o。')),
                                 random_member.name))
 
-        elif message.content == '<@!%d>' % self.user.id:
+        elif message.content.startswith('<@!%d>' % self.user.id):
             await message.channel.send(
                     random.choice((
                         '<@!%d>: What is your command?' % message.author.id,

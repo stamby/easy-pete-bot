@@ -1,12 +1,26 @@
+import re
+from dbl import DBLClient
+
 from base_client import BaseClient
 
 class GuildClient(BaseClient):
     def __init__(self):
         BaseClient.__init__(self, 'Guild Client')
 
+        self.top_gg = DBLClient(
+                self,
+                '',
+                webhook_path='/dblwebhook',
+                webhook_auth='password',
+                webhook_port=5000)
+
     async def on_ready(self):
         print("'%s' has connected to Discord!" \
                 % self.name)
+
+        await self.top_gg.post_guild_count()
+
+        print("Server count sent to 'top.gg'.")
 
     async def on_member_join(self, member):
         c = self.db.cursor()
@@ -41,6 +55,14 @@ class GuildClient(BaseClient):
                         farewell))
 
     async def on_guild_join(self, guild):
+        print(
+                'Joined \'%s\' (%d): %d members, %d channels.' \
+                        % (
+                            guild,
+                            guild.id,
+                            len(guild.members),
+                            len(guild.channels)))
+
         c = self.db.cursor()
 
         c.execute(
@@ -49,11 +71,26 @@ class GuildClient(BaseClient):
 
         self.db.commit()
 
+        await self.top_gg.post_guild_count()
+
+        print("Server count sent to 'top.gg'.")
+
+    async def on_guild_remove(self, guild):
         print(
-                'Joined \'%s\' (%d): %d members, %d channels.' \
+                'Leaving \'%s\' (%d).' \
                         % (
                             guild,
-                            guild.id,
-                            len(guild.members),
-                            len(guild.channels)))
+                            guild.id))
+
+        c = self.db.cursor()
+
+        c.execute(
+                'delete from servers where s_id = %s',
+                (guild.id,))
+
+        self.db.commit()
+
+        await self.top_gg.post_guild_count()
+
+        print("Server count sent to 'top.gg'.")
 
