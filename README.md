@@ -3,7 +3,10 @@ EASY PETE BOT
 
 <p align="center"><a href="https://top.gg/bot/700307494580256768">
   <img src="https://top.gg/api/widget/700307494580256768.svg" alt="Easy Pete Bot" />
-</a></p>
+</a>
+  <a href="https://bots.ondiscord.xyz/bots/700307494580256768"><img src="https://bots.ondiscord.xyz/bots/700307494580256768/embed?theme=dark&showGuilds=true" alt="Easy Pete" />
+</a>
+</p>
 
 A general-purpose bot for Discord with the following commands:
 
