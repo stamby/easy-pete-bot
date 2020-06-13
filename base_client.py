@@ -2,11 +2,10 @@ import discord
 import psycopg2
 
 class BaseClient(discord.Client):
-    def __init__(self, name, load_status=False):
+    def __init__(self, name):
         discord.Client.__init__(self)
 
         self.name = name
-        self.load_status = load_status
 
         print("Creating a database connection for client '%s'..." \
                 % name)

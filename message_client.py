@@ -419,11 +419,12 @@ This list changes often. It is up to date as of this very moment.
 
                 elif command.startswith('search'):
                     like = '%%%s%%' % re.sub(
-                            '[^A-Za-z0-9_-]+', '%', command[7:])
+                            '[^A-Za-z0-9_-]+',
+                            '%',
+                            command[7:])
 
-                    c.execute(
-                            '''
-select url from songs where artist || title like %s or title || artist like %s
+                    c.execute('''
+select url from songs where artist || title ilike %s or title || artist ilike %s
                             ''',
                             (like, like))
 
