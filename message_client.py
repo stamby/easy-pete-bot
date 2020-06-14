@@ -398,7 +398,7 @@ This list changes often. It is up to date as of this very moment.
                         return
 
                     c.execute(
-                            'insert into song_requests (time, solicitor, s_id, url) values (%s, %s, %s, %s)',
+                            'insert into song_requests (added_on, solicitor, s_id, url) values (%s, %s, %s, %s)',
                             (
                                 datetime.now().strftime('%F %H:%M:%S.%f'),
                                 message.author.id,
