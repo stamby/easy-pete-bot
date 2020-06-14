@@ -114,7 +114,7 @@ and column_name like 'c_%'
 Optionally:
 **.song search** (artist and/or title)
 **.song genre** (music genre)
-**.song add** (Youtube URL)
+**.song submit** (Youtube URL)
 **.song all**
 '''
 
@@ -302,17 +302,13 @@ To report an issue, please run _.links._
 
                 # Parse the message
                 trailing_space, command, extra_chars = re.findall(
-                        '^\.....( *)((?:all$|add +(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[A-Za-z0-9_-]+$|search .+|genre(?: .+|$))?)(.*)',
+                        '^\.....( *)((?:all$|submit +(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[A-Za-z0-9_-]+$|search .+|genre(?: .+|$))?)(.*)',
                         message.content.lower())[0]
 
                 if trailing_space == '' and command == '':
                     # No command is being provided, therefore send a random song from the DB
                     c.execute(
-                            'select count(*) from songs')
-
-                    c.execute(
-                            'select url from songs where id = %s',
-                            (random.randrange(1, c.fetchone()[0]),))
+                            'select url from songs order by random() limit 1')
 
                     await message.channel.send(
                             c.fetchone()[0])
@@ -363,7 +359,7 @@ from songs order by genre, artist, title
                                     description='''
 The attached file contains all my songs.
 
-You can add to these songs by running _.song add (Youtube URL)_ and search them through _.song search (artist, title or both)._
+You can add to these songs by running _.song submit (Youtube URL)_ and search them through _.song search (artist, title or both)._
 
 This list changes often. It is up to date as of this very moment.
                                     '''),
@@ -380,7 +376,7 @@ This list changes often. It is up to date as of this very moment.
                                         message.guild,
                                         message.guild.id))
 
-                elif command.startswith('add'):
+                elif command.startswith('submit'):
                     url = re.split(' +', command)[1]
 
                     c.execute(
@@ -424,19 +420,20 @@ This list changes often. It is up to date as of this very moment.
                             command[7:])
 
                     c.execute('''
-select url from songs where artist || title ilike %s or title || artist ilike %s
+select url from songs where artist || title ilike %s
+or title || artist ilike %s
+order by random() limit 1
                             ''',
                             (like, like))
 
-                    match = c.fetchall()
+                    match = c.fetchone()
 
                     if match:
-                        await message.channel.send(
-                                random.choice(match)[0])
+                        await message.channel.send(match[0])
 
                     else:
                         await message.channel.send(
-                                'No matches. Submit a URL by typing _.song add (Youtube URL)._')
+                                'No matches. Submit a URL by typing _.song submit (Youtube URL)._')
 
                 elif command.startswith('genre'):
                     requested_genre = command[6:]
@@ -457,15 +454,16 @@ select url from songs where artist || title ilike %s or title || artist ilike %s
                                         % available_genres_str[2:])
                         return
 
-                    c.execute(
-                            'select url from songs where genre = %s',
+                    c.execute('''
+select url from songs where genre = %s
+order by random() limit 1
+                            ''',
                             (requested_genre,))
 
-                    match = c.fetchall()
+                    match = c.fetchone()
 
                     if match:
-                        await message.channel.send(
-                                random.choice(match)[0])
+                        await message.channel.send(match[0])
 
                     else:
                         await message.channel.send(
