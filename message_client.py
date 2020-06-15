@@ -331,9 +331,12 @@ from songs order by genre, artist, title
 
                             f.write(line[0])
 
+                        c.execute(
+                                'select max(added_on) from songs')
+
                         f.write(
-                                datetime.utcnow().strftime(
-                                    '</ul><p>Fetched on %A %-d %B %y, %-I:%M %p (UTC).</p></body></html>'))
+                                c.fetchone()[0].strftime(
+                                    '</ul><p>Last song added on %A %-d %B %y, %-I:%M %p (UTC).</p></body></html>'))
 
                     with open(file_, 'r') as f:
                         await message.channel.send(
@@ -381,10 +384,10 @@ This list changes often. It is up to date as of this very moment.
                                 'Song has already been requested.')
                         return
 
-                    c.execute(
-                            'insert into song_requests (added_on, solicitor, s_id, url) values (%s, %s, %s, %s)',
+                    c.execute('''
+insert into song_requests (solicitor, s_id, url) values (%s, %s, %s)
+                            ''',
                             (
-                                datetime.now().strftime('%F %H:%M:%S.%f'),
                                 message.author.id,
                                 message.guild.id,
                                 url))
