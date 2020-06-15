@@ -49,15 +49,7 @@ select column_name from information_schema.columns where table_name = 'servers'
 and column_name != 'id' and column_name != 'added_on'
                 ''')
 
-        fields_tuple = c.fetchall()
-
-        c.close()
-
-        fields = []
-        for field in fields_tuple:
-            fields.append(field[0])
-
-        return fields
+        return [field[0] for field in c.fetchall()]
 
     async def get_c_fields(self):
         c = self.db.cursor()
@@ -66,16 +58,8 @@ and column_name != 'id' and column_name != 'added_on'
 select column_name from information_schema.columns where table_name = 'servers'
 and column_name like 'c_%'
                 ''')
-
-        c_fields_tuple = c.fetchall()
-
-        c.close()
-
-        c_fields = []
-        for field in c_fields_tuple:
-            c_fields.append(field[0])
-
-        return c_fields
+  
+        return [field[0][2:] for field in c.fetchall()]
 
     async def on_message(self, message):
         if message.author.bot or not message.guild:
@@ -442,16 +426,10 @@ order by random() limit 1
                         c.execute(
                                 'select distinct genre from songs order by 1')
 
-                        available_genres = c.fetchall()
-
-                        available_genres_str = ''
-
-                        for genre in available_genres:
-                            available_genres_str += ', %s' % genre
-
                         await message.channel.send(
                                 'The available genres are _%s._' \
-                                        % available_genres_str[2:])
+                                        % ', '.join(
+                                            [genre[0] for genre in c.fetchall()]))
                         return
 
                     c.execute('''
@@ -705,7 +683,7 @@ order by random() limit 1
                 c_fields = await self.get_c_fields()
 
                 for command in commands:
-                    if 'c_' + command not in c_fields:
+                    if command not in c_fields:
                         await message.channel.send(
                                 'The command _%s_ is not valid. Please type _.admin_ to see which commands may be enabled.' \
                                         % command)
@@ -749,7 +727,7 @@ order by random() limit 1
                 c_fields = await self.get_c_fields()
 
                 for command in commands:
-                    if 'c_' + command not in c_fields:
+                    if command not in c_fields:
                         await message.channel.send(
                                 '_%s_ is not valid. Please type _.admin_ to see which commands may be disabled.' \
                                         % command)
