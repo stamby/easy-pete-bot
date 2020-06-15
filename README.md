@@ -25,5 +25,6 @@ All features can be enabled, disabled or customized with the help of _.enable,_ 
 
 ## More links
 
+- [Visit the bot's guide](https://bot.molteni.im)
 - [Add the bot to Discord](https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot)
 - [Join our support server](https://discord.gg/VkvRqrv)
