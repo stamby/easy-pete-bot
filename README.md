@@ -1,11 +1,10 @@
 EASY PETE BOT
 =============
 
-<p align="center"><a href="https://top.gg/bot/700307494580256768">
+<!-- <p align="center"><a href="https://top.gg/bot/700307494580256768">
   <img src="https://top.gg/api/widget/700307494580256768.svg" alt="Easy Pete Bot" />
 </a>
-</p>
-
+</p> -->
 A general-purpose bot for Discord with the following commands:
 
 **.iam** (role name): Assign yourself a role. If the role doesn't exist, it may be created depending on settings.
