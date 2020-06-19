@@ -46,17 +46,27 @@ class MessageClient(BaseClient):
 
         c.execute('''
 select column_name from information_schema.columns where table_name = 'servers'
-and column_name != 'id' and column_name != 'added_on'
+and column_name like 'c_%'
                 ''')
 
-        return [field[0] for field in c.fetchall()]
+        c_fields = [field[0] for field in c.fetchall()]
+
+        c.execute('''
+select column_name from information_schema.columns where table_name = 'servers'
+and column_name != 'id' and column_name != 'added_on'
+and column_name not like 'c\_%' and column_name not like 's\_%'
+                ''')
+
+        properties = [field[0] for field in c.fetchall()]
+
+        return c_fields, properties
 
     async def get_c_fields(self):
         c = self.db.cursor()
 
         c.execute('''
 select column_name from information_schema.columns where table_name = 'servers'
-and column_name like 'c_%'
+and column_name like 'c\_%'
                 ''')
   
         return [field[0][2:] for field in c.fetchall()]
@@ -488,14 +498,17 @@ order by random() limit 1
                 roles = message.guild.get_member(
                     self.user.id).roles
 
-                i = len(roles) - 1
+                i = len(roles)
 
-                while i >= 0:
+                while True:
+                    i -= 1
+
                     if roles[i].permissions.manage_roles:
                         own_role = roles[i]
                         break
 
-                    i -= 1
+                    if i == 0:
+                        break
 
                 if not own_role:
                     await message.channel.send(
@@ -575,17 +588,16 @@ order by random() limit 1
                                     random.randrange(255)),
                                 hoist=True)
 
-                    elif existing_role.permissions.value != 0:
-                        # If the role's permissions differ from the default ones
-                        await message.channel.send(
-                                '_%s_ is an already-existing role with additional permissions. Please ask an admin to remove all permissions from the role before you may add it.' \
-                                        % existing_role.name)
-                        return
-
                     elif existing_role > own_role:
                         # If the role can't be changed due to its position in the hierarchy
                         await message.channel.send(
                                 'The role _%s_ is higher on the list than the one that allows me to manage other roles. I would need mine to be higher so I can add you the one you requested. Please ask an admin for assistance.' \
+                                        % existing_role.name)
+                        return
+
+                    elif existing_role.permissions.value != 0:
+                        await message.channel.send(
+                                '_%s_ is an already-existing role with additional permissions. Please ask an admin to remove all permissions from the role before you may add it.' \
                                         % existing_role.name)
                         return
 
@@ -692,8 +704,6 @@ order by random() limit 1
                                         % command)
                         return
 
-                commands_str = ''
-
                 for command in commands:
                     c.execute(
                             'update servers set c_{} = %s where s_id = %s'.format(command),
@@ -701,13 +711,11 @@ order by random() limit 1
                                 message.channel.id,
                                 message.guild.id))
 
-                    commands_str += ', %s' % command
-
                 self.db.commit()
 
                 await message.channel.send(
                         'The following commands have been reserved for this channel: _%s._' \
-                                % commands_str[2:])
+                                % ', '.join(commands))
 
             elif re.match(
                     '^\.[Dd][Ii][Ss][Aa][Bb][Ll][Ee]( |$)',
@@ -736,21 +744,17 @@ order by random() limit 1
                                         % command)
                         return
 
-                commands_str = ''
-
                 for command in commands:
                     c.execute('''
 update servers set c_{} = null where s_id = %s
                             '''.format(command),
                             (message.guild.id,))
 
-                    commands_str += ', %s' % command
-
                 self.db.commit()
 
                 await message.channel.send(
                         'The following commands have been disabled: _%s._' \
-                                % commands_str[2:])
+                                % ', '.join(commands))
 
             elif re.match(
                     '^\.[Ss][Ee][Tt]( |$)',
@@ -768,17 +772,12 @@ update servers set c_{} = null where s_id = %s
 
                 if trailing_space == '':
                     # Just print everything
-                    fields = await self.get_all_fields()
-
-                    fields_str = ''
-
-                    for field in fields:
-                        fields_str += ', %s' % field
+                    c_fields, properties = await self.get_all_fields()
 
                     c.execute(
                             'select %s from servers where s_id = %s' \
                                     % (
-                                        fields_str[2:],
+                                        ', '.join(c_fields),
                                         message.guild.id))
 
                     fetched = c.fetchone()
@@ -788,38 +787,49 @@ update servers set c_{} = null where s_id = %s
                                 'Uh-oh - server not added to the list. This is because the bot was not running it was allowed it to join this server. Please kick the bot and readd it through the link provided by the _.links_ command.')
                         return
 
+                    ''
+
                     i = 0
 
-                    message_body = ''
+                    message_body = '**CHANNELS**\n\n'
 
-                    while i < len(fields):
-                        if fields[i] == 'id' or fields[i].startswith('s_'):
-                            pass
-
-                        elif fields[i].startswith('c_'):
-                            if fetched[i]:
-                                message_body += '**%s**: <#%d>\n' \
-                                        % (
-                                                fields[i][2:],
-                                                fetched[i])
-
-                            else:
-                                message_body += '**%s**: Disabled\n' \
-                                        % fields[i][2:]
-
-                        else:
-                            message_body += '**%s**: _%s_\n' \
+                    while i < len(c_fields):
+                        if fetched[i]:
+                            message_body += '**%s**: <#%d>\n' \
                                     % (
-                                            fields[i],
+                                            c_fields[i][2:],
                                             fetched[i])
+                        else:
+                            message_body += '**%s**: Disabled\n' \
+                                    % c_fields[i][2:]
+
+                        i += 1
+
+                    c.execute(
+                            'select %s from servers where s_id = %s' \
+                                    % (
+                                        ', '.join(properties),
+                                        message.guild.id))
+
+                    fetched = c.fetchone()
+
+                    i = 0
+
+                    message_body += '\n**PROPERTIES**\n\n'
+
+                    while i < len(properties):
+                        message_body += '**%s**: _%s_\n' \
+                                % (
+                                        properties[i],
+                                        fetched[i])
                         i += 1
 
                     await message.channel.send(
                             embed=discord.Embed(
-                                title='ALL PROPERTIES',
+                                title='CURRENT SETTINGS',
                                 colour=discord.Colour.gold(),
                                 description=message_body + \
-                                        '\nRefer to _.admin_ to see how to change them.'))
+                                        '\nChannels may be changed through _.enable_ and _.disable,_ while properties require the use of _.set._ For more information, see _.admin._'))
                     return
 
                 if value == '':
@@ -837,7 +847,7 @@ update servers set c_{} = null where s_id = %s
                     self.db.commit()
 
                     await message.channel.send(
-                            'Message saved. Remember to enable it on the desired channel by writing _.enable greeting._')
+                            'Message saved. If you haven\'t, remember to enable it on the desired channel by writing _.enable greeting._')
                     return
 
                 elif command == 'max_deletions':
