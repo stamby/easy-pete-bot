@@ -46,7 +46,7 @@ class MessageClient(BaseClient):
 
         c.execute('''
 select column_name from information_schema.columns where table_name = 'servers'
-and column_name like 'c_%'
+and column_name like 'c\_%'
                 ''')
 
         c_fields = [field[0] for field in c.fetchall()]
