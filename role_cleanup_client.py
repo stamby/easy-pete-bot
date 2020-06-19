@@ -8,6 +8,9 @@ class RoleCleanupClient(BaseClient):
         print('Role Clean-Up has started.')
 
     async def on_member_update(self, before, after):
+        if len(before.roles) == len(after.roles):
+            return
+
         c = self.db.cursor()
 
         c.execute(
