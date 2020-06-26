@@ -68,7 +68,7 @@ and column_name not like 'c\_%' and column_name not like 's\_%'
 select column_name from information_schema.columns where table_name = 'servers'
 and column_name like 'c\_%'
                 ''')
-  
+
         return [field[0][2:] for field in c.fetchall()]
 
     async def on_message(self, message):
@@ -255,12 +255,21 @@ To report an issue, please run _.links._
                         meme_filter = 1
 
                     if meme_filter:
-                        dir_ = Credentials.MEME_DIR_ALL_AUDIENCES
+                        dir_ = os.path.join(
+                                Credentials.MEME_DIR_ALL_AUDIENCES,
+                                random.choice(
+                                    os.listdir(
+                                        Credentials.MEME_DIR_ALL_AUDIENCES)))
 
                     else:
                         dir_ = random.choice((
-                            Credentials.MEME_DIR_ALL_AUDIENCES,
-                            Credentials.MEME_DIR_OVER_EIGHTEEN))
+                                Credentials.MEME_DIR_ALL_AUDIENCES,
+                                Credentials.MEME_DIR_OVER_EIGHTEEN))
+
+                        dir_ = os.path.join(
+                                dir_,
+                                random.choice(
+                                    os.listdir(dir_)))
 
                     file_ = random.choice(
                             os.listdir(dir_))
@@ -500,7 +509,7 @@ order by random() limit 1
 
                 i = len(roles)
 
-                while True:
+                while i > 0:
                     i -= 1
 
                     if roles[i].permissions.manage_roles:
@@ -524,11 +533,9 @@ order by random() limit 1
                 requested_role_name_lower = requested_role_name.lower()
 
                 # Check whether the requested role exists
-                existing_role = None
-                for role in message.guild.roles:
-                    if role.name.lower() == requested_role_name_lower:
-                        existing_role = role
-                        break
+                existing_role = discord.utils.find(
+                        lambda r: r.name.lower() == requested_role_name_lower,
+                        message.guild.roles)
 
                 # Remember whether we had 'not' in the command
                 if command != '':
@@ -553,19 +560,13 @@ order by random() limit 1
                     await message.author.remove_roles(
                             existing_role,
                             reason='Self-removed')
+
                     await message.channel.send(
                             '_%s_ removed.' \
                                     % existing_role.name)
 
                 else:
                     # We are adding him the role
-                    # Check whether the user has got this role
-                    if existing_role in message.author.roles:
-                        await message.channel.send(
-                                'The role _%s_ has already been assigned to you.' \
-                                        % existing_role.name) 
-                        return
-
                     # If the role doesn't exist
                     if not existing_role:
                         # Check whether we are allowed to create it
@@ -587,6 +588,12 @@ order by random() limit 1
                                     random.randrange(255),
                                     random.randrange(255)),
                                 hoist=True)
+
+                    elif existing_role in message.author.roles:
+                        await message.channel.send(
+                                'The role _%s_ has already been assigned to you.' \
+                                        % existing_role.name) 
+                        return
 
                     elif existing_role > own_role:
                         # If the role can't be changed due to its position in the hierarchy
@@ -909,7 +916,9 @@ update servers set {} = %s where s_id = %s
                 await message.channel.send(
                         'OK')
 
-            elif message.content == '.links':
+            elif re.match(
+                    '^\.[Ll][Ii][Nn][Kk][Ss]( |$)',
+                    message.content):
                 await message.channel.send(
                         embed=discord.Embed(
                             title='ALL LINKS',

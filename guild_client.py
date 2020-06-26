@@ -27,12 +27,12 @@ class GuildClient(BaseClient):
     def __init__(self):
         BaseClient.__init__(self, 'Guild Client')
 
-        self.top_gg = DBLClient(
-                self,
-                TOKEN_TOP_GG,
-                webhook_path='/dblwebhook',
-                webhook_auth='password',
-                webhook_port=5000)
+#        self.top_gg = DBLClient(
+#                self,
+#                TOKEN_TOP_GG,
+#                webhook_path='/dblwebhook',
+#                webhook_auth='password',
+#                webhook_port=5000)
 
         self.bots_on_discord = BotsOnDiscordHandler()
 
@@ -40,9 +40,9 @@ class GuildClient(BaseClient):
         print("'%s' has connected to Discord!" \
                 % self.name)
 
-        await self.top_gg.post_guild_count()
+#        await self.top_gg.post_guild_count()
 
-        print("Server count sent to 'top.gg'.")
+#        print("Server count sent to 'top.gg'.")
 
         await self.bots_on_discord.set_id(self.user.id)
 
@@ -99,9 +99,9 @@ class GuildClient(BaseClient):
 
         self.db.commit()
 
-        await self.top_gg.post_guild_count()
+#        await self.top_gg.post_guild_count()
 
-        print("Server count sent to 'top.gg'.")
+#        print("Server count sent to 'top.gg'.")
 
         await self.bots_on_discord.post_guild_count()
 
@@ -122,9 +122,9 @@ class GuildClient(BaseClient):
 
         self.db.commit()
 
-        await self.top_gg.post_guild_count()
+#        await self.top_gg.post_guild_count()
 
-        print("Server count sent to 'top.gg'.")
+#        print("Server count sent to 'top.gg'.")
 
         await self.bots_on_discord.post_guild_count()
 

@@ -28,11 +28,11 @@ if __name__ == '__main__':
     guild_client_process = Process(
             target=launch_guild_client)
 
-    role_cleanup_client_process = Process(
-            target=launch_role_cleanup_client)
+    message_client_process = Process(
+            target=launch_message_client)
 
     guild_client_process.start()
-    role_cleanup_client_process.start()
+    message_client_process.start()
     
-    launch_message_client()
+    launch_role_cleanup_client()
 
