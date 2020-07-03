@@ -1045,50 +1045,62 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                         'How may I help you, <@!%d>?' % message.author.id,
                         'Ready when you are, <@!%d>.' % message.author.id)))
 
-    async def on_reaction_add(self, reaction, user):
-        if reaction.message.author.id != self.user.id \
-                or user.id == self.user.id:
+    async def on_raw_reaction_add(self, payload):
+        if payload.user_id == self.user.id:
             return
 
-        if reaction.message.content.startswith(
-                'https://www.youtube.com/'):
+        message = await self.get_channel(
+                payload.channel_id).fetch_message(
+                        payload.message_id)
+
+        if message.author.id != self.user.id:
+            return
+
+        if message.content.startswith(
+                'http'):
             # `.song' command
             c = self.db.cursor()
 
-            if reaction.emoji == '👍':
+            if payload.emoji.name == '👍':
                 c.execute(
                         'update songs set yes = yes + 1 where url = %s',
-                        (reaction.message.content,))
+                        (message.content,))
 
-            elif reaction.emoji == '👎':
+            elif payload.emoji.name == '👎':
                 c.execute(
                         'update songs set no = no + 1 where url = %s',
-                        (reaction.message.content,))
+                        (message.content,))
 
             else:
                 return
 
             self.db.commit()
 
-    async def on_reaction_remove(self, reaction, user):
-        if reaction.message.author.id != self.user.id \
-                or user.id == self.user.id:
+    async def on_raw_reaction_remove(self, payload):
+        if payload.user_id == self.user.id:
             return
 
-        if reaction.message.content.startswith(
-                'https://www.youtube.com/'):
+        message = await self.get_channel(
+                payload.channel_id).fetch_message(
+                        payload.message_id)
+
+        if message.author.id != self.user.id:
+            return
+
+        if message.content.startswith(
+                'http'):
             # `.song' command
             c = self.db.cursor()
 
-            if reaction.emoji == '👍':
+            if payload.emoji.name == '👍':
                 c.execute(
                         'update songs set yes = yes - 1 where url = %s',
-                        (reaction.message.content,))
+                        (message.content,))
 
-            elif reaction.emoji == '👎':
+            elif payload.emoji.name == '👎':
                 c.execute(
                         'update songs set no = no - 1 where url = %s',
-                        (reaction.message.content,))
+                        (message.content,))
 
             else:
                 return
