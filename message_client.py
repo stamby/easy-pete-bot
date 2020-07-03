@@ -313,8 +313,10 @@ To report an issue, please run _.links._
                     c.execute(
                             'select url from songs order by random() limit 1')
 
-                    await message.channel.send(
+                    song_message = await message.channel.send(
                             c.fetchone()[0])
+                    await song_message.add_reaction('👍')
+                    await song_message.add_reaction('👎')
 
                 elif command == 'all':
                     c.execute(
@@ -435,7 +437,9 @@ order by random() limit 1
                     match = c.fetchone()
 
                     if match:
-                        await message.channel.send(match[0])
+                        song_message = await message.channel.send(match[0])
+                        await song_message.add_reaction('👍')
+                        await song_message.add_reaction('👎')
 
                     else:
                         await message.channel.send(
@@ -463,7 +467,9 @@ order by random() limit 1
                     match = c.fetchone()
 
                     if match:
-                        await message.channel.send(match[0])
+                        song_message = await message.channel.send(match[0])
+                        await song_message.add_reaction('👍')
+                        await song_message.add_reaction('👎')
 
                     else:
                         await message.channel.send(
@@ -875,7 +881,7 @@ update servers set c_{} = null where s_id = %s
                         'role_cleanup',
                         'someone',
                         'meme_filter'):
-                    if re.match('^([Tt][Rr][u][e]|[Ff][Aa][Ll][Ss][Ee])$', value):
+                    if re.match('^(true|false)$', value):
                         value = value.lower() != 'false'
 
                         c.execute('''
@@ -899,9 +905,13 @@ update servers set {} = %s where s_id = %s
                             if c_meme:
                                 if not message.guild.get_channel(c_meme).nsfw:
                                     await message.channel.send(
-                                            'Setting saved; however, because <#%d> has not been marked as NSFW, the meme filter will still take effect until this changes.' \
+                                            'Setting saved; however, because <#%d> has not been marked as NSFW, the meme filter will still take effect until this changes. Keep in mind that, without filter, some memes may be offensive to users. Please make sure they are of age and that they agree with these changes.' \
                                                     % c_meme)
                                     return
+
+                            await message.channel.send(
+                                    'Meme filter has been turned off. Warning: Some memes may be offensive and even distasteful to some users. If you do not want this to be the case, run _.set meme\_filter true._')
+                            return
 
                     else:
                         await message.channel.send(
@@ -1035,3 +1045,52 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                         'How may I help you, <@!%d>?' % message.author.id,
                         'Ready when you are, <@!%d>.' % message.author.id)))
 
+    async def on_reaction_add(self, reaction, user):
+        if reaction.message.author.id != self.user.id \
+                or user.id == self.user.id:
+            return
+
+        if reaction.message.content.startswith(
+                'https://www.youtube.com/'):
+            # `.song' command
+            c = self.db.cursor()
+
+            if reaction.emoji == '👍':
+                c.execute(
+                        'update songs set yes = yes + 1 where url = %s',
+                        (reaction.message.content,))
+
+            elif reaction.emoji == '👎':
+                c.execute(
+                        'update songs set no = no + 1 where url = %s',
+                        (reaction.message.content,))
+
+            else:
+                return
+
+            self.db.commit()
+
+    async def on_reaction_remove(self, reaction, user):
+        if reaction.message.author.id != self.user.id \
+                or user.id == self.user.id:
+            return
+
+        if reaction.message.content.startswith(
+                'https://www.youtube.com/'):
+            # `.song' command
+            c = self.db.cursor()
+
+            if reaction.emoji == '👍':
+                c.execute(
+                        'update songs set yes = yes - 1 where url = %s',
+                        (reaction.message.content,))
+
+            elif reaction.emoji == '👎':
+                c.execute(
+                        'update songs set no = no - 1 where url = %s',
+                        (reaction.message.content,))
+
+            else:
+                return
+
+            self.db.commit()
