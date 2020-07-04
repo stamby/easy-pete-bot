@@ -148,7 +148,7 @@ select filter_mass_mention, filter_action from servers where s_id = %s
 
                 if c_song:
                     description += '''
-**.song**: Send a good song for your happy ears. 
+**.song**: Send a good song for your happy ears.
 
 Optionally:
 **.song search** (artist and/or title)
@@ -168,7 +168,12 @@ Optionally:
 **.links**: Show the links to invite the bot to a new server and to contact the devs in case there is an issue, or if you would like to suggest an improvement.
 '''
 
-                if not c_iam or not c_meme or not c_song or not someone:
+                if message.channel.permissions_for(
+                        message.author).manage_channels \
+                                and (not c_iam \
+                                or not c_meme \
+                                or not c_song \
+                                or not someone):
                     description += '''
 More commands can be enabled. Admins may add them by use of _.enable_ and _.set,_ described in _.admin._
 '''
@@ -248,7 +253,8 @@ For more information, please write _.links._
 
                 c_meme, meme_filter = c.fetchone()
 
-                if not c_meme:
+                if not c_meme and message.channel.permissions_for(
+                        message.author).manage_channels:
                     await message.channel.send(
                             'To enable this command, type _.enable meme._')
                     return
@@ -347,7 +353,8 @@ For more information, please write _.links._
 
                 c_song = c.fetchone()[0]
 
-                if not c_song:
+                if not c_song and message.channel.permissions_for(
+                        message.author).manage_channels:
                     await message.channel.send(
                             'Please enable this command by means of _.enable song._')
                     return
@@ -550,7 +557,8 @@ order by random() limit 1
 
                 c_iam, role_create = c.fetchone()
 
-                if not c_iam:
+                if not c_iam and message.channel.permissions_for(
+                        message.author).manage_channels:
                     await message.channel.send(
                             'The command _.iam%s_ is not available. An admin may enable it by entering _.enable iam._' \
                                     % command.lower())
@@ -603,19 +611,22 @@ order by random() limit 1
                     if not existing_role:
                         await message.channel.send(
                                 'The role _%s_ does not exist. Maybe check your spelling?' \
-                                        % requested_role_name) 
+                                        % discord.utils.escape_markdown(
+                                            requested_role_name))
                         return
 
                     if existing_role not in message.author.roles:
                         await message.channel.send(
                                 'The role _%s_ has not been assigned to you.' \
-                                        % existing_role.name) 
+                                        % discord.utils.escape_markdown(
+                                            existing_role.name))
                         return
 
                     elif existing_role > own_role:
                         await message.channel.send(
                                 'The role _%s_ is too high on the list for me to remove it. I would need mine to be higher than the role that is to be removed.' \
-                                        % existing_role.name) 
+                                        % discord.utils.escape_markdown(
+                                            existing_role.name))
                         return
 
                     await message.author.remove_roles(
@@ -624,7 +635,8 @@ order by random() limit 1
 
                     await message.channel.send(
                             '_%s_ removed.' \
-                                    % existing_role.name)
+                                    % discord.utils.escape_markdown(
+                                        existing_role.name))
 
                 else:
                     # We are adding him the role
@@ -634,7 +646,8 @@ order by random() limit 1
                         if role_create == 0:
                             await message.channel.send(
                                     'The role _%s_ doesn\'t exist and cannot be created due to bot settings for this server.' \
-                                            % requested_role_name)
+                                            % discord.utils.escape_markdown(
+                                                requested_role_name))
                             return
 
                         # Create the role
@@ -653,20 +666,23 @@ order by random() limit 1
                     elif existing_role in message.author.roles:
                         await message.channel.send(
                                 'The role _%s_ has already been assigned to you.' \
-                                        % existing_role.name) 
+                                        % discord.utils.escape_markdown(
+                                            existing_role.name))
                         return
 
                     elif existing_role > own_role:
                         # If the role can't be changed due to its position in the hierarchy
                         await message.channel.send(
                                 'The role _%s_ is higher on the list than the one that allows me to manage other roles. I would need mine to be higher so I can add you the one you requested. Please ask an admin for assistance.' \
-                                        % existing_role.name)
+                                        % discord.utils.escape_markdown(
+                                            existing_role.name))
                         return
 
                     elif existing_role.permissions.value != 0:
                         await message.channel.send(
                                 '_%s_ is an already-existing role with additional permissions. Please ask an admin to remove all permissions from the role before you may add it.' \
-                                        % existing_role.name)
+                                        % discord.utils.escape_markdown(
+                                            existing_role.name))
                         return
 
                     await message.author.add_roles(
@@ -676,7 +692,8 @@ order by random() limit 1
 
                     await message.channel.send(
                             '_%s_ assigned.' \
-                                    % existing_role.name)
+                                    % discord.utils.escape_markdown(
+                                        existing_role.name))
 
             elif re.match(
                     '^\.[Pp][Rr][Uu][Nn][Ee]( |$)',
@@ -769,7 +786,8 @@ order by random() limit 1
                     if command not in c_fields:
                         await message.channel.send(
                                 'The command _%s_ is not valid. Please type _.admin_ to see which commands may be enabled.' \
-                                        % command)
+                                        % discord.utils.escape_markdown(
+                                            command))
                         return
 
                 for command in commands:
@@ -809,7 +827,8 @@ order by random() limit 1
                     if command not in c_fields:
                         await message.channel.send(
                                 '_%s_ is not valid. Please type _.admin_ to see which commands may be disabled.' \
-                                        % command)
+                                        % discord.utils.escape_markdown(
+                                            command))
                         return
 
                 for command in commands:
@@ -864,6 +883,8 @@ from servers where s_id = %s
 **song**: <#%d>
 **updates**: <#%d>
 
+Syntax: _.enable greeting_ (and/or _iam, meme,_ etc.)
+
 **PROPERTIES**
 
 **welcome**: _%s_
@@ -877,6 +898,8 @@ from servers where s_id = %s
 **filter_profanity**: _%s_
 **filter_mass_mention**: _%s_
 
+Syntax: _.set someone false_ (or any other property for that matter)
+
 Channels may be changed through _.enable_ and _.disable,_ while properties require the use of _.set._ For more information, see _.admin._
                         ''' % (
                                 c_greeting, c_iam, c_meme, c_song, c_updates,
@@ -885,19 +908,19 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
                                 max_deletions,
                                 (
                                     'False (bot cannot create roles)' ,
-                                    'True (allowed to create roles)' 
+                                    'True (allowed to create roles)'
                                 )[int(role_create)],
                                 (
                                     'False (turned off)' ,
-                                    'True (running)' 
+                                    'True (running)'
                                 )[int(role_cleanup)],
                                 (
                                     'False (not allowed)' ,
-                                    'True (allowed)' 
+                                    'True (allowed)'
                                 )[int(someone)],
                                 (
                                     'False (memes may be for mature audiences)',
-                                    'True (memes can be seen by all audiences)' 
+                                    'True (memes can be seen by all audiences)'
                                 )[int(meme_filter)],
                                 (
                                     '0 (off)',
@@ -907,11 +930,11 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
                                 )[filter_action],
                                 (
                                     'False (not moderated)' ,
-                                    'True (swear words reached by filter)' 
+                                    'True (swear words reached by filter)'
                                 )[int(filter_profanity)],
                                 (
                                     'False (not moderated)' ,
-                                    'True (mass mentioning reached by filter)' 
+                                    'True (mass mentioning reached by filter)'
                                 )[int(filter_mass_mention)]
                             )
 
@@ -941,7 +964,7 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
                     return
 
                 elif command == 'max_deletions':
-                    if re.match('^([0-9]{1,2}|100)$', value):
+                    if re.match('^(0|[1-9][0-9]?|100)$', value):
                         c.execute(
                                 'update servers set max_deletions = %s where s_id = %s',
                                 (int(value), message.guild.id))
@@ -1014,7 +1037,7 @@ update servers set {} = %s where s_id = %s
                             if c_meme:
                                 if not message.guild.get_channel(c_meme).nsfw:
                                     await message.channel.send(
-                                            'Setting saved; however, because <#%d> has not been marked as NSFW, the meme filter will still take effect until this changes. Keep in mind that, without filter, some memes may be offensive to users. Please make sure they are of age and that they agree with these changes.' \
+                                            'Setting saved; however, because <#%d> has not been marked as NSFW, the meme filter will still take effect until this changes. Keep in mind that, without filter, some memes may be offensive to users. Please make sure that they are of age and they will agree with these changes.' \
                                                     % c_meme)
                                     return
 
@@ -1029,7 +1052,7 @@ update servers set {} = %s where s_id = %s
 
                 else:
                     await message.channel.send(
-                            'Please type _.admin_ to see how to run this command.')
+                            'Please write _.admin_ to see how to run this command.')
                     return
 
                 await message.channel.send(
