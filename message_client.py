@@ -41,26 +41,6 @@ class MessageClient(BaseClient):
 
         c.close()
 
-    async def get_all_fields(self):
-        c = self.db.cursor()
-
-        c.execute('''
-select column_name from information_schema.columns where table_name = 'servers'
-and column_name like 'c\_%'
-                ''')
-
-        c_fields = [field[0] for field in c.fetchall()]
-
-        c.execute('''
-select column_name from information_schema.columns where table_name = 'servers'
-and column_name != 'id' and column_name != 'added_on'
-and column_name not like 'c\_%' and column_name not like 's\_%'
-                ''')
-
-        properties = [field[0] for field in c.fetchall()]
-
-        return c_fields, properties
-
     async def get_c_fields(self):
         c = self.db.cursor()
 
@@ -794,58 +774,87 @@ update servers set c_{} = null where s_id = %s
                         message.content.lower())[0]
 
                 if trailing_space == '':
+                    c.execute('''
+select c_greeting, c_iam, c_meme, c_song, c_updates,
+welcome, farewell, max_deletions, role_create, role_cleanup, someone,
+meme_filter, filter_action, filter_profanity, filter_mass_mention
+from servers where s_id = %s
+                            ''',
+                            (message.guild.id,))
+
+                    c_greeting, c_iam, c_meme, c_song, c_updates, \
+                            welcome, farewell, max_deletions, role_create, \
+                            role_cleanup, someone, meme_filter, \
+                            filter_action, filter_profanity, \
+                            filter_mass_mention \
+                                = c.fetchone()
+
                     # Just print everything
-                    c_fields, properties = await self.get_all_fields()
+                    message_body = '''
+**CHANNELS**
 
-                    c.execute(
-                            'select %s from servers where s_id = %s' \
-                                    % (
-                                        ', '.join(c_fields),
-                                        message.guild.id))
+**greeting**: <#%d>
+**iam**: <#%d>
+**meme**: <#%d>
+**song**: <#%d>
+**updates**: <#%d>
 
-                    fetched = c.fetchone()
+**PROPERTIES**
 
-                    i = 0
+**welcome**: _%s_
+**farewell**: _%s_
+**max_deletions**: _%d_
+**role_create**: _%s_
+**role_cleanup**: _%s_
+**someone**: _%s_
+**meme_filter**: _%s_
+**filter_action**: _%s_
+**filter_profanity**: _%s_
+**filter_mass_mention**: _%s_
 
-                    message_body = '**CHANNELS**\n\n'
-
-                    while i < len(c_fields):
-                        if fetched[i]:
-                            message_body += '**%s**: <#%d>\n' \
-                                    % (
-                                            c_fields[i][2:],
-                                            fetched[i])
-                        else:
-                            message_body += '**%s**: Disabled\n' \
-                                    % c_fields[i][2:]
-
-                        i += 1
-
-                    c.execute(
-                            'select %s from servers where s_id = %s' \
-                                    % (
-                                        ', '.join(properties),
-                                        message.guild.id))
-
-                    fetched = c.fetchone()
-
-                    i = 0
-
-                    message_body += '\n**PROPERTIES**\n\n'
-
-                    while i < len(properties):
-                        message_body += '**%s**: _%s_\n' \
-                                % (
-                                        properties[i],
-                                        fetched[i])
-                        i += 1
+Channels may be changed through _.enable_ and _.disable,_ while properties require the use of _.set._ For more information, see _.admin._
+                        ''' % (
+                                c_greeting, c_iam, c_meme, c_song, c_updates,
+                                welcome,
+                                farewell,
+                                max_deletions,
+                                (
+                                    'False (bot cannot create roles)' ,
+                                    'True (allowed to create roles)' 
+                                )[int(role_create)],
+                                (
+                                    'False (turned off)' ,
+                                    'True (running)' 
+                                )[int(role_cleanup)],
+                                (
+                                    'False (not allowed)' ,
+                                    'True (allowed)' 
+                                )[int(someone)],
+                                (
+                                    'False (memes may be for mature audiences)',
+                                    'True (memes can be seen by all audiences)' 
+                                )[int(meme_filter)],
+                                (
+                                    '0 (off)',
+                                    '1 (warning, not deleting)',
+                                    '2 (warning and deleting)',
+                                    '3 (deleting without warning)'
+                                )[filter_action],
+                                (
+                                    'False (not moderated)' ,
+                                    'True (swear words reached by filter)' 
+                                )[int(filter_profanity)],
+                                (
+                                    'False (not moderated)' ,
+                                    'True (mass mentioning reached by filter)' 
+                                )[int(filter_mass_mention)]
+                            )
 
                     await message.channel.send(
                             embed=discord.Embed(
                                 title='CURRENT SETTINGS',
                                 colour=discord.Colour.gold(),
-                                description=message_body + \
-                                        '\nChannels may be changed through _.enable_ and _.disable,_ while properties require the use of _.set._ For more information, see _.admin._'))
+                                description=message_body))
                     return
 
                 if value == '':
