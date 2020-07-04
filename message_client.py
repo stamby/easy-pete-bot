@@ -19,6 +19,8 @@ class MessageClient(BaseClient):
     def __init__(self):
         BaseClient.__init__(self, 'Message Client')
 
+        self.mention = None
+
         self.mass_mention_regex = re.compile(
                 '( *<@![0-9]+> *){4,}')
 
@@ -28,6 +30,8 @@ class MessageClient(BaseClient):
     async def on_ready(self):
         print("'%s' has connected to Discord!" \
                 % self.name)
+
+        self.mention = '<@!%d>' % self.user.id
 
         c = self.db.cursor()
 
@@ -902,26 +906,16 @@ Syntax: _.set someone false_ (or any other property for that matter)
 
 Channels may be changed through _.enable_ and _.disable,_ while properties require the use of _.set._ For more information, see _.admin._
                         ''' % (
-                                (lambda: \
-                                        c_greeting and '<#%d>' % c_greeting \
-                                        or 'Disabled'
-                                )(),
-                                (lambda: \
-                                        c_iam and '<#%d>' % c_iam \
-                                        or 'Disabled'
-                                )(),
-                                (lambda: \
-                                        c_meme and '<#%d>' % c_meme \
-                                        or 'Disabled'
-                                )(),
-                                (lambda: \
-                                        c_song and '<#%d>' % c_song \
-                                        or 'Disabled'
-                                )(),
-                                (lambda: \
-                                        c_updates and '<#%d>' % c_updates \
-                                        or 'Disabled'
-                                )(),
+                                c_greeting and '<#%d>' % c_greeting \
+                                        or 'Disabled',
+                                c_iam and '<#%d>' % c_iam \
+                                        or 'Disabled',
+                                c_meme and '<#%d>' % c_meme \
+                                        or 'Disabled',
+                                c_song and '<#%d>' % c_song \
+                                        or 'Disabled',
+                                c_updates and '<#%d>' % c_updates \
+                                        or 'Disabled',
                                 welcome,
                                 farewell,
                                 max_deletions,
@@ -1186,7 +1180,7 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                                     '（✿ ͡◕ ᴗ◕)つ━━✫・o。')),
                                 random_member.name))
 
-        elif message.content == '<@!%d>' % self.user.id:
+        elif message.content == self.mention:
             await message.channel.send(
                     random.choice((
                         '<@!%d>: What is your command?',
