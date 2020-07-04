@@ -149,19 +149,23 @@ More commands can be enabled. Admins may add them by use of _.enable_ and _.set,
 
                 await message.channel.send(
                         embed=discord.Embed(
-                            title='FOR ADMINS ONLY',
+                            title='MODERATION',
                             colour=discord.Colour.gold(),
                             description='''
 **.prune** (amount) or **.prune** (user) (amount): Requires _Manage Messages_ permission. Delete messages from a channel, starting by the latest. If a user precedes the amount, delete messages from that user only.
 Example: _.prune @a user I don't like 100_
+                        '''))
 
-**SETTING UP THE BOT**
-
-**.enable** or **.disable** (commands): Requires _Manage Channels_ permission. Enable or disable one or more commands for the current channel. Valid commands:
+                await message.channel.send(
+                        embed=discord.Embed(
+                            title='SETTING UP THE BOT',
+                            colour=discord.Colour.gold(),
+                            description='''
+**.enable** or **.disable** (commands): Requires _Manage Channels_ permission. Enable or disable one or more features for the current channel. Valid features:
 **greeting**: To send greeting messages to this channel.
 **iam**: To reply to _.iam_ and _.iamnot_ on this channel.
 **song**: Likewise for _.song._
-**meme**: Likewise for _.meme._
+**meme**: " for _.meme._
 **updates**: Updates about the bot.
 All of them are disabled by default. Note that this means that they will not work, unless enabled.
 Example: _.enable greeting iam_
@@ -175,12 +179,18 @@ Example: _.set farewell @@USER@@ has left the server._ (default)
 Example: _.set max\_deletions 100_
 **role\_create**: Whether _.iam_ should create a non-existing role. If disabled, it has no effect. Value should be _true_ or _false._ Default value: _false._
 Example: _.set role\_create false_
-**role\_cleanup**: Whether the bot should remove any unused roles. Value should be _true_ or _false._ Default value: _false._
-**someone**: Whether _@someone_ is allowed. Value should be _true_ or _false._ Default value: _true._
-**meme\_filter**: Filter memes sent by _.meme._ Value should be _true_ or _false._ Default value: _true._
+**role\_cleanup**: Whether the bot should remove any unused roles. _True_ or _false._ Default value: _false._
+**someone**: Whether _@someone_ is allowed. _True_ or _false._ Default: _true._
+**meme\_filter**: Filter memes sent by _.meme._ _True_ or _false._ Default: _true._
+**filter\_profanity**: Filter swearing. _True_ or _false._ Default: _false._
+Example: _.set filter\_profanity true_
+**filter\_mass\_mention**: Filter mass mentions. _True_ or _false._ Default: _false._
+**filter\_action**: Choose an action for when the filter is activated. Valid values:
+0: Take no action, 1: Drop a warning, 2: Warn, then delete message, 3: Delete message. Default value: _0._
+Example: _.set filter\_action 3_
 
-To report an issue, please run _.links._
-                    '''))
+For more information, please write _.links._
+                        '''))
 
             elif re.match(
                     '^\.[Mm][Ee][Mm][Ee]( |$)',
@@ -795,13 +805,6 @@ update servers set c_{} = null where s_id = %s
 
                     fetched = c.fetchone()
 
-                    if not fetched:
-                        await message.channel.send(
-                                'Uh-oh - server not added to the list. This is because the bot was not running it was allowed it to join this server. Please kick the bot and readd it through the link provided by the _.links_ command.')
-                        return
-
-                    ''
-
                     i = 0
 
                     message_body = '**CHANNELS**\n\n'
@@ -876,11 +879,43 @@ update servers set c_{} = null where s_id = %s
                                 'Invalid amount. The limit is currently 100.')
                         return
 
+                elif command == 'filter_action':
+                    if re.match('^[0-3]$', value):
+                        c.execute(
+                                '''
+update servers set filter_action = %s where s_id = %s
+                                ''',
+                                (int(value), message.guild.id))
+
+                        self.db.commit()
+
+                        if value != '0':
+                            c.execute('''
+select filter_profanity, filter_mass_mention from servers where s_id = %s
+                                ''',
+                                (message.guild.id,))
+
+                            filter_profanity, filter_mass_mention = \
+                                    c.fetchone()
+
+                            if not filter_profanity \
+                                    and not filter_mass_mention:
+                                await message.channel.send(
+                                        'Settings saved. Remember to enable one of the available filters by running _.set filter\_profanity true_ and _.set filter\_mass\_mention true._')
+                                return
+
+                    else:
+                        await message.channel.send(
+                                'Value should be one of _0, 1, 2_ or _3._')
+                        return
+
                 elif command in (
                         'role_create',
                         'role_cleanup',
                         'someone',
-                        'meme_filter'):
+                        'meme_filter',
+                        'filter_profanity',
+                        'filter_mass_mention'):
                     if re.match('^(true|false)$', value):
                         value = value.lower() != 'false'
 
@@ -1035,7 +1070,7 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                                     '（✿ ͡◕ ᴗ◕)つ━━✫・o。')),
                                 random_member.name))
 
-        elif message.content.startswith('<@!%d>' % self.user.id):
+        elif message.content == '<@!%d>':
             await message.channel.send(
                     random.choice((
                         '<@!%d>: What is your command?' % message.author.id,
@@ -1046,7 +1081,8 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                         'Ready when you are, <@!%d>.' % message.author.id)))
 
     async def on_raw_reaction_add(self, payload):
-        if payload.user_id == self.user.id:
+        if payload.user_id == self.user.id \
+                or payload.emoji.name not in ('👍', '👎'):
             return
 
         message = await self.get_channel(
@@ -1077,7 +1113,8 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
             self.db.commit()
 
     async def on_raw_reaction_remove(self, payload):
-        if payload.user_id == self.user.id:
+        if payload.user_id == self.user.id \
+                or payload.emoji.name not in ('👍', '👎'):
             return
 
         message = await self.get_channel(

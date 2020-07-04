@@ -7,7 +7,8 @@ from os import nice
 
 from guild_client import GuildClient
 from message_client import MessageClient
-from role_cleanup_client import RoleCleanupClient
+from member_update_client import MemberUpdateClient
+from word_filter_client import WordFilterClient
 
 def launch_guild_client():
     g = GuildClient()
@@ -17,12 +18,17 @@ def launch_message_client():
     m = MessageClient()
     m.run(TOKEN)
 
-def launch_role_cleanup_client():
-    r = RoleCleanupClient()
+def launch_member_update_client():
+    r = MemberUpdateClient()
 
     nice(19)
 
     r.run(TOKEN)
+
+def launch_word_filter_client():
+    w = WordFilterClient()
+
+    w.run(TOKEN)
 
 if __name__ == '__main__':
     guild_client_process = Process(
@@ -31,8 +37,12 @@ if __name__ == '__main__':
     message_client_process = Process(
             target=launch_message_client)
 
+    word_filter_client_process = Process(
+            target=launch_word_filter_client)
+
     guild_client_process.start()
     message_client_process.start()
+    word_filter_client_process.start()
     
-    launch_role_cleanup_client()
+    launch_member_update_client()
 

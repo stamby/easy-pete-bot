@@ -1,11 +1,11 @@
 from base_client import BaseClient
 
-class RoleCleanupClient(BaseClient):
+class MemberUpdateClient(BaseClient):
     def __init__(self):
-        BaseClient.__init__(self, 'Role Clean-Up')
+        BaseClient.__init__(self, 'Member Update')
 
     async def on_ready(self):
-        print('Role Clean-Up has started.')
+        print('Member Update has started.')
 
     async def on_member_update(self, before, after):
         if len(before.roles) == len(after.roles):
