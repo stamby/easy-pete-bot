@@ -1070,15 +1070,16 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
                                     '（✿ ͡◕ ᴗ◕)つ━━✫・o。')),
                                 random_member.name))
 
-        elif message.content == '<@!%d>':
+        elif message.content == '<@!%d>' % self.user.id:
             await message.channel.send(
                     random.choice((
-                        '<@!%d>: What is your command?' % message.author.id,
-                        '<@!%d>: Yes?' % message.author.id,
-                        '<@!%d>: I\'m listening.' % message.author.id,
-                        'Do you need anything, <@!%d>?' % message.author.id,
-                        'How may I help you, <@!%d>?' % message.author.id,
-                        'Ready when you are, <@!%d>.' % message.author.id)))
+                        '<@!%d>: What is your command?',
+                        '<@!%d>: Yes?',
+                        '<@!%d>: I\'m listening.',
+                        'Do you need anything, <@!%d>?',
+                        'How may I help you, <@!%d>?',
+                        'Ready when you are, <@!%d>.')) \
+                                % message.author.id)
 
     async def on_raw_reaction_add(self, payload):
         if payload.user_id == self.user.id \
