@@ -877,11 +877,11 @@ from servers where s_id = %s
                     message_body = '''
 **CHANNELS**
 
-**greeting**: <#%d>
-**iam**: <#%d>
-**meme**: <#%d>
-**song**: <#%d>
-**updates**: <#%d>
+**greeting**: %s
+**iam**: %s
+**meme**: %s
+**song**: %s
+**updates**: %s
 
 Syntax: _.enable greeting_ (and/or _iam, meme,_ etc.)
 
@@ -902,7 +902,26 @@ Syntax: _.set someone false_ (or any other property for that matter)
 
 Channels may be changed through _.enable_ and _.disable,_ while properties require the use of _.set._ For more information, see _.admin._
                         ''' % (
-                                c_greeting, c_iam, c_meme, c_song, c_updates,
+                                (lambda: \
+                                        c_greeting and '<#%d>' % c_greeting \
+                                        or 'Disabled'
+                                )(),
+                                (lambda: \
+                                        c_iam and '<#%d>' % c_iam \
+                                        or 'Disabled'
+                                )(),
+                                (lambda: \
+                                        c_meme and '<#%d>' % c_meme \
+                                        or 'Disabled'
+                                )(),
+                                (lambda: \
+                                        c_song and '<#%d>' % c_song \
+                                        or 'Disabled'
+                                )(),
+                                (lambda: \
+                                        c_updates and '<#%d>' % c_updates \
+                                        or 'Disabled'
+                                )(),
                                 welcome,
                                 farewell,
                                 max_deletions,
