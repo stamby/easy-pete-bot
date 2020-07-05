@@ -153,6 +153,7 @@ Please don't send so many mentions, <@!%d>.
             if re.match(
                     '^\.[Hh][Ee][Ll][Pp]( |$)',
                     message.content):
+                # `.help'
                 c.execute(
                         '''
 select c_iam, c_meme, c_song, someone from servers where s_id = %s
@@ -216,6 +217,7 @@ More commands can be enabled. Admins may add them by use of _.enable_ and _.set,
             elif re.match(
                     '^\.[Aa][Dd][Mm][Ii][Nn]( |$)',
                     message.content):
+                # `.admin'
                 permissions = message.channel.permissions_for(
                         message.author)
 
@@ -276,7 +278,7 @@ For more information, please write _.links._
             elif re.match(
                     '^\.[Mm][Ee][Mm][Ee]( |$)',
                     message.content):
-
+                # `.meme'
                 # Check whether it is enabled for this channel
                 c.execute(
                         '''
@@ -387,6 +389,7 @@ The size of the attachment needs not to exceed 8 MB.
             elif re.match(
                     '^\.[Ss][Oo][Nn][Gg]( |$)',
                     message.content):
+                # `.song'
                 # Check whether it is enabled for this channel
                 c.execute(
                         'select c_song from servers where s_id = %s',
@@ -603,6 +606,7 @@ An invalid command has been supplied. Please type _.help_ to see valid options t
             elif re.match(
                     '^\.[Ii][Aa][Mm]([Nn][Oo][Tt])?( |$)',
                     message.content):
+                # `.iam' and `.iamnot'
                 # Parse message
                 command, trailing_space, requested_role_name = re.findall(
                         '^\.[Ii][Aa][Mm]((?:[Nn][Oo][Tt])?)( *)(.*)',
@@ -770,6 +774,7 @@ _%s_ is an already-existing role with additional permissions. Please ask an admi
             elif re.match(
                     '^\.[Pp][Rr][Uu][Nn][Ee]( |$)',
                     message.content):
+                # `.prune'
                 # Parse the message
                 trailing_space, user_str, requested_amount_str, extra_chars = re.findall(
                         '^\......( *)((?:<@![0-9]+>)?) *((?:[0-9]+$)?)(.*)',
@@ -843,6 +848,7 @@ For security reasons, only up to %d messages may be deleted. Type _.set max\_del
             elif re.match(
                     '^\.[Ee][Nn][Aa][Bb][Ll][Ee]( |$)',
                     message.content):
+                # `.enable'
                 # Check whether the user has the appropriate permissions
                 if not message.channel.permissions_for(
                         message.author).manage_channels:
@@ -891,6 +897,7 @@ The following commands have been reserved for this channel: _%s._
             elif re.match(
                     '^\.[Dd][Ii][Ss][Aa][Bb][Ll][Ee]( |$)',
                     message.content):
+                # `.disable'
                 # Check whether the user has the appropriate permissions
                 if not message.channel.permissions_for(
                         message.author).manage_channels:
@@ -936,6 +943,7 @@ update servers set c_{} = null where s_id = %s
             elif re.match(
                     '^\.[Ss][Ee][Tt]( |$)',
                     message.content):
+                # `.set'
                 # Check whether the user has the appropriate permissions
                 if not message.channel.permissions_for(
                         message.author).manage_guild:
@@ -1185,6 +1193,7 @@ Meme filter has been turned off. Warning: Some memes may be offensive and even d
             elif re.match(
                     '^\.[Ll][Ii][Nn][Kk][Ss]( |$)',
                     message.content):
+                # `.links'
                 await message.channel.send(
                         embed=discord.Embed(
                             title='ALL LINKS',
@@ -1261,6 +1270,7 @@ select s_id, c_updates from servers where c_updates is not null
         elif re.match(
                 '@[Ss][Oo][Mm][Ee][Oo][Nn][Ee]',
                 message.content):
+            # `@someone'
             c = self.db.cursor()
 
             # Check whether it is enabled
