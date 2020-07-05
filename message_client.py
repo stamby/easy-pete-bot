@@ -130,8 +130,9 @@ select filter_mass_mention, filter_action from servers where s_id = %s
             if re.match(
                     '^\.[Hh][Ee][Ll][Pp]( |$)',
                     message.content):
-                c.execute(
-                        'select c_iam, c_meme, c_song, someone from servers where s_id = %s',
+                c.execute('''
+select c_iam, c_meme, c_song, someone from servers where s_id = %s
+                        ''',
                         (message.guild.id,))
 
                 c_iam, c_meme, c_song, someone = c.fetchone()
@@ -251,8 +252,9 @@ For more information, please write _.links._
                     message.content):
 
                 # Check whether it is enabled for this channel
-                c.execute(
-                        'select c_meme, meme_filter from servers where s_id = %s',
+                c.execute('''
+select c_meme, meme_filter from servers where s_id = %s
+                        ''',
                         (message.guild.id,))
 
                 c_meme, meme_filter = c.fetchone()
@@ -521,7 +523,11 @@ order by random() limit 1
                         await message.channel.send(
                                 'The available genres are _%s._' \
                                         % ', '.join(
-                                            [genre[0] for genre in c.fetchall()]))
+                                            [
+                                                genre[0]
+                                                for genre in c.fetchall()
+                                            ]
+                                        ))
                         return
 
                     c.execute('''
@@ -795,11 +801,13 @@ order by random() limit 1
                         return
 
                 for command in commands:
-                    c.execute(
-                            'update servers set c_{} = %s where s_id = %s'.format(command),
+                    c.execute('''
+update servers set c_{} = %s where s_id = %s
+                            '''.format(command),
                             (
                                 message.channel.id,
-                                message.guild.id))
+                                message.guild.id
+                            ))
 
                 self.db.commit()
 
@@ -920,15 +928,15 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
                                 farewell,
                                 max_deletions,
                                 (
-                                    'False (bot cannot create roles)' ,
+                                    'False (bot cannot create roles)',
                                     'True (allowed to create roles)'
                                 )[int(role_create)],
                                 (
-                                    'False (turned off)' ,
+                                    'False (turned off)',
                                     'True (running)'
                                 )[int(role_cleanup)],
                                 (
-                                    'False (not allowed)' ,
+                                    'False (not allowed)',
                                     'True (allowed)'
                                 )[int(someone)],
                                 (
@@ -942,11 +950,11 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
                                     '3 (deleting without warning)'
                                 )[filter_action],
                                 (
-                                    'False (not moderated)' ,
+                                    'False (not moderated)',
                                     'True (swear words reached by filter)'
                                 )[int(filter_profanity)],
                                 (
-                                    'False (not moderated)' ,
+                                    'False (not moderated)',
                                     'True (mass mentioning reached by filter)'
                                 )[int(filter_mass_mention)]
                             )
@@ -964,11 +972,13 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
                     return
 
                 if command in ('welcome', 'farewell'):
-                    c.execute(
-                            'update servers set {} = %s where s_id = %s'.format(command),
+                    c.execute('''
+update servers set {} = %s where s_id = %s
+                            '''.format(command),
                             (
                                 value,
-                                message.guild.id))
+                                message.guild.id
+                            ))
 
                     self.db.commit()
 
@@ -978,9 +988,13 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
 
                 elif command == 'max_deletions':
                     if re.match('^(0|[1-9][0-9]?|100)$', value):
-                        c.execute(
-                                'update servers set max_deletions = %s where s_id = %s',
-                                (int(value), message.guild.id))
+                        c.execute('''
+update servers set max_deletions = %s where s_id = %s
+                                ''',
+                                (
+                                    int(value),
+                                    message.guild.id
+                                ))
 
                         self.db.commit()
 
@@ -1041,8 +1055,9 @@ update servers set {} = %s where s_id = %s
                         if command[0] == 'm' and not value:
                             # We are setting meme_filter to 0, so validate that the
                             # meme channel is set to NSFW
-                            c.execute(
-                                    'select c_meme from servers where s_id = %s',
+                            c.execute('''
+select c_meme from servers where s_id = %s
+                                    ''',
                                     (message.guild.id,))
 
                             c_meme = c.fetchone()[0]
@@ -1079,21 +1094,22 @@ update servers set {} = %s where s_id = %s
                             title='ALL LINKS',
                             colour=discord.Colour.gold(),
                             description='''
-Invite:
+Website: https://bot.molteni.im
 
-https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot
+Invite: https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot
 
-To report an issue or suggest a new feature for this bot, we encourage you to do it through this site:
+Source code: https://github.com/stamby/easy-pete-bot
 
-https://github.com/stamby/easy-pete-bot/issues/new/choose
+Report an issue or suggest a new feature: https://github.com/stamby/easy-pete-bot/issues/new/choose
 
 A server is also available for help and suggestions: https://discord.gg/shvcbR2
                             '''))
 
             if message.author.id == Credentials.OWNER_ID:
                 if message.content.startswith('.update '):
-                    c.execute(
-                            'select s_id, c_updates from servers where c_updates is not null')
+                    c.execute('''
+select s_id, c_updates from servers where c_updates is not null
+                            ''')
 
                     while True:
                         s_id_and_c_updates = c.fetchone()
