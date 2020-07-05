@@ -1151,6 +1151,20 @@ update servers set {} = %s where s_id = %s
 
                         self.db.commit()
 
+                        if command[0] == 'f' and value:
+                            c.execute(
+                                    '''
+select filter_action from servers where s_id = %s
+                                    ''',
+                                    (message.guild.id,))
+
+                            if not c.fetchone()[0]:
+                                await message.channel.send(
+                                        '''
+Setting saved. Please make sure to also run _.set filter\_action_ followed by _1_ to send warnings to those whose messages are being filtered, _2_ to warn and also delete their messages and _3_ to delete without warning. The current setting is _0,_ which does nothing.
+                                        ''')
+                                return
+
                         if command[0] == 'm' and not value:
                             # We are setting meme_filter to 0, so validate that the
                             # meme channel is set to NSFW
