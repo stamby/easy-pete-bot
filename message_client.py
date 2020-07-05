@@ -54,7 +54,8 @@ class MessageClient(BaseClient):
     async def get_c_fields(self):
         c = self.db.cursor()
 
-        c.execute('''
+        c.execute(
+                '''
 select column_name from information_schema.columns where table_name = 'servers'
 and column_name like 'c\_%'
                 ''')
@@ -69,10 +70,11 @@ and column_name like 'c\_%'
         if self.profanity_regex.search(message.content):
             c = self.db.cursor()
 
-            c.execute('''
+            c.execute(
+                        '''
 select filter_profanity, filter_action from servers where s_id = %s
-                    ''',
-                    (message.guild.id,))
+                        ''',
+                        (message.guild.id,))
 
             filter_profanity, filter_action = c.fetchone()
 
@@ -85,11 +87,21 @@ select filter_profanity, filter_action from servers where s_id = %s
             if warning:
                 await message.channel.send(
                         random.choice((
-                            '<@!%d>, our server has been set up to discourage the use of swearing. Please be nice.',
-                            "<@!%d>: Please adhere to our server's Victorian values by avoiding undisguised, foul language.",
-                            '<@!%d>, we like all kinds of debauchery here but not swear words! Please avoid using them.',
-                            "Please make sure you don't use any swear words, <@!%d>.",
-                            "<@!%d>: There is one thing you might not know about swear words on this server: We don't use them.")) \
+                            '''
+<@!%d>, our server has been set up to discourage the use of swearing. Please be nice.
+                            ''',
+                            '''
+<@!%d>: Please adhere to our server's Victorian values by avoiding undisguised, foul language.
+                            ''',
+                            '''
+<@!%d>, we like all kinds of debauchery here but not swear words! Please avoid using them.
+                            ''',
+                            '''
+Please make sure you don't use any swear words, <@!%d>.
+                            ''',
+                            '''
+<@!%d>: There is one thing you might not know about swear words on this server: We don't use them.
+                            ''')) \
                                     % message.author.id)
 
             if deleting:
@@ -98,7 +110,8 @@ select filter_profanity, filter_action from servers where s_id = %s
         elif self.mass_mention_regex.search(message.content):
             c = self.db.cursor()
 
-            c.execute('''
+            c.execute(
+                    '''
 select filter_mass_mention, filter_action from servers where s_id = %s
                     ''',
                     (message.guild.id,))
@@ -114,11 +127,21 @@ select filter_mass_mention, filter_action from servers where s_id = %s
             if warning:
                 await message.channel.send(
                         random.choice((
-                            '<@!%d>: Up to three mentions may be sent per message.',
-                            "<@!%d>: Please don't mention more than three times at one message.",
-                            '<@!%d>, there should be no need to mention that many times in one message. If it is important, please message each person privately instead.',
-                            "Mass mentions are discouraged, <@!%d>.",
-                            "Please don't send so many mentions, <@!%d>.")) \
+                            '''
+<@!%d>: Up to three mentions may be sent per message.
+                            ''',
+                            '''
+<@!%d>: Please don't mention more than three times at one message.
+                            ''',
+                            '''
+<@!%d>, there should be no need to mention that many times in one message. If it is important, please message each person privately instead.
+                            ''',
+                            '''
+Mass mentions are discouraged, <@!%d>.
+                            ''',
+                            '''
+Please don't send so many mentions, <@!%d>.
+                            ''')) \
                                     % message.author.id)
 
             if deleting:
@@ -130,7 +153,8 @@ select filter_mass_mention, filter_action from servers where s_id = %s
             if re.match(
                     '^\.[Hh][Ee][Ll][Pp]( |$)',
                     message.content):
-                c.execute('''
+                c.execute(
+                        '''
 select c_iam, c_meme, c_song, someone from servers where s_id = %s
                         ''',
                         (message.guild.id,))
@@ -199,7 +223,9 @@ More commands can be enabled. Admins may add them by use of _.enable_ and _.set,
                         and not permissions.manage_messages \
                         and not permissions.manage_guild:
                     await message.channel.send(
-                            'The _.admin_ message is directed towards people who have _Manage Channels, Manage Messages_ or _Manage Server_ permission.')
+                            '''
+The _.admin_ message is directed towards people who have _Manage Channels, Manage Messages_ or _Manage Server_ permission.
+                            ''')
                     return
 
                 await message.channel.send(
@@ -252,7 +278,8 @@ For more information, please write _.links._
                     message.content):
 
                 # Check whether it is enabled for this channel
-                c.execute('''
+                c.execute(
+                        '''
 select c_meme, meme_filter from servers where s_id = %s
                         ''',
                         (message.guild.id,))
@@ -278,13 +305,17 @@ select c_meme, meme_filter from servers where s_id = %s
 
                 if extra_chars != '':
                     await message.channel.send(
-                            'The only valid option to the _.meme_ command is the word _submit._')
+                            '''
+The only valid option to the _.meme_ command is the word _submit._
+                            ''')
                     return
 
                 if command == 'submit':
                     if len(message.attachments) == 0:
                         await message.channel.send(
-                                'A submission requires an attachment. Please try again.')
+                                '''
+A submission requires an attachment. Please try again.
+                                ''')
                         return
 
                     if len(message.attachments) != 1:
@@ -294,12 +325,16 @@ select c_meme, meme_filter from servers where s_id = %s
 
                     if not message.attachments[0].height:
                         await message.channel.send(
-                                'A valid attachment must be either an image or video.')
+                                '''
+A valid attachment must be either an image or video.
+                                ''')
                         return
 
                     if message.attachments[0].size > 8388608:
                         await message.channel.send(
-                                'The size of the attachment needs not to exceed 8 MB.')
+                                '''
+The size of the attachment needs not to exceed 8 MB.
+                                ''')
                         return
 
                     with open(
@@ -362,7 +397,9 @@ select c_meme, meme_filter from servers where s_id = %s
                 if not c_song and message.channel.permissions_for(
                         message.author).manage_channels:
                     await message.channel.send(
-                            'Please enable this command by means of _.enable song._')
+                            '''
+Please enable this command by means of _.enable song._
+                            ''')
                     return
 
                 if message.channel.id != c_song:
@@ -410,7 +447,8 @@ from songs order by genre, artist, title
                                 '<html><head><title>%s</title></head><body><h1>%s\'S SONGS</h1><ul>' \
                                         % (
                                             Credentials.BOT_NAME,
-                                            Credentials.BOT_NAME.upper()))
+                                            Credentials.BOT_NAME.upper()
+                                        ))
 
                         while True:
                             line = c.fetchone()
@@ -450,7 +488,8 @@ This list changes often. It is up to date as of this very moment.
                             'Songs sent to "%s" (%d).' \
                                     % (
                                         message.guild,
-                                        message.guild.id))
+                                        message.guild.id
+                                    ))
 
                 elif command.startswith('submit'):
                     url = re.split(' +', command)[1]
@@ -473,7 +512,8 @@ This list changes often. It is up to date as of this very moment.
                                 'Song has already been requested.')
                         return
 
-                    c.execute('''
+                    c.execute(
+                            '''
 insert into song_requests (solicitor, s_id, url) values (%s, %s, %s)
                             ''',
                             (
@@ -495,7 +535,8 @@ insert into song_requests (solicitor, s_id, url) values (%s, %s, %s)
                             '%',
                             command[7:])
 
-                    c.execute('''
+                    c.execute(
+                            '''
 select url from songs where artist || title ilike %s
 or title || artist ilike %s
 order by random() limit 1
@@ -511,7 +552,9 @@ order by random() limit 1
 
                     else:
                         await message.channel.send(
-                                'No matches. Submit a URL by typing _.song submit (Youtube URL)._')
+                                '''
+No matches. Submit a URL by typing _.song submit (Youtube URL)._
+                                ''')
 
                 elif command.startswith('genre'):
                     requested_genre = command[6:]
@@ -530,7 +573,8 @@ order by random() limit 1
                                         ))
                         return
 
-                    c.execute('''
+                    c.execute(
+                            '''
 select url from songs where genre = %s
 order by random() limit 1
                             ''',
@@ -545,12 +589,16 @@ order by random() limit 1
 
                     else:
                         await message.channel.send(
-                                'No matches. Type _.song genre_ to see all available music genres.')
+                                '''
+No matches. Type _.song genre_ to see all available music genres.
+                                ''')
                         return
 
                 else:
                     await message.channel.send(
-                            'An invalid command has been supplied. Please type _.help_ to see valid options to the _.song_ command.')
+                            '''
+An invalid command has been supplied. Please type _.help_ to see valid options to the _.song_ command.
+                            ''')
 
             elif re.match(
                     '^\.[Ii][Aa][Mm]([Nn][Oo][Tt])?( |$)',
@@ -562,7 +610,9 @@ order by random() limit 1
 
                 # Check whether it is enabled for this channel
                 c.execute(
-                        'select c_iam, role_create from servers where s_id = %s',
+                        '''
+select c_iam, role_create from servers where s_id = %s
+                        ''',
                         (message.guild.id,))
 
                 c_iam, role_create = c.fetchone()
@@ -570,7 +620,9 @@ order by random() limit 1
                 if not c_iam and message.channel.permissions_for(
                         message.author).manage_channels:
                     await message.channel.send(
-                            'The command _.iam%s_ is not available. An admin may enable it by entering _.enable iam._' \
+                            '''
+The command _.iam%s_ is not available. An admin may enable it by entering _.enable iam._
+                            ''' \
                                     % command.lower())
                     return
 
@@ -600,7 +652,9 @@ order by random() limit 1
 
                 if not own_role:
                     await message.channel.send(
-                            'Insufficient permissions. Namely, this command requires me to have _Manage Roles_ permission.')
+                            '''
+Insufficient permissions. Namely, this command requires me to have _Manage Roles_ permission.
+                            ''')
                     return
 
                 if requested_role_name == '':
@@ -620,7 +674,9 @@ order by random() limit 1
                 if command != '':
                     if not existing_role:
                         await message.channel.send(
-                                'The role _%s_ does not exist. Maybe check your spelling?' \
+                                '''
+The role _%s_ does not exist. Maybe check your spelling?
+                                ''' \
                                         % discord.utils.escape_markdown(
                                             requested_role_name))
                         return
@@ -634,7 +690,9 @@ order by random() limit 1
 
                     elif existing_role > own_role:
                         await message.channel.send(
-                                'The role _%s_ is too high on the list for me to remove it. I would need mine to be higher than the role that is to be removed.' \
+                                '''
+The role _%s_ is too high on the list for me to remove it. I would need mine to be higher than the role that is to be removed.
+                                ''' \
                                         % discord.utils.escape_markdown(
                                             existing_role.name))
                         return
@@ -655,7 +713,9 @@ order by random() limit 1
                         # Check whether we are allowed to create it
                         if role_create == 0:
                             await message.channel.send(
-                                    'The role _%s_ doesn\'t exist and cannot be created due to bot settings for this server.' \
+                                    '''
+The role _%s_ doesn't exist and cannot be created due to bot settings for this server.
+                                    ''' \
                                             % discord.utils.escape_markdown(
                                                 requested_role_name))
                             return
@@ -690,7 +750,9 @@ order by random() limit 1
 
                     elif existing_role.permissions.value != 0:
                         await message.channel.send(
-                                '_%s_ is an already-existing role with additional permissions. Please ask an admin to remove all permissions from the role before you may add it.' \
+                                '''
+_%s_ is an already-existing role with additional permissions. Please ask an admin to remove all permissions from the role before you may add it.
+                                ''' \
                                         % discord.utils.escape_markdown(
                                             existing_role.name))
                         return
@@ -723,12 +785,16 @@ order by random() limit 1
                 if not message.channel.permissions_for(
                         message.author).manage_messages:
                     await message.channel.send(
-                            'The _.prune_ command has to come from someone having the _Manage Messages_ permission for this channel.')
+                            '''
+The _.prune_ command has to come from someone having the _Manage Messages_ permission for this channel.
+                            ''')
                     return
 
                 if max_deletions == 0:
                     await message.channel.send(
-                            'The _.prune_ command has been disabled. An admin may type _.set max\_deletions (number)_ to change this.')
+                            '''
+The _.prune_ command has been disabled. An admin may type _.set max\_deletions (number)_ to change this.
+                            ''')
                     return
 
                 if requested_amount_str != '':
@@ -765,7 +831,9 @@ order by random() limit 1
 
                     if requested_amount > max_deletions:
                         await message.channel.send(
-                                'For security reasons, only up to %d messages may be deleted. Type _.set max\_deletions (number)_ to change this.' \
+                                '''
+For security reasons, only up to %d messages may be deleted. Type _.set max\_deletions (number)_ to change this.
+                                ''' \
                                         % max_deletions)
 
                 else:
@@ -779,7 +847,9 @@ order by random() limit 1
                 if not message.channel.permissions_for(
                         message.author).manage_channels:
                     await message.channel.send(
-                            'The _.enable_ command has to come from someone having the _Manage Channels_ permission for this channel.')
+                            '''
+The _.enable_ command has to come from someone having the _Manage Channels_ permission for this channel.
+                            ''')
                     return
 
                 commands = re.findall(
@@ -801,7 +871,8 @@ order by random() limit 1
                         return
 
                 for command in commands:
-                    c.execute('''
+                    c.execute(
+                            '''
 update servers set c_{} = %s where s_id = %s
                             '''.format(command),
                             (
@@ -812,7 +883,9 @@ update servers set c_{} = %s where s_id = %s
                 self.db.commit()
 
                 await message.channel.send(
-                        'The following commands have been reserved for this channel: _%s._' \
+                        '''
+The following commands have been reserved for this channel: _%s._
+                        ''' \
                                 % ', '.join(commands))
 
             elif re.match(
@@ -822,7 +895,9 @@ update servers set c_{} = %s where s_id = %s
                 if not message.channel.permissions_for(
                         message.author).manage_channels:
                     await message.channel.send(
-                            'The _.disable_ command has to come from someone having the _Manage Channels_ permission for this channel.')
+                            '''
+The _.disable_ command has to come from someone having the _Manage Channels_ permission for this channel.
+                            ''')
                     return
 
                 commands = re.findall(
@@ -838,13 +913,16 @@ update servers set c_{} = %s where s_id = %s
                 for command in commands:
                     if command not in c_fields:
                         await message.channel.send(
-                                '_%s_ is not valid. Please type _.admin_ to see which commands may be disabled.' \
+                                '''
+_%s_ is not valid. Please type _.admin_ to see which commands may be disabled.
+                                ''' \
                                         % discord.utils.escape_markdown(
                                             command))
                         return
 
                 for command in commands:
-                    c.execute('''
+                    c.execute(
+                            '''
 update servers set c_{} = null where s_id = %s
                             '''.format(command),
                             (message.guild.id,))
@@ -862,7 +940,9 @@ update servers set c_{} = null where s_id = %s
                 if not message.channel.permissions_for(
                         message.author).manage_guild:
                     await message.channel.send(
-                            'The _.set_ command may be run only by someone having the _Manage Server_ permission.')
+                            '''
+The _.set_ command may be run only by someone having the _Manage Server_ permission.
+                            ''')
                     return
 
                 trailing_space, command, value = re.findall(
@@ -870,7 +950,8 @@ update servers set c_{} = null where s_id = %s
                         message.content.lower())[0]
 
                 if trailing_space == '':
-                    c.execute('''
+                    c.execute(
+                            '''
 select c_greeting, c_iam, c_meme, c_song, c_updates,
 welcome, farewell, max_deletions, role_create, role_cleanup, someone,
 meme_filter, filter_action, filter_profanity, filter_mass_mention
@@ -968,11 +1049,14 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
 
                 if value == '':
                     await message.channel.send(
-                            'Missing value. Type _.admin_ to find out what the properties and its possible values are.')
+                            '''
+Missing value. Type _.admin_ to find out what the properties and its possible values are.
+                            ''')
                     return
 
                 if command in ('welcome', 'farewell'):
-                    c.execute('''
+                    c.execute(
+                            '''
 update servers set {} = %s where s_id = %s
                             '''.format(command),
                             (
@@ -983,12 +1067,15 @@ update servers set {} = %s where s_id = %s
                     self.db.commit()
 
                     await message.channel.send(
-                            'Message saved. If you haven\'t, remember to enable it on the desired channel by writing _.enable greeting._')
+                            '''
+Message saved. If you haven't, remember to enable it on the desired channel by writing _.enable greeting._
+                            ''')
                     return
 
                 elif command == 'max_deletions':
                     if re.match('^(0|[1-9][0-9]?|100)$', value):
-                        c.execute('''
+                        c.execute(
+                                '''
 update servers set max_deletions = %s where s_id = %s
                                 ''',
                                 (
@@ -1014,10 +1101,11 @@ update servers set filter_action = %s where s_id = %s
                         self.db.commit()
 
                         if value != '0':
-                            c.execute('''
+                            c.execute(
+                                    '''
 select filter_profanity, filter_mass_mention from servers where s_id = %s
-                                ''',
-                                (message.guild.id,))
+                                    ''',
+                                    (message.guild.id,))
 
                             filter_profanity, filter_mass_mention = \
                                     c.fetchone()
@@ -1025,7 +1113,9 @@ select filter_profanity, filter_mass_mention from servers where s_id = %s
                             if not filter_profanity \
                                     and not filter_mass_mention:
                                 await message.channel.send(
-                                        'Settings saved. Remember to enable one of the available filters by running _.set filter\_profanity true_ and _.set filter\_mass\_mention true._')
+                                        '''
+Settings saved. Remember to enable one of the available filters by running _.set filter\_profanity true_ and _.set filter\_mass\_mention true._
+                                        ''')
                                 return
 
                     else:
@@ -1043,7 +1133,8 @@ select filter_profanity, filter_mass_mention from servers where s_id = %s
                     if re.match('^(true|false)$', value):
                         value = value.lower() != 'false'
 
-                        c.execute('''
+                        c.execute(
+                                '''
 update servers set {} = %s where s_id = %s
                                 '''.format(command),
                                 (
@@ -1055,7 +1146,8 @@ update servers set {} = %s where s_id = %s
                         if command[0] == 'm' and not value:
                             # We are setting meme_filter to 0, so validate that the
                             # meme channel is set to NSFW
-                            c.execute('''
+                            c.execute(
+                                    '''
 select c_meme from servers where s_id = %s
                                     ''',
                                     (message.guild.id,))
@@ -1065,12 +1157,16 @@ select c_meme from servers where s_id = %s
                             if c_meme:
                                 if not message.guild.get_channel(c_meme).nsfw:
                                     await message.channel.send(
-                                            'Setting saved; however, because <#%d> has not been marked as NSFW, the meme filter will still take effect until this changes. Keep in mind that, without filter, some memes may be offensive to users. Please make sure that they are of age and they will agree with these changes.' \
+                                            '''
+Setting saved; however, because <#%d> has not been marked as NSFW, the meme filter will still take effect until this changes. Keep in mind that, without filter, some memes may be offensive to users. Please make sure that they are of age and they will agree with these changes.
+                                            ''' \
                                                     % c_meme)
                                     return
 
                             await message.channel.send(
-                                    'Meme filter has been turned off. Warning: Some memes may be offensive and even distasteful to some users. If you do not want this to be the case, run _.set meme\_filter true._')
+                                    '''
+Meme filter has been turned off. Warning: Some memes may be offensive and even distasteful to some users. If you do not want this to be the case, run _.set meme\_filter true._
+                                    ''')
                             return
 
                     else:
@@ -1107,7 +1203,8 @@ A server is also available for help and suggestions: https://discord.gg/shvcbR2
 
             if message.author.id == Credentials.OWNER_ID:
                 if message.content.startswith('.update '):
-                    c.execute('''
+                    c.execute(
+                            '''
 select s_id, c_updates from servers where c_updates is not null
                             ''')
 
