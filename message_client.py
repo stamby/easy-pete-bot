@@ -161,22 +161,23 @@ select c_iam, c_meme, c_song, someone from servers where s_id = %s
 
                 c_iam, c_meme, c_song, someone = c.fetchone()
 
-                description = ''
+                description = '''
+%s%s%s%s
+**.admin**: More commands for admins. It shows help on how to manage the bot's features.
 
-                if c_iam:
-                    description += '''
+**.links**: Show the links to invite the bot to a new server and to contact the devs in case there is an issue, or if you would like to suggest an improvement.
+%s
+                        ''' % \
+                        (
+                                c_iam and '''
 **.iam** (role name): Assign yourself a role. If the role doesn't exist, it may be created depending on settings.
 
 **.iamnot** (role name): Remove a role from your user. If no users have the role anymore, the role may be removed depending on settings.
-'''
-
-                if c_meme:
-                    description += '''
+                                ''' or '',
+                                c_meme and '''
 **.meme**: Send a random meme, straight from our repositories. Submit a meme by writing _.meme submit._
-'''
-
-                if c_song:
-                    description += '''
+                                ''' or '',
+                                c_song and '''
 **.song**: Send a good song for your happy ears.
 
 Optionally:
@@ -184,28 +185,20 @@ Optionally:
 **.song genre** (music genre)
 **.song submit** (Youtube URL)
 **.song all**
-'''
-
-                if someone:
-                    description += '''
+                                ''' or '',
+                                someone and '''
 **@someone**: Randomly mention someone on the server.
-'''
-
-                description += '''
-**.admin**: More commands for admins. It shows help on how to manage the bot's features.
-
-**.links**: Show the links to invite the bot to a new server and to contact the devs in case there is an issue, or if you would like to suggest an improvement.
-'''
-
-                if message.channel.permissions_for(
-                        message.author).manage_channels \
-                                and (not c_iam \
-                                or not c_meme \
-                                or not c_song \
-                                or not someone):
-                    description += '''
+                                ''' or '',
+                                message.channel.permissions_for(
+                                    message.author).manage_channels \
+                                            and (not c_iam \
+                                            or not c_meme \
+                                            or not c_song \
+                                            or not someone) \
+                                            and '''
 More commands can be enabled. Admins may add them by use of _.enable_ and _.set,_ described in _.admin._
-'''
+                                ''' or ''
+                        )
 
                 await message.channel.send(
                         embed=discord.Embed(
