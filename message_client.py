@@ -163,7 +163,7 @@ select c_iam, c_meme, c_song, someone from servers where s_id = %s
 
                 description = '''
 %s%s%s%s
-**.about**: Show the links to invite the bot to a new server and to contact the devs in case there is an issue, or if you would like to suggest an improvement.
+**.about**: Show information on the bot and how to contact the developers, as well as an invite link.
 
 **.admin**: More commands for admins. It shows help on how to manage the bot's features.
 %s
