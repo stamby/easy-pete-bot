@@ -20,8 +20,11 @@ class MessageClient(BaseClient):
 
         self.mention = None
 
+        self.invite_regex = re.compile(
+                'discord((app)?\.com/invite\/[^ ]|\.gg\/[^ ])')
+
         self.mass_mention_regex = re.compile(
-                '( *<@![0-9]+> *){4,}')
+                '(.*<@![0-9]+>.*){4,}')
 
         self.profanity_regex = re.compile(
                 '[Ss][Uu][Cc][CcKk][Ee][Rr]|([Ss][Uu][Cc][Kk].*[Dd]|d)[Ii][Cc][Kk]|[Dd][Ii][Cc][Kk][Hh][Ee][Aa][Dd]|[Ff][Uu][Cc][CcKk]|[Ff][Aa][Gg]{2}[Oo][Tt]|[Nn][Ii][Gg]{2}([Aa]|[Ee][Rr])|[Rr][Ee][Tt][Aa][Rr][Dd]|[Ii][Dd][Ii][Oo][Tt]|[Ss][Tt][Uu][Pp][Ii][Dd]|(^|[^a-z])[Aa][Ss]{2}|(^|[^a-z])[Aa][Rr][Ss][Ee]|(^|[^a-z])[Aa][Nn][Uu][Ss]|(^|[^a-z])[Cc][Oo][Cc][CcKk]|[Dd][Aa][RrMm][Nn]|[Cc][Uu][Nn][Tt]|[Cc][Rr][Aa][Pp]|[Bb][Uu][Gg]{2}[Ee][Rr]|[Bb][Ii][Tt][Cc][Hh]|[Bb][Uu][Ll]{2}[Ss][Hh][Ii][Tt]|[Pp][Rr][Ii][Cc][Kk]|[Pp][Uu][Nn]{1,2}[Aa][Nn][IiYy]|[Pp][Uu][Ss]{2}[Yy]|[Ss][Nn][Aa][Tt][Cc][Hh]|[Ss][Hh][Aa][Gg]|[Hh][Oo][Ee]|[Ww][Hh][Oo][Rr][Ee]')
@@ -146,6 +149,33 @@ Please don't send so many mentions, <@!%d>.
             if deleting:
                 await message.delete()
 
+        elif self.invite_regex.search(message.content):
+            c = self.db.cursor()
+
+            c.execute(
+                    '''
+select filter_invite, filter_action from servers where s_id = %s
+                    ''',
+                    (message.guild.id,))
+
+            filter_invite, filter_action = c.fetchone()
+
+            if not filter_invite or not filter_action:
+                return
+
+            warning = filter_action == 1 or filter_action == 2
+            deleting = filter_action == 2 or filter_action == 3
+
+            if warning:
+                await message.channel.send(
+                        random.choice((
+                            "Please don't advertise your server here, <@!%d>.",
+                            'Server invites are discouraged, <@!%d>.')) \
+                                    % message.author.id)
+
+            if deleting:
+                await message.delete()
+
         elif message.content.startswith('.'):
             c = self.db.cursor()
 
@@ -258,6 +288,7 @@ Example: _.set role\_create false_
 **meme\_filter**: Filter memes sent by _.meme._ _True_ or _false._ Default: _true._
 **filter\_profanity**: Filter swearing. _True_ or _false._ Default: _false._
 Example: _.set filter\_profanity true_
+**filter\_invite**: Filter server invites. _True_ or _false._ Default: _false._
 **filter\_mass\_mention**: Filter mass mentions. _True_ or _false._ Default: _false._
 **filter\_action**: Choose an action for when the filter is activated. Valid values:
 0: Take no action, 1: Drop a warning, 2: Warn, then delete message, 3: Delete message. Default value: _0._
@@ -952,8 +983,9 @@ The _.set_ command may be run only by someone having the _Manage Server_ permiss
                     c.execute(
                             '''
 select c_greeting, c_iam, c_meme, c_song, c_updates,
-welcome, farewell, max_deletions, role_create, role_cleanup, someone,
-meme_filter, filter_action, filter_profanity, filter_mass_mention
+welcome, farewell, max_deletions, role_create,
+role_cleanup, someone, meme_filter, filter_action,
+filter_profanity, filter_mass_mention, filter_invite
 from servers where s_id = %s
                             ''',
                             (message.guild.id,))
@@ -962,7 +994,7 @@ from servers where s_id = %s
                             welcome, farewell, max_deletions, role_create, \
                             role_cleanup, someone, meme_filter, \
                             filter_action, filter_profanity, \
-                            filter_mass_mention \
+                            filter_mass_mention, filter_invite \
                                 = c.fetchone()
 
                     # Just print everything
@@ -989,6 +1021,7 @@ Syntax: _.enable greeting_ (and/or _iam, meme,_ etc.)
 **filter_action**: _%s_
 **filter_profanity**: _%s_
 **filter_mass_mention**: _%s_
+**filter_invite**: _%s_
 
 Syntax: _.set someone false_ (or any other property for that matter)
 
@@ -1037,6 +1070,10 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
                                     'False (not moderated)',
                                     'True (mass mentioning reached by filter)'
                                 )[int(filter_mass_mention)]
+                                (
+                                    'False (not moderated)',
+                                    'True (Discord invites reached by filter)'
+                                )[int(filter_invite)]
                             )
 
                     await message.channel.send(
@@ -1128,7 +1165,8 @@ Settings saved. Remember to enable one of the available filters by running _.set
                         'someone',
                         'meme_filter',
                         'filter_profanity',
-                        'filter_mass_mention'):
+                        'filter_mass_mention',
+                        'filter_invite'):
                     if re.match('^(true|false)$', value):
                         value = value.lower() != 'false'
 
