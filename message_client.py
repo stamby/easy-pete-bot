@@ -1069,7 +1069,7 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
                                 (
                                     'False (not moderated)',
                                     'True (mass mentioning reached by filter)'
-                                )[int(filter_mass_mention)]
+                                )[int(filter_mass_mention)],
                                 (
                                     'False (not moderated)',
                                     'True (Discord invites reached by filter)'
@@ -1139,18 +1139,20 @@ update servers set filter_action = %s where s_id = %s
                         if value != '0':
                             c.execute(
                                     '''
-select filter_profanity, filter_mass_mention from servers where s_id = %s
+select filter_profanity, filter_mass_mention, filter_invite
+from servers where s_id = %s
                                     ''',
                                     (message.guild.id,))
 
-                            filter_profanity, filter_mass_mention = \
+                            filter_profanity, filter_mass_mention, filter_invite = \
                                     c.fetchone()
 
                             if not filter_profanity \
-                                    and not filter_mass_mention:
+                                    and not filter_mass_mention \
+                                    and not filter_invite:
                                 await message.channel.send(
                                         '''
-Settings saved. Remember to enable one of the available filters by running _.set filter\_profanity true_ and _.set filter\_mass\_mention true._
+Settings saved. Remember to enable one of the available filters by running _.set,_ followed by _filter\_profanity, filter\_mass\_mention_ or _filter\_invite,_ followed by _true_ or _false._
                                         ''')
                                 return
 
