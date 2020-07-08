@@ -163,9 +163,9 @@ select c_iam, c_meme, c_song, someone from servers where s_id = %s
 
                 description = '''
 %s%s%s%s
-**.admin**: More commands for admins. It shows help on how to manage the bot's features.
+**.about**: Show the links to invite the bot to a new server and to contact the devs in case there is an issue, or if you would like to suggest an improvement.
 
-**.links**: Show the links to invite the bot to a new server and to contact the devs in case there is an issue, or if you would like to suggest an improvement.
+**.admin**: More commands for admins. It shows help on how to manage the bot's features.
 %s
                         ''' % \
                         (
@@ -189,13 +189,12 @@ Optionally:
                                 someone and '''
 **@someone**: Randomly mention someone on the server.
                                 ''' or '',
-                                message.channel.permissions_for(
-                                    message.author).manage_channels \
-                                            and (not c_iam \
-                                            or not c_meme \
-                                            or not c_song \
-                                            or not someone) \
-                                            and '''
+                                (
+                                    not c_iam \
+                                    or not c_meme \
+                                    or not c_song \
+                                    or not someone
+                                ) and '''
 More commands can be enabled. Admins may add them by use of _.enable_ and _.set,_ described in _.admin._
                                 ''' or ''
                         )
@@ -264,7 +263,7 @@ Example: _.set filter\_profanity true_
 0: Take no action, 1: Drop a warning, 2: Warn, then delete message, 3: Delete message. Default value: _0._
 Example: _.set filter\_action 3_
 
-For more information, please write _.links._
+For more information, please write _.about._
                         '''))
 
             elif re.match(
@@ -294,8 +293,8 @@ select c_meme, meme_filter from servers where s_id = %s
 
                 # Parse the message
                 trailing_space, command, extra_chars = re.findall(
-                        '^\.....( *)((?:submit$)?)(.*)',
-                        message.content.lower())[0]
+                        '^\.....( *)((?:[Ss][Uu][Bb][Mm][Ii][Tt]$)?)(.*)',
+                        message.content)[0]
 
                 if extra_chars != '':
                     await message.channel.send(
@@ -304,7 +303,7 @@ The only valid option to the _.meme_ command is the word _submit._
                             ''')
                     return
 
-                if command == 'submit':
+                if command != '':
                     if len(message.attachments) == 0:
                         await message.channel.send(
                                 '''
@@ -1197,12 +1196,12 @@ Meme filter has been turned off. Warning: Some memes may be offensive and even d
                         'OK')
 
             elif re.match(
-                    '^\.[Ll][Ii][Nn][Kk][Ss]( |$)',
+                    '^\.[Aa][Bb][Oo][Uu][Tt]( |$)',
                     message.content):
-                # `.links'
+                # `.about'
                 await message.channel.send(
                         embed=discord.Embed(
-                            title='ALL LINKS',
+                            title='ABOUT %s' % Credentials.BOT_NAME.upper(),
                             colour=discord.Colour.gold(),
                             description='''
 Website: https://bot.molteni.im
