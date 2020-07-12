@@ -378,7 +378,7 @@ The size of the attachment needs not to exceed 8 MB.
                     if not meme_filter and not message.channel.nsfw:
                         # Channel was not marked as NSFW, therefore
                         # force filtering
-                        meme_filter = 1
+                        meme_filter = True
 
                     if meme_filter:
                         dir_ = os.path.join(
