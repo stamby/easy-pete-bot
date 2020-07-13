@@ -1,12 +1,10 @@
 import re
-from dbl import DBLClient
+#from dbl import DBLClient
 from requests import post
 
 from base_client import BaseClient
 
-TOKEN_TOP_GG = None
-
-TOKEN_BOTS_ON_DISCORD = None
+from tokens import TOKEN_TOP_GG, TOKEN_BOTS_ON_DISCORD
 
 class BotsOnDiscordHandler:
     def __init__(self):

@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
-TOKEN = None
-
 from multiprocessing import Process
 from os import nice
+
+from tokens import TOKEN
 
 from guild_client import GuildClient
 from message_client import MessageClient
