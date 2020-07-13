@@ -112,7 +112,7 @@ The role _%s_ is too high on the list for me to remove it. I would need mine to 
         # If the role doesn't exist
         if not existing_role:
             # Check whether we are allowed to create it
-            if role_create == 0:
+            if not role_create:
                 await message.channel.send(
                         '''
 The role _%s_ doesn't exist and cannot be created due to bot settings for this server.
