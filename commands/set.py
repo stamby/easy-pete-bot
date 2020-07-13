@@ -208,7 +208,7 @@ Settings saved. Remember to enable one of the available filters by running _.set
             'filter_mass_mention',
             'filter_invite'):
         if re.match('^(true|false)$', value):
-            value = value.lower() != 'false'
+            value = value != 'false'
 
             c.execute(
                     '''
