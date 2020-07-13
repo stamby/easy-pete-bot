@@ -1,8 +1,6 @@
 import discord
-import os
 import random
 import re
-import sys
 
 from base_client import BaseClient
 
@@ -179,23 +177,10 @@ select s_id, c_updates from servers where c_updates is not null
 
         if message.content.startswith(
                 'http'):
-            # `.song' command
-            c = self.db.cursor()
-
-            if payload.emoji.name == '👍':
-                c.execute(
-                        'update songs set yes = yes + 1 where url = %s',
-                        (message.content,))
-
-            elif payload.emoji.name == '👎':
-                c.execute(
-                        'update songs set no = no + 1 where url = %s',
-                        (message.content,))
-
-            else:
-                return
-
-            self.db.commit()
+            await reactions.song.add(
+                    message,
+                    payload,
+                    self.db)
 
     async def on_raw_reaction_remove(self, payload):
         if payload.user_id == self.user.id \
@@ -211,20 +196,8 @@ select s_id, c_updates from servers where c_updates is not null
 
         if message.content.startswith(
                 'http'):
-            # `.song' command
-            c = self.db.cursor()
+            await reactions.song.remove(
+                    message,
+                    payload,
+                    self.db)
 
-            if payload.emoji.name == '👍':
-                c.execute(
-                        'update songs set yes = yes - 1 where url = %s',
-                        (message.content,))
-
-            elif payload.emoji.name == '👎':
-                c.execute(
-                        'update songs set no = no - 1 where url = %s',
-                        (message.content,))
-
-            else:
-                return
-
-            self.db.commit()
