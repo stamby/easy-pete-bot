@@ -12,8 +12,8 @@ select c_iam, c_meme, c_song, someone from servers where s_id = %s
     c_iam, c_meme, c_song, someone = c.fetchone()
 
     description = '''
-%s%s%s%s
 **.about**: Show information on the bot and how to contact the developers, as well as an invite link.
+%s%s%s%s
 
 **.admin**: More commands for admins. It shows help on how to manage the bot's features.
 %s
