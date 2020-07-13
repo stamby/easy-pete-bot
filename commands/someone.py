@@ -17,7 +17,7 @@ async def run(message, db):
                 message.guild.members)
 
         if random_member.id != message.id \
-                or not random_member.bot:
+                and not random_member.bot:
             break
 
     await message.channel.send(
