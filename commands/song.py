@@ -3,6 +3,9 @@ import os
 import random
 import re
 
+regex = re.compile(
+        '\.[Ss][Oo][Nn][Gg]( |$)')
+
 async def run(message, db, credentials):
     c = db.cursor()
 

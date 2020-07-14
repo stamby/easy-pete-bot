@@ -1,6 +1,9 @@
 import discord
 import random
 
+regex = re.compile(
+        '@[Ss][Oo][Mm][Ee][Oo][Nn][Ee]')
+
 async def run(message, db):
     c = db.cursor()
 

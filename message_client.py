@@ -52,69 +52,38 @@ class MessageClient(BaseClient):
             await filters.invite.run(message, self.db)
 
         elif message.content.startswith('.'):
-            if re.match(
-                    '\.[Hh][Ee][Ll][Pp]( |$)',
-                    message.content):
-                # `.help'
+            if commands.help.regex.match(message.content):
                 await commands.help.run(message, self.db)
 
-            elif re.match(
-                    '\.[Aa][Dd][Mm][Ii][Nn]( |$)',
-                    message.content):
-                # `.admin'
+            elif commands.admin.regex.match(message.content):
                 await commands.admin.run(message, self.db)
 
-            elif re.match(
-                    '\.[Mm][Ee][Mm][Ee]( |$)',
-                    message.content):
-                # `.meme'
+            elif commands.meme.regex.match(message.content):
                 await commands.meme.run(message, self.db, credentials)
 
-            elif re.match(
-                    '^\.[Ss][Oo][Nn][Gg]( |$)',
-                    message.content):
-                # `.song'
+            elif commands.song.regex.match(message.content):
                 await commands.song.run(message, self.db, credentials)
 
-            elif re.match(
-                    '\.[Ii][Aa][Mm]([Nn][Oo][Tt])?( |$)',
-                    message.content):
-                # `.iam' and `.iamnot'
+            elif commands.iam.regex.match(message.content):
                 await commands.iam.run(
                         message,
                         self.db,
                         self.user.id,
                         credentials)
 
-            elif re.match(
-                    '\.[Pp][Rr][Uu][Nn][Ee]( |$)',
-                    message.content):
-                # `.prune'
+            elif commands.prune.regex.match(message.content):
                 await commands.prune.run(message, self.db)
 
-            elif re.match(
-                    '\.[Ee][Nn][Aa][Bb][Ll][Ee]( |$)',
-                    message.content):
-                # `.enable'
+            elif commands.enable.regex.match(message.content):
                 await commands.enable.run(message, self.db)
 
-            elif re.match(
-                    '\.[Dd][Ii][Ss][Aa][Bb][Ll][Ee]( |$)',
-                    message.content):
-                # `.disable'
+            elif commands.disable.regex.match(message.content):
                 await commands.disable.run(message, self.db)
 
-
-            elif re.match(
-                    '\.[Ss][Ee][Tt]( |$)',
-                    message.content):
-                # `.set'
+            elif commands.set.regex.match(message.content):
                 await commands.set.run(message, self.db)
 
-            elif re.match(
-                    '\.[Aa][Bb][Oo][Uu][Tt]( |$)',
-                    message.content):
-                # `.about'
+            elif commands.about.regex.match(message.content):
                 await commands.about.run(message, credentials)
 
             if message.author.id == credentials.OWNER_ID:
@@ -135,10 +104,8 @@ class MessageClient(BaseClient):
                     self.db.close()
                     await self.close()
 
-        elif re.match(
-                '@[Ss][Oo][Mm][Ee][Oo][Nn][Ee]',
+        elif commands.someone.regex.match(message.content):
                 message.content):
-            # `@someone'
             await commands.someone.run(message, self.db)
 
         elif message.content == self.mention:

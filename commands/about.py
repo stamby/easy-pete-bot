@@ -1,4 +1,8 @@
 import discord
+import re
+
+regex = re.compile(
+        '\.[Aa][Bb][Oo][Uu][Tt]( |$)')
 
 async def run(message, credentials):
     await message.channel.send(

@@ -1,6 +1,9 @@
 import discord
 import re
 
+regex = re.compile(
+        '\.[Ee][Nn][Aa][Bb][Ll][Ee]( |$)')
+
 async def run(message, db):
     c = db.cursor()
 

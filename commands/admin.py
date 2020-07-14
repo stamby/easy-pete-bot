@@ -1,4 +1,8 @@
 import discord
+import re
+
+regex = re.compile(
+        '\.[Aa][Dd][Mm][Ii][Nn]( |$)')
 
 async def run(message, db):
     c = db.cursor()

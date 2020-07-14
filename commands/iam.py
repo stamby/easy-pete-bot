@@ -2,6 +2,9 @@ import discord
 import random
 import re
 
+regex = re.compile(
+        '\.[Ii][Aa][Mm]([Nn][Oo][Tt])?( |$)')
+
 async def run(message, db, id_, credentials):
     c = db.cursor()
 
