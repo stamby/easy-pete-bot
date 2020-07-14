@@ -1,7 +1,7 @@
 import re
 
 regex = re.compile(
-        '\.[Pp][Rr][Uu][Nn][Ee]( |$)')
+        '.[Pp][Rr][Uu][Nn][Ee]( |$)')
 
 async def run(message, db):
     c = db.cursor()

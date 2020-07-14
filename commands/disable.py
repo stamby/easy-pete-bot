@@ -2,7 +2,7 @@ import discord
 import re
 
 regex = re.compile(
-        '\.[Dd][Ii][Ss][Aa][Bb][Ll][Ee]( |$)')
+        '.[Dd][Ii][Ss][Aa][Bb][Ll][Ee]( |$)')
 
 async def run(message, db):
     c = db.cursor()
