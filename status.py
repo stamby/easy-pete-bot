@@ -19,7 +19,7 @@ async def load(client):
 
     c.close()
 
-async def change(client, db):
+async def change(message, client):
     c = client.db.cursor()
 
     status = message.content[8:]

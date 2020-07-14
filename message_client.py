@@ -120,36 +120,18 @@ class MessageClient(BaseClient):
 
             if message.author.id == credentials.OWNER_ID:
                 if message.content.startswith('.update '):
-                    c.execute(
-                            '''
-select s_id, c_updates from servers where c_updates is not null
-                            ''')
-
-                    while True:
-                        s_id_and_c_updates = c.fetchone()
-
-                        if not s_id_and_c_updates:
-                            break
-
-                        channel = self.get_guild(
-                                s_id_and_c_updates[0]).get_channel(
-                                        s_id_and_c_updates[1])
-
-                        await channel.send(
-                                embed=discord.Embed(
-                                    title='ANNOUNCEMENT',
-                                    colour=discord.Colour.gold(),
-                                    description=message.content[8:]))
+                    await commands.update.run(message, self)
 
                 elif message.content.startswith('.status'):
-                    await status.change(self)
+                    await status.change(message, self)
 
                 elif message.content == '.stop':
                     print(
                             'Stop requested through "%s" (%d), stopping.' \
                                     % (
                                         message.guild,
-                                        message.guild.id))
+                                        message.guild.id
+                                    ))
 
                     self.db.close()
                     await self.close()
