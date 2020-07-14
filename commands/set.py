@@ -26,7 +26,7 @@ The _%sset_ command may be run only by someone having the _Manage Server_ permis
 select c_greeting, c_iam, c_meme, c_song, c_updates,
 welcome, farewell, max_deletions, role_create,
 role_cleanup, someone, meme_filter, filter_action,
-filter_profanity, filter_mass_mention, filter_invite,
+filter_profanity, filter_mass_mention, filter_invite
 from servers where s_id = %s
                 ''',
                 (message.guild.id,))
