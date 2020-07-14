@@ -35,7 +35,8 @@ prefix from servers where s_id = %s
                 welcome, farewell, max_deletions, role_create, \
                 role_cleanup, someone, meme_filter, \
                 filter_action, filter_profanity, \
-                filter_mass_mention, filter_invite \
+                filter_mass_mention, filter_invite, \
+                prefix \
                     = c.fetchone()
 
         # Just print everything
