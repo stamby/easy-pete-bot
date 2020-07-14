@@ -261,7 +261,7 @@ Meme filter has been turned off. Warning: Some memes may be offensive and even d
                         ''' % (
                                 not c_meme and \
                                     ' To enable the command, run _.enable meme._'
-                            )
+                            ))
                 return
 
         else:
