@@ -1,5 +1,4 @@
 import discord
-import random
 import re
 
 from base_client import BaseClient
@@ -54,19 +53,19 @@ class MessageClient(BaseClient):
 
         elif message.content.startswith('.'):
             if re.match(
-                    '^\.[Hh][Ee][Ll][Pp]( |$)',
+                    '\.[Hh][Ee][Ll][Pp]( |$)',
                     message.content):
                 # `.help'
                 await commands.help.run(message, self.db)
 
             elif re.match(
-                    '^\.[Aa][Dd][Mm][Ii][Nn]( |$)',
+                    '\.[Aa][Dd][Mm][Ii][Nn]( |$)',
                     message.content):
                 # `.admin'
                 await commands.admin.run(message, self.db)
 
             elif re.match(
-                    '^\.[Mm][Ee][Mm][Ee]( |$)',
+                    '\.[Mm][Ee][Mm][Ee]( |$)',
                     message.content):
                 # `.meme'
                 await commands.meme.run(message, self.db, credentials)
@@ -78,7 +77,7 @@ class MessageClient(BaseClient):
                 await commands.song.run(message, self.db, credentials)
 
             elif re.match(
-                    '^\.[Ii][Aa][Mm]([Nn][Oo][Tt])?( |$)',
+                    '\.[Ii][Aa][Mm]([Nn][Oo][Tt])?( |$)',
                     message.content):
                 # `.iam' and `.iamnot'
                 await commands.iam.run(
@@ -88,32 +87,32 @@ class MessageClient(BaseClient):
                         credentials)
 
             elif re.match(
-                    '^\.[Pp][Rr][Uu][Nn][Ee]( |$)',
+                    '\.[Pp][Rr][Uu][Nn][Ee]( |$)',
                     message.content):
                 # `.prune'
                 await commands.prune.run(message, self.db)
 
             elif re.match(
-                    '^\.[Ee][Nn][Aa][Bb][Ll][Ee]( |$)',
+                    '\.[Ee][Nn][Aa][Bb][Ll][Ee]( |$)',
                     message.content):
                 # `.enable'
                 await commands.enable.run(message, self.db)
 
             elif re.match(
-                    '^\.[Dd][Ii][Ss][Aa][Bb][Ll][Ee]( |$)',
+                    '\.[Dd][Ii][Ss][Aa][Bb][Ll][Ee]( |$)',
                     message.content):
                 # `.disable'
                 await commands.disable.run(message, self.db)
 
 
             elif re.match(
-                    '^\.[Ss][Ee][Tt]( |$)',
+                    '\.[Ss][Ee][Tt]( |$)',
                     message.content):
                 # `.set'
                 await commands.set.run(message, self.db)
 
             elif re.match(
-                    '^\.[Aa][Bb][Oo][Uu][Tt]( |$)',
+                    '\.[Aa][Bb][Oo][Uu][Tt]( |$)',
                     message.content):
                 # `.about'
                 await commands.about.run(message, credentials)
