@@ -54,17 +54,23 @@ class MessageClient(BaseClient):
             await filters.invite.run(message, self.db)
 
         elif message.content.startswith('.'):
-            if commands.help.regex.match(message.content):
-                await commands.help.run(message, self.db)
-
-            elif commands.admin.regex.match(message.content):
-                await commands.admin.run(message, self.db)
-
-            elif commands.meme.regex.match(message.content):
+            if commands.meme.regex.match(message.content):
                 await commands.meme.run(message, self.db, credentials)
 
             elif commands.song.regex.match(message.content):
                 await commands.song.run(message, self.db, credentials)
+
+            elif commands.set.regex.match(message.content):
+                await commands.set.run(message, self.db)
+
+            elif commands.prune.regex.match(message.content):
+                await commands.prune.run(message, self.db)
+
+            elif commands.help.regex.match(message.content):
+                await commands.help.run(message, self.db)
+
+            elif commands.admin.regex.match(message.content):
+                await commands.admin.run(message, self.db)
 
             elif commands.iam.regex.match(message.content):
                 await commands.iam.run(
@@ -73,22 +79,16 @@ class MessageClient(BaseClient):
                         self.user.id,
                         credentials)
 
-            elif commands.prune.regex.match(message.content):
-                await commands.prune.run(message, self.db)
-
             elif commands.enable.regex.match(message.content):
                 await commands.enable.run(message, self.db)
-
-            elif commands.disable.regex.match(message.content):
-                await commands.disable.run(message, self.db)
-
-            elif commands.set.regex.match(message.content):
-                await commands.set.run(message, self.db)
 
             elif commands.about.regex.match(message.content):
                 await commands.about.run(message, credentials)
 
-            if message.author.id == credentials.OWNER_ID:
+            elif commands.disable.regex.match(message.content):
+                await commands.disable.run(message, self.db)
+
+            elif message.author.id == credentials.OWNER_ID:
                 if message.content.startswith('.update '):
                     await commands.update.run(message, self)
 
