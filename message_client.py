@@ -17,6 +17,7 @@ import commands.prune
 import commands.set
 import commands.someone
 import commands.song
+import commands.update
 
 import filters.invite
 import filters.mass_mention
