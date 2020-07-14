@@ -56,7 +56,7 @@ class MessageClient(BaseClient):
             await filters.invite.run(message, self.db)
 
         elif message.content.startswith(
-                prefix.get(message.guild.id)):
+                prefix.get(message.guild.id, self.db)):
             if commands.meme.regex.match(message.content):
                 await commands.meme.run(message, self.db, credentials)
 
