@@ -16,4 +16,4 @@ select s_id, prefix from servers
             if not s_id_and_prefix:
                 break
 
-            self.from_s_id[str(s_id_and_prefix[0])] = s_id_and_prefix[1]
+            self.from_s_id[s_id_and_prefix[0]] = s_id_and_prefix[1]
