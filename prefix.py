@@ -1,4 +1,4 @@
-async def get(s_id, db):
+def get(s_id, db):
     c = db.cursor()
 
     c.execute(
