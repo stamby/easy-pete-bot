@@ -26,8 +26,8 @@ The _.set_ command may be run only by someone having the _Manage Server_ permiss
 select c_greeting, c_iam, c_meme, c_song, c_updates,
 welcome, farewell, max_deletions, role_create,
 role_cleanup, someone, meme_filter, filter_action,
-filter_profanity, filter_mass_mention, filter_invite
-from servers where s_id = %s
+filter_profanity, filter_mass_mention, filter_invite,
+prefix from servers where s_id = %s
                 ''',
                 (message.guild.id,))
 
@@ -63,6 +63,7 @@ Syntax: _.enable greeting_ (and/or _iam, meme,_ etc.)
 **filter_profanity**: _%s_
 **filter_mass_mention**: _%s_
 **filter_invite**: _%s_
+**prefix**: _%s_
 
 Syntax: _.set someone false_ (or any other property for that matter)
 
@@ -114,7 +115,8 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
                     (
                         'False (not moderated)',
                         'True (Discord invites reached by filter)'
-                    )[int(filter_invite)]
+                    )[int(filter_invite)],
+                    prefix
                 )
 
         await message.channel.send(
@@ -131,7 +133,25 @@ Missing value. Type _.admin_ to find out what the properties and its possible va
                 ''')
         return
 
-    if command in ('welcome', 'farewell'):
+    if command == 'prefix':
+        if re.match('^.$', value):
+            c.execute(
+                    '''
+update servers set prefix = %s where s_id = %s
+                    ''',
+                    (
+                        value,
+                        message.guild.id
+                    ))
+
+        else:
+            await message.channel.send(
+                    '''
+The prefix must be only one character. It is a dot by default.
+                    ''')
+            return
+
+    elif command in ('welcome', 'farewell'):
         c.execute(
                 '''
 update servers set {} = %s where s_id = %s

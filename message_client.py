@@ -2,6 +2,7 @@ import discord
 import re
 
 from base_client import BaseClient
+from prefix import Prefix
 
 import credentials
 
@@ -32,6 +33,8 @@ class MessageClient(BaseClient):
 
         self.mention = None
 
+        self.prefix = Prefix(self.db)
+
     async def on_ready(self):
         print("'%s' has connected to Discord!" \
                 % self.name)
@@ -53,7 +56,8 @@ class MessageClient(BaseClient):
         elif filters.invite.regex.search(message.content):
             await filters.invite.run(message, self.db)
 
-        elif message.content.startswith('.'):
+        elif message.content.startswith(
+                self.prefix.from_s_id[message.guild.id]):
             if commands.meme.regex.match(message.content):
                 await commands.meme.run(message, self.db, credentials)
 
