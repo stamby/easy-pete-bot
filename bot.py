@@ -3,11 +3,11 @@
 from multiprocessing import Process
 from os import nice
 
-from tokens import TOKEN
-
 from guild_client import GuildClient
 from message_client import MessageClient
 from member_update_client import MemberUpdateClient
+
+from tokens import TOKEN
 
 def launch_guild_client():
     g = GuildClient()

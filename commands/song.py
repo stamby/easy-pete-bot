@@ -6,7 +6,7 @@ import re
 regex = re.compile(
         '\.[Ss][Oo][Nn][Gg]( |$)')
 
-async def run(message, db, credentials):
+def run(message, db, credentials):
     c = db.cursor()
 
     # Check whether it is enabled for this channel

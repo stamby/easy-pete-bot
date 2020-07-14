@@ -1,4 +1,4 @@
-async def add(message, payload, db):
+def add(message, payload, db):
     c = db.cursor()
 
     if payload.emoji.name == '👍':
@@ -20,7 +20,7 @@ update songs set no = no + 1 where url = %s
 
     db.commit()
 
-async def remove(message, payload, db):
+def remove(message, payload, db):
     c = db.cursor()
 
     if payload.emoji.name == '👍':

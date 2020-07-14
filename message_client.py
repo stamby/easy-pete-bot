@@ -45,52 +45,52 @@ class MessageClient(BaseClient):
             return
 
         if filters.profanity.regex.search(message.content):
-            await filters.profanity.run(message, self.db)
+            filters.profanity.run(message, self.db)
 
         elif filters.mass_mention.regex.search(message.content):
-            await filters.mass_mention.run(message, self.db)
+            filters.mass_mention.run(message, self.db)
 
         elif filters.invite.regex.search(message.content):
-            await filters.invite.run(message, self.db)
+            filters.invite.run(message, self.db)
 
         elif message.content.startswith('.'):
             if commands.help.regex.match(message.content):
-                await commands.help.run(message, self.db)
+                commands.help.run(message, self.db)
 
             elif commands.admin.regex.match(message.content):
-                await commands.admin.run(message, self.db)
+                commands.admin.run(message, self.db)
 
             elif commands.meme.regex.match(message.content):
-                await commands.meme.run(message, self.db, credentials)
+                commands.meme.run(message, self.db, credentials)
 
             elif commands.song.regex.match(message.content):
-                await commands.song.run(message, self.db, credentials)
+                commands.song.run(message, self.db, credentials)
 
             elif commands.iam.regex.match(message.content):
-                await commands.iam.run(
+                commands.iam.run(
                         message,
                         self.db,
                         self.user.id,
                         credentials)
 
             elif commands.prune.regex.match(message.content):
-                await commands.prune.run(message, self.db)
+                commands.prune.run(message, self.db)
 
             elif commands.enable.regex.match(message.content):
-                await commands.enable.run(message, self.db)
+                commands.enable.run(message, self.db)
 
             elif commands.disable.regex.match(message.content):
-                await commands.disable.run(message, self.db)
+                commands.disable.run(message, self.db)
 
             elif commands.set.regex.match(message.content):
-                await commands.set.run(message, self.db)
+                commands.set.run(message, self.db)
 
             elif commands.about.regex.match(message.content):
-                await commands.about.run(message, credentials)
+                commands.about.run(message, credentials)
 
             if message.author.id == credentials.OWNER_ID:
                 if message.content.startswith('.update '):
-                    await commands.update.run(message, self)
+                    commands.update.run(message, self)
 
                 elif message.content.startswith('.status'):
                     await status.change(message, self)
@@ -107,10 +107,10 @@ class MessageClient(BaseClient):
                     await self.close()
 
         elif commands.someone.regex.match(message.content):
-            await commands.someone.run(message, self.db)
+            commands.someone.run(message, self.db)
 
         elif message.content == self.mention:
-            await commands.mention.run(message)
+            commands.mention.run(message)
 
     async def on_raw_reaction_add(self, payload):
         if payload.user_id == self.user.id \
@@ -126,7 +126,7 @@ class MessageClient(BaseClient):
 
         if message.content.startswith(
                 'http'):
-            await reactions.song.add(
+            reactions.song.add(
                     message,
                     payload,
                     self.db)
@@ -145,7 +145,7 @@ class MessageClient(BaseClient):
 
         if message.content.startswith(
                 'http'):
-            await reactions.song.remove(
+            reactions.song.remove(
                     message,
                     payload,
                     self.db)

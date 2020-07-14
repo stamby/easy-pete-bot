@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         'discord((app)?\.com/invite\/[^ ]|\.gg\/[^ ])')
 
-async def run(message, db):
+def run(message, db):
     c = db.cursor()
 
     c.execute(

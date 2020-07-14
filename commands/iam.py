@@ -5,7 +5,7 @@ import re
 regex = re.compile(
         '\.[Ii][Aa][Mm]([Nn][Oo][Tt])?( |$)')
 
-async def run(message, db, id_, credentials):
+def run(message, db, id_, credentials):
     c = db.cursor()
 
     # Parse message
