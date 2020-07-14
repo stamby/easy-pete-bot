@@ -32,7 +32,7 @@ Please enable this command by means of _.enable song._
 
     # Parse the message
     trailing_space, command, extra_chars = re.findall(
-            '^\.....( *)((?:all$|submit +(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[A-Za-z0-9_-]+$|search .+|genre(?: .+|$))?)(.*)',
+            '^.....( *)((?:all$|submit +(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[A-Za-z0-9_-]+$|search .+|genre(?: .+|$))?)(.*)',
             message.content.lower())[0]
 
     if trailing_space == '' and command == '':

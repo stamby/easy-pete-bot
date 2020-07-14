@@ -8,7 +8,7 @@ async def run(message, db):
 
     # Parse the message
     trailing_space, user_str, requested_amount_str, extra_chars = re.findall(
-            '^\......( *)((?:<@![0-9]+>)?) *((?:[0-9]+$)?)(.*)',
+            '^......( *)((?:<@![0-9]+>)?) *((?:[0-9]+$)?)(.*)',
             message.content)[0]
 
     c.execute(

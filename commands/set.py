@@ -17,7 +17,7 @@ The _.set_ command may be run only by someone having the _Manage Server_ permiss
         return
 
     trailing_space, command, value = re.findall(
-            '^\....( *)((?:[^ ]+)?) *(.*)$',
+            '^....( *)((?:[^ ]+)?) *(.*)$',
             message.content.lower())[0]
 
     if trailing_space == '':

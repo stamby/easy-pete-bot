@@ -10,7 +10,7 @@ async def run(message, db, id_, credentials):
 
     # Parse message
     command, trailing_space, requested_role_name = re.findall(
-            '^\.[Ii][Aa][Mm]((?:[Nn][Oo][Tt])?)( *)(.*)',
+            '^.[Ii][Aa][Mm]((?:[Nn][Oo][Tt])?)( *)(.*)',
             message.content)[0]
 
     # Check whether it is enabled for this channel

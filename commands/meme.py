@@ -32,7 +32,7 @@ async def run(message, db, credentials):
 
     # Parse the message
     trailing_space, command, extra_chars = re.findall(
-            '^\.....( *)((?:[Ss][Uu][Bb][Mm][Ii][Tt]$)?)(.*)',
+            '^.....( *)((?:[Ss][Uu][Bb][Mm][Ii][Tt]$)?)(.*)',
             message.content)[0]
 
     if extra_chars != '':
