@@ -140,7 +140,7 @@ Missing value. Type _%sadmin_ to find out what the properties and its possible v
         return
 
     if command == 'prefix':
-        if re.match('^.$', value):
+        if len(value) == 1:
             c.execute(
                     '''
 update servers set prefix = %s where s_id = %s
@@ -151,6 +151,16 @@ update servers set prefix = %s where s_id = %s
                     ))
 
             db.commit()
+
+            if re.match('[A-Za-z0-9]', value):
+                await message.channel.send(
+                        '''
+Setting saved. Warning: You have set the prefix to _%s,_ which is alphanumeric. To avoid confusion, we strongly recommend using a symbol instead, like the default dot _(.)._ To achieve this, write _%sset prefix ._
+                        ''' % (
+                            value,
+                            value
+                        ))
+                return
 
         else:
             await message.channel.send(
