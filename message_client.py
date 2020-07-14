@@ -59,7 +59,8 @@ class MessageClient(BaseClient):
             await commands.someone.run(message, self.db)
 
         elif message.content == self.mention:
-            prefix_ = prefix.get(message.guild.id, self.db)
+            prefix_ = discord.utils.escape_markdown(
+                    prefix.get(message.guild.id, self.db))
 
             await commands.mention.run(prefix_, message)
 
