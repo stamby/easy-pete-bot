@@ -145,6 +145,8 @@ update servers set prefix = %s where s_id = %s
                         message.guild.id
                     ))
 
+            db.commit()
+
         else:
             await message.channel.send(
                     '''
