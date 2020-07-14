@@ -3,7 +3,7 @@ import re
 regex = re.compile(
         '\.[Pp][Rr][Uu][Nn][Ee]( |$)')
 
-def run(message, db):
+async def run(message, db):
     c = db.cursor()
 
     # Parse the message

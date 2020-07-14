@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         '\.[Ss][Ee][Tt]( |$)')
 
-def run(message, db):
+async def run(message, db):
     c = db.cursor()
 
     # Check whether the user has the appropriate permissions

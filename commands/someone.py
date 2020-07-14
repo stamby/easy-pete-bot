@@ -5,7 +5,7 @@ import re
 regex = re.compile(
         '@[Ss][Oo][Mm][Ee][Oo][Nn][Ee]')
 
-def run(message, db):
+async def run(message, db):
     c = db.cursor()
 
     # Check whether it is enabled

@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         '\.[Hh][Ee][Ll][Pp]( |$)')
 
-def run(message, db):
+async def run(message, db):
     c = db.cursor()
 
     c.execute(

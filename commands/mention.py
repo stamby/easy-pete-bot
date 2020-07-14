@@ -1,6 +1,6 @@
 import random
 
-def run(message):
+async def run(message):
     await message.channel.send(
             random.choice((
                 '<@!%d>: What is your command?',

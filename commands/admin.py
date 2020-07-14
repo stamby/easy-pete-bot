@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         '\.[Aa][Dd][Mm][Ii][Nn]( |$)')
 
-def run(message, db):
+async def run(message, db):
     c = db.cursor()
 
     permissions = message.channel.permissions_for(

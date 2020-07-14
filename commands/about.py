@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         '\.[Aa][Bb][Oo][Uu][Tt]( |$)')
 
-def run(message, credentials):
+async def run(message, credentials):
     await message.channel.send(
             embed=discord.Embed(
                 title='ABOUT %s' % credentials.BOT_NAME.upper(),

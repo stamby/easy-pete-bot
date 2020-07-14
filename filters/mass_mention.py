@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         '(<@![0-9]+>.*?){4,}')
 
-def run(message, db):
+async def run(message, db):
     c = db.cursor()
 
     c.execute(

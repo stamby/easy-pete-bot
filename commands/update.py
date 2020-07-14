@@ -1,6 +1,6 @@
 import discord
 
-def run(message, client):
+async def run(message, client):
     c.execute(
             '''
 select s_id, c_updates from servers where c_updates is not null
