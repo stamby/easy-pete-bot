@@ -22,6 +22,8 @@ Example: _.prune @a user I don't like 100_
 
 All features can be enabled, disabled or customized with the help of _.enable,_ _.disable_ and _.set._ Additionally, the bot can welcome users and clean up unused roles, which may be coupled with the _.iam_ command for smoother role management.
 
+The default dot prefix can be changed through _.set._
+
 ## More links
 
 - [Add to Discord](https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot)
