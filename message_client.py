@@ -105,7 +105,6 @@ class MessageClient(BaseClient):
                     await self.close()
 
         elif commands.someone.regex.match(message.content):
-                message.content):
             await commands.someone.run(message, self.db)
 
         elif message.content == self.mention:
