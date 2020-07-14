@@ -1,13 +1,13 @@
 import random
 
-async def run(message):
+async def run(prefix_, message):
     await message.channel.send(
             random.choice((
-                '<@!%d>: What is your command?',
-                '<@!%d>: Yes?',
-                '<@!%d>: I\'m listening.',
-                'Do you need anything, <@!%d>?',
-                'How may I help you, <@!%d>?',
-                'Ready when you are, <@!%d>.')) \
-                        % message.author.id)
+                '<@!%d>: What is your command? Don\'t they begin with _%s?_',
+                '<@!%d>: Yes? Do you need help? _%sHelp_ might be what you\'re looking for.',
+                '<@!%d>: I\'m listening. Type _%shelp to get started._',
+                'Do you need anything, <@!%d>? _%s_ is the current prefix.',
+                'How may I help you, <@!%d>? Maybe check _%shelp?_',
+                'Ready when you are, <@!%d>. Just type _%shelp._')) \
+                        % (message.author.id, prefix_))
 

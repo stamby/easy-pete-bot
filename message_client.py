@@ -59,7 +59,9 @@ class MessageClient(BaseClient):
             await commands.someone.run(message, self.db)
 
         elif message.content == self.mention:
-            await commands.mention.run(message)
+            prefix_ = prefix.get(message.guild.id, self.db)
+
+            await commands.mention.run(prefix_, message)
 
         else:
             prefix_ = prefix.get(message.guild.id, self.db)
