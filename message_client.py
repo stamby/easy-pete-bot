@@ -22,6 +22,8 @@ import filters.invite
 import filters.mass_mention
 import filters.profanity
 
+import reactions.song
+
 import status
 
 class MessageClient(BaseClient):
