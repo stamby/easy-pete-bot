@@ -55,6 +55,12 @@ class MessageClient(BaseClient):
         elif filters.invite.regex.search(message.content):
             await filters.invite.run(message, self.db)
 
+        elif commands.someone.regex.match(message.content):
+            await commands.someone.run(message, self.db)
+
+        elif message.content == self.mention:
+            await commands.mention.run(message)
+
         else:
             prefix_ = prefix.get(message.guild.id, self.db)
 
@@ -139,12 +145,6 @@ class MessageClient(BaseClient):
 
                         self.db.close()
                         await self.close()
-
-        elif commands.someone.regex.match(message.content):
-            await commands.someone.run(message, self.db)
-
-        elif message.content == self.mention:
-            await commands.mention.run(message)
 
     async def on_raw_reaction_add(self, payload):
         if payload.user_id == self.user.id \
