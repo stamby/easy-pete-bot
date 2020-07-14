@@ -257,8 +257,11 @@ Setting saved; however, because <#%d> has not been marked as NSFW, the meme filt
 
                 await message.channel.send(
                         '''
-Meme filter has been turned off. Warning: Some memes may be offensive and even distasteful to some users. If you do not want this to be the case, run _.set meme\_filter true._
-                        ''')
+Meme filter has been turned off. Warning: Some memes may be offensive and even distasteful to some users. If you do not want this to be the case, run _.set meme\_filter true._%s
+                        ''' % (
+                                not c_meme and \
+                                    ' To enable the command, run _.enable meme._'
+                            )
                 return
 
         else:
