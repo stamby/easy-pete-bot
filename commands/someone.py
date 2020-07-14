@@ -1,5 +1,6 @@
 import discord
 import random
+import re
 
 regex = re.compile(
         '@[Ss][Oo][Mm][Ee][Oo][Nn][Ee]')
