@@ -49,7 +49,7 @@ Example: _%senable greeting iam_
                     prefix_,
                     prefix_,
                     prefix_
-                ))
+                )))
 
     await message.channel.send(
             embed=discord.Embed(
