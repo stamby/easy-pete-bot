@@ -55,59 +55,90 @@ class MessageClient(BaseClient):
         elif filters.invite.regex.search(message.content):
             await filters.invite.run(message, self.db)
 
-        elif message.content.startswith(
-                prefix.get(message.guild.id, self.db)):
-            if commands.meme.regex.match(message.content):
-                await commands.meme.run(message, self.db, credentials)
+        else:
+            prefix_ = prefix.get(message.guild.id, self.db)
 
-            elif commands.song.regex.match(message.content):
-                await commands.song.run(message, self.db, credentials)
+            if message.content.startswith(prefix_):
+                prefix_ = discord.utils.escape_markdown(prefix_)
 
-            elif commands.set.regex.match(message.content):
-                await commands.set.run(message, self.db)
+                if commands.meme.regex.match(message.content):
+                    await commands.meme.run(
+                            prefix_,
+                            message,
+                            self.db,
+                            credentials)
 
-            elif commands.prune.regex.match(message.content):
-                await commands.prune.run(message, self.db)
+                elif commands.song.regex.match(message.content):
+                    await commands.song.run(
+                            prefix_,
+                            message,
+                            self.db,
+                            credentials)
 
-            elif commands.help.regex.match(message.content):
-                await commands.help.run(message, self.db)
+                elif commands.set.regex.match(message.content):
+                    await commands.set.run(
+                            prefix_,
+                            message,
+                            self.db)
 
-            elif commands.admin.regex.match(message.content):
-                await commands.admin.run(message, self.db)
+                elif commands.prune.regex.match(message.content):
+                    await commands.prune.run(
+                            prefix_,
+                            message,
+                            self.db)
 
-            elif commands.iam.regex.match(message.content):
-                await commands.iam.run(
-                        message,
-                        self.db,
-                        self.user.id,
-                        credentials)
+                elif commands.help.regex.match(message.content):
+                    await commands.help.run(
+                            prefix_,
+                            message,
+                            self.db)
 
-            elif commands.enable.regex.match(message.content):
-                await commands.enable.run(message, self.db)
+                elif commands.admin.regex.match(message.content):
+                    await commands.admin.run(
+                            prefix_,
+                            message,
+                            self.db)
 
-            elif commands.about.regex.match(message.content):
-                await commands.about.run(message, credentials)
+                elif commands.iam.regex.match(message.content):
+                    await commands.iam.run(
+                            prefix_,
+                            message,
+                            self.db,
+                            self.user.id,
+                            credentials)
 
-            elif commands.disable.regex.match(message.content):
-                await commands.disable.run(message, self.db)
+                elif commands.enable.regex.match(message.content):
+                    await commands.enable.run(
+                            prefix_,
+                            message,
+                            self.db)
 
-            elif message.author.id == credentials.OWNER_ID:
-                if message.content.startswith('.update '):
-                    await commands.update.run(message, self)
+                elif commands.about.regex.match(message.content):
+                    await commands.about.run(message, credentials)
 
-                elif message.content.startswith('.status'):
-                    await status.change(message, self)
+                elif commands.disable.regex.match(message.content):
+                    await commands.disable.run(
+                            prefix_,
+                            message,
+                            self.db)
 
-                elif message.content == '.stop':
-                    print(
-                            'Stop requested through "%s" (%d), stopping.' \
-                                    % (
-                                        message.guild,
-                                        message.guild.id
-                                    ))
+                elif message.author.id == credentials.OWNER_ID:
+                    if message.content.startswith('.update '):
+                        await commands.update.run(message, self)
 
-                    self.db.close()
-                    await self.close()
+                    elif message.content.startswith('.status'):
+                        await status.change(message, self)
+
+                    elif message.content == '.stop':
+                        print(
+                                'Stop requested through "%s" (%d), stopping.' \
+                                        % (
+                                            message.guild,
+                                            message.guild.id
+                                        ))
+
+                        self.db.close()
+                        await self.close()
 
         elif commands.someone.regex.match(message.content):
             await commands.someone.run(message, self.db)

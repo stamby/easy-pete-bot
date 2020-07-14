@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         '.[Hh][Ee][Ll][Pp]( |$)')
 
-async def run(message, db):
+async def run(prefix_, message, db):
     c = db.cursor()
 
     c.execute(
@@ -16,41 +16,59 @@ select c_iam, c_meme, c_song, someone from servers where s_id = %s
     c_iam, c_meme, c_song, someone = c.fetchone()
 
     description = '''
-**.about**: Show information on the bot and how to contact the developers, as well as an invite link.
+**%sabout**: Show information on the bot and how to contact the developers, as well as an invite link.
 %s%s%s%s
 
-**.admin**: More commands for admins. It shows help on how to manage the bot's features.
+**%sadmin**: More commands for admins. It shows help on how to manage the bot's features.
 %s
             ''' % \
             (
+                    prefix_,
                     c_iam and '''
-**.iam** (role name): Assign yourself a role. If the role doesn't exist, it may be created depending on settings.
+**%siam** (role name): Assign yourself a role. If the role doesn't exist, it may be created depending on settings.
 
-**.iamnot** (role name): Remove a role from your user. If no users have the role anymore, the role may be removed depending on settings.
-                    ''' or '',
+**%siamnot** (role name): Remove a role from your user. If no users have the role anymore, the role may be removed depending on settings.
+                    ''' % (
+                        prefix_,
+                        prefix_
+                    ) or '',
                     c_meme and '''
-**.meme**: Send a random meme, straight from our repositories. Submit a meme by writing _.meme submit._
-                    ''' or '',
+**%smeme**: Send a random meme, straight from our repositories. Submit a meme by writing _%smeme submit._
+                    ''' % (
+                        prefix_,
+                        prefix_
+                    ) or '',
                     c_song and '''
-**.song**: Send a good song for your happy ears.
+**%ssong**: Send a good song for your happy ears.
 
 Optionally:
-**.song search** (artist and/or title)
-**.song genre** (music genre)
-**.song submit** (Youtube URL)
-**.song all**
-                    ''' or '',
+**%ssong search** (artist and/or title)
+**%ssong genre** (music genre)
+**%ssong submit** (Youtube URL)
+**%ssong all**
+                    ''' % (
+                        prefix_,
+                        prefix_,
+                        prefix_,
+                        prefix_,
+                        prefix_
+                    ) or '',
                     someone and '''
 **@someone**: Randomly mention someone on the server.
                     ''' or '',
+                    prefix_,
                     (
                         not c_iam \
                         or not c_meme \
                         or not c_song \
                         or not someone
                     ) and '''
-More commands can be enabled. Admins may add them by use of _.enable_ and _.set,_ described in _.admin._
-                    ''' or ''
+More commands can be enabled. Admins may add them by use of _%senable_ and _%sset,_ described in _%sadmin._
+                    ''' % (
+                        prefix_,
+                        prefix_,
+                        prefix_
+                    ) or ''
             )
 
     await message.channel.send(

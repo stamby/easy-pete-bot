@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         '.[Dd][Ii][Ss][Aa][Bb][Ll][Ee]( |$)')
 
-async def run(message, db):
+async def run(prefix_, message, db):
     c = db.cursor()
 
     # Check whether the user has the appropriate permissions
@@ -12,8 +12,8 @@ async def run(message, db):
             message.author).manage_channels:
         await message.channel.send(
                 '''
-The _.disable_ command has to come from someone having the _Manage Channels_ permission for this channel.
-                ''')
+The _%sdisable_ command has to come from someone having the _Manage Channels_ permission for this channel.
+                ''' % prefix_)
         return
 
     commands = re.findall(
@@ -36,10 +36,13 @@ and column_name like 'c\_%'
         if command not in c_fields:
             await message.channel.send(
                     '''
-_%s_ is not valid. Please type _.admin_ to see which commands may be disabled.
+_%s_ is not valid. Please type _%sadmin_ to see which commands may be disabled.
                     ''' \
-                            % discord.utils.escape_markdown(
-                                command))
+                            % (
+                                discord.utils.escape_markdown(
+                                    command),
+                                prefix_
+                            ))
             return
 
     for command in commands:

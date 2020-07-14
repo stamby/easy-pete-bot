@@ -5,7 +5,7 @@ import re
 regex = re.compile(
         '.[Ii][Aa][Mm]([Nn][Oo][Tt])?( |$)')
 
-async def run(message, db, id_, credentials):
+async def run(prefix_, message, db, id_, credentials):
     c = db.cursor()
 
     # Parse message
@@ -26,9 +26,9 @@ select c_iam, role_create from servers where s_id = %s
             message.author).manage_channels:
         await message.channel.send(
                 '''
-The command _.iam%s_ is not available. An admin may enable it by entering _.enable iam._
+The command _%siam%s_ is not available. An admin may enable it by entering _%senable iam._
                 ''' \
-                        % command.lower())
+                        % (prefix_, command.lower(), prefix_))
         return
 
     if message.channel.id != c_iam:
@@ -63,8 +63,8 @@ Insufficient permissions. Namely, this command requires me to have _Manage Roles
 
     if requested_role_name == '':
         await message.channel.send(
-                'Please write _.iam%s_ followed by the role name.' \
-                        % command.lower())
+                'Please write _%siam%s_ followed by the role name.' \
+                        % (prefix_, command.lower()))
         return
 
     requested_role_name_lower = requested_role_name.lower()

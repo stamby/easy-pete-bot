@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         '.[Ss][Ee][Tt]( |$)')
 
-async def run(message, db):
+async def run(prefix_, message, db):
     c = db.cursor()
 
     # Check whether the user has the appropriate permissions
@@ -12,8 +12,8 @@ async def run(message, db):
             message.author).manage_guild:
         await message.channel.send(
                 '''
-The _.set_ command may be run only by someone having the _Manage Server_ permission.
-                ''')
+The _%sset_ command may be run only by someone having the _Manage Server_ permission.
+                ''' % prefix_)
         return
 
     trailing_space, command, value = re.findall(
@@ -27,7 +27,7 @@ select c_greeting, c_iam, c_meme, c_song, c_updates,
 welcome, farewell, max_deletions, role_create,
 role_cleanup, someone, meme_filter, filter_action,
 filter_profanity, filter_mass_mention, filter_invite,
-prefix from servers where s_id = %s
+from servers where s_id = %s
                 ''',
                 (message.guild.id,))
 
@@ -36,7 +36,6 @@ prefix from servers where s_id = %s
                 role_cleanup, someone, meme_filter, \
                 filter_action, filter_profanity, \
                 filter_mass_mention, filter_invite, \
-                prefix \
                     = c.fetchone()
 
         # Just print everything
@@ -49,7 +48,7 @@ prefix from servers where s_id = %s
 **song**: %s
 **updates**: %s
 
-Syntax: _.enable greeting_ (and/or _iam, meme,_ etc.)
+Syntax: _%senable greeting_ (and/or _iam, meme,_ etc.)
 
 **PROPERTIES**
 
@@ -66,9 +65,9 @@ Syntax: _.enable greeting_ (and/or _iam, meme,_ etc.)
 **filter_invite**: _%s_
 **prefix**: _%s_
 
-Syntax: _.set someone false_ (or any other property for that matter)
+Syntax: _%sset someone false_ (or any other property for that matter)
 
-Channels may be changed through _.enable_ and _.disable,_ while properties require the use of _.set._ For more information, see _.admin._
+Channels may be changed through _%senable_ and _%sdisable,_ while properties require the use of _%sset._ For more information, see _%sadmin._
             ''' % (
                     c_greeting and '<#%d>' % c_greeting \
                             or 'Disabled',
@@ -80,6 +79,7 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
                             or 'Disabled',
                     c_updates and '<#%d>' % c_updates \
                             or 'Disabled',
+                    prefix_,
                     welcome,
                     farewell,
                     max_deletions,
@@ -117,7 +117,12 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
                         'False (not moderated)',
                         'True (Discord invites reached by filter)'
                     )[int(filter_invite)],
-                    prefix
+                    prefix_,
+                    prefix_,
+                    prefix_,
+                    prefix_,
+                    prefix_,
+                    prefix_
                 )
 
         await message.channel.send(
@@ -130,8 +135,8 @@ Channels may be changed through _.enable_ and _.disable,_ while properties requi
     if value == '':
         await message.channel.send(
                 '''
-Missing value. Type _.admin_ to find out what the properties and its possible values are.
-                ''')
+Missing value. Type _%sadmin_ to find out what the properties and its possible values are.
+                ''' % prefix_)
         return
 
     if command == 'prefix':
@@ -168,8 +173,8 @@ update servers set {} = %s where s_id = %s
 
         await message.channel.send(
                 '''
-Message saved. If you haven't, remember to enable it on the desired channel by writing _.enable greeting._
-                ''')
+Message saved. If you haven't, remember to enable it on the desired channel by writing _%senable greeting._
+                ''' % prefix_)
         return
 
     elif command == 'max_deletions':
@@ -216,8 +221,8 @@ from servers where s_id = %s
                         and not filter_invite:
                     await message.channel.send(
                             '''
-Settings saved. Remember to enable one of the available filters by running _.set,_ followed by _filter\_profanity, filter\_mass\_mention_ or _filter\_invite,_ followed by _true_ or _false._
-                            ''')
+Settings saved. Remember to enable one of the available filters by running _%sset,_ followed by _filter\_profanity, filter\_mass\_mention_ or _filter\_invite,_ followed by _true_ or _false._
+                            ''' % prefix_)
                     return
 
         else:
@@ -257,8 +262,8 @@ select filter_action from servers where s_id = %s
                 if not c.fetchone()[0]:
                     await message.channel.send(
                             '''
-Setting saved. Please make sure to also run _.set filter\_action_ followed by _1_ to send warnings to those whose messages are being filtered, _2_ to warn and also delete their messages and _3_ to delete without warning. The current setting is _0,_ which does nothing.
-                            ''')
+Setting saved. Please make sure to also run _%sset filter\_action_ followed by _1_ to send warnings to those whose messages are being filtered, _2_ to warn and also delete their messages and _3_ to delete without warning. The current setting is _0,_ which does nothing.
+                            ''' % prefix_)
                     return
 
             if command[0] == 'm' and not value:
@@ -283,11 +288,13 @@ Setting saved; however, because <#%d> has not been marked as NSFW, the meme filt
 
                 await message.channel.send(
                         '''
-Meme filter has been turned off. Warning: Some memes may be offensive and even distasteful to some users. If you do not want this to be the case, run _.set meme\_filter true._%s
+Meme filter has been turned off. Warning: Some memes may be offensive and even distasteful to some users. If you do not want this to be the case, run _%sset meme\_filter true._%s
                         ''' % (
-                                not c_meme and \
-                                    ' To enable the command, run _.enable meme._' \
-                                or ''
+                                c_meme and '' \
+                                or ' To enable the command, run _%senable meme._' \
+                                    % prefix_\
+                                or '',
+                                prefix_
                             ))
                 return
 
@@ -298,7 +305,8 @@ Meme filter has been turned off. Warning: Some memes may be offensive and even d
 
     else:
         await message.channel.send(
-                'Please write _.admin_ to see how to run this command.')
+                'Please write _%sadmin_ to see how to run this command.' \
+                        % prefix_)
         return
 
     await message.channel.send(
