@@ -76,9 +76,12 @@ class GuildClient(BaseClient):
         if c_greeting:
             await member.guild.get_channel(c_greeting).send(
                     re.sub(
-                        '@@[Uu][Ss][Ee][Rr]@@',
-                        '<@!%d>' % member.id,
-                        farewell))
+                        '@@[Tt][Aa][Gg]@@',
+                        str(member),
+                        re.sub(
+                            '@@[Uu][Ss][Ee][Rr]@@',
+                            '<@!%d>' % member.id,
+                            farewell)))
 
     async def on_guild_join(self, guild):
         print(

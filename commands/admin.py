@@ -57,10 +57,10 @@ Example: _%senable greeting iam_
                 colour=discord.Colour.gold(),
                 description='''
 **%sset** (property) (value) or **%sset**: Requires _Manage Server_ permission. Define properties that change the way the bot behaves. If no property is given, show current values. Valid properties:
-**welcome**: A greeting for when a user joins. Writing _@@USER@@_ in it will mention the user in question.
+**welcome**: A greeting for when a user joins. Writing _@@USER@@_ in it will mention the user. @@TAG@@ will print the user's tag.
 Example: _%sset welcome Welcome, @@USER@@!_ (default)
 **farewell**: Likewise when someone leaves.
-Example: _%sset farewell @@USER@@ has left the server._ (default)
+Example: _%sset farewell \*\*@@TAG@@\*\* has left the server._ (default)
 **max\_deletions**: The maximum amount of messages that _%sprune_ may delete. The default value is 10.
 Example: _%sset max\_deletions 100_
 **role\_create**: Whether _%siam_ should create a non-existing role. If disabled, it has no effect. Value should be _true_ or _false._ Default value: _false._
