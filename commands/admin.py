@@ -57,7 +57,7 @@ Example: _%senable greeting iam_
                 colour=discord.Colour.gold(),
                 description='''
 **%sset** (property) (value) or **%sset**: Requires _Manage Server_ permission. Define properties that change the way the bot behaves. If no property is given, show current values. Valid properties:
-**welcome**: A greeting for when a user joins. Writing _@@USER@@_ in it will mention the user. @@TAG@@ will print the user's tag.
+**welcome**: A greeting for when a user joins. Writing _@@USER@@_ in it will mention the user. _@@TAG@@_ will print the user's tag.
 Example: _%sset welcome Welcome, @@USER@@!_ (default)
 **farewell**: Likewise when someone leaves.
 Example: _%sset farewell \*\*@@TAG@@\*\* has left the server._ (default)
