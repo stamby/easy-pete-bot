@@ -2,7 +2,7 @@ import random
 import re
 
 regex = re.compile(
-        r'\b([Ss][Uu][Cc][CcKk][Ee][Rr]|([Ss][Uu][Cc][Kk].*[Dd]|d)[Ii][Cc][Kk]|[Dd][Ii][Cc][Kk][Hh][Ee][Aa][Dd]|[Ff][Uu][Cc][CcKk]|[Ff][Aa][Gg]{2}[Oo][Tt]|[Nn][Ii][Gg]{2}([Aa]|[Ee][Rr])|[Rr][Ee][Tt][Aa][Rr][Dd]|[Ii][Dd][Ii][Oo][Tt]|[Ss][Tt][Uu][Pp][Ii][Dd]|[Aa][Ss]{2}|[Aa][Rr][Ss][Ee]|[Cc][Oo][Cc][CcKk]|[Dd][Aa][RrMm][Nn]|[Cc][Uu][Nn][Tt]|[Cc][Rr][Aa][Pp]|[Bb][Uu][Gg]{2}[Ee][Rr]|[Bb][Ii][Tt][Cc][Hh]|[Bb][Uu][Ll]{2}[Ss][Hh][Ii][Tt]|[Pp][Rr][Ii][Cc][Kk]|[Pp][Uu][Nn]{1,2}[Aa][Nn][IiYy]|[Pp][Uu][Ss]{2}[Yy]|[Ss][Nn][Aa][Tt][Cc][Hh]|[Ss][Hh][Aa][Gg]|[Hh][Oo][Ee]|[Ww][Hh][Oo][Rr][Ee])\b')
+        r'\b([Ss][Uu][Cc][CcKk][Ee][Rr]|([Ss][Uu][Cc][Kk].*[Dd]|d)[Ii][Cc][Kk]|[Dd][Ii][Cc][Kk][Hh][Ee][Aa][Dd]|[Ff][Uu][Cc][CcKk]|[Ff][Aa][Gg]{2}[Oo][Tt]|[Nn][Ii][Gg]{2}([Aa]|[Ee][Rr])|[Rr][Ee][Tt][Aa][Rr][Dd]|[Ii][Dd][Ii][Oo][Tt]|[Ss][Tt][Uu][Pp][Ii][Dd]|([Aa][Rr][Ss][Ee]|[Aa][Ss]{2})([Hh][Oo][Ll][Ee]|[Hh][Aa][Tt]|[Cc][Hh][Ee]{2}[Kk])|[Cc][Oo][Cc][CcKk]|[Dd][Aa][RrMm][Nn]|[Cc][Uu][Nn][Tt]|[Cc][Rr][Aa][Pp]|[Bb][Uu][Gg]{2}[Ee][Rr]|[Bb][Ii][Tt][Cc][Hh]|[Bb][Uu][Ll]{2}[Ss][Hh][Ii][Tt]|[Pp][Rr][Ii][Cc][Kk]|[Pp][Uu][Nn]{1,2}[Aa][Nn][IiYy]|[Pp][Uu][Ss]{2}[Yy]|[Ss][Nn][Aa][Tt][Cc][Hh]|[Ss][Hh][Aa][Gg]|[Hh][Oo][Ee]|[Ww][Hh][Oo][Rr][Ee])')
 
 async def run(message, db):
     c = db.cursor()
