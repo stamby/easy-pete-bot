@@ -67,11 +67,11 @@ Insufficient permissions. Namely, this command requires me to have _Manage Roles
                         % (prefix_, command.lower()))
         return
 
-    requested_role_name_lower = requested_role_name.lower()
+    requested_role_name_casefold = requested_role_name.casefold()
 
     # Check whether the requested role exists
     existing_role = discord.utils.find(
-            lambda r: r.name.lower() == requested_role_name_lower,
+            lambda r: r.name.casefold() == requested_role_name_casefold,
             message.guild.roles)
 
     # Remember whether we had 'not' in the command

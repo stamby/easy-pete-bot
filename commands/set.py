@@ -18,7 +18,7 @@ The _%sset_ command may be run only by someone having the _Manage Server_ permis
 
     trailing_space, command, value = re.findall(
             '^....( *)((?:[^ ]+)?) *(.*)$',
-            message.content.lower())[0]
+            message.content)[0]
 
     if trailing_space == '':
         c.execute(
@@ -79,9 +79,9 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                             or 'Disabled',
                     c_updates and '<#%d>' % c_updates \
                             or 'Disabled',
-                    prefix_,
-                    welcome,
-                    farewell,
+                    prefix_, # This will be already 'escaped'
+                    discord.utils.escape_markdown(welcome),
+                    discord.utils.escape_markdown(farewell),
                     max_deletions,
                     (
                         'False (bot cannot create roles)',
@@ -138,6 +138,8 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
 Missing value. Type _%sadmin_ to find out what the properties and its possible values are.
                 ''' % prefix_)
         return
+
+    command = command.casefold()
 
     if command == 'prefix':
         if len(value) == 1:
@@ -248,8 +250,10 @@ Settings saved. Remember to enable one of the available filters by running _%sse
             'filter_profanity',
             'filter_mass_mention',
             'filter_invite'):
-        if re.match('^(true|false)$', value):
-            value = value != 'false'
+        if re.match(
+                '^([Tt][Rr][Uu][Ee]|[Ff][Aa][Ll][Ss][Ee])$',
+                value):
+            value = value.lower() == 'true'
 
             c.execute(
                     '''
