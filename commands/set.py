@@ -154,7 +154,14 @@ update servers set prefix = %s where s_id = %s
 
             db.commit()
 
-            if re.match('[A-Za-z0-9]', value):
+            if value in ('@', '#'):
+                await message.channel.send(
+                        '''
+Setting saved. Warning: You have set the prefix to _%s,_ which might interfere with the way Discord works in few cases. To avoid this, please consider choosing another prefix.
+                        ''' % value)
+                return
+
+            elif re.match('[A-Za-z0-9]', value):
                 await message.channel.send(
                         '''
 Setting saved. Warning: You have set the prefix to _%s,_ which is alphanumeric. To avoid confusion, we strongly recommend using a symbol instead, like the default dot _(.)._ To achieve this, write _%sset prefix ._
