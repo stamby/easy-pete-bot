@@ -313,8 +313,7 @@ Meme filter has been turned off. Warning: Some memes may be offensive and even d
                         ''' % (
                                 c_meme and '' \
                                 or ' To enable the command, run _%senable meme._' \
-                                    % prefix_\
-                                or '',
+                                    % prefix_,
                                 prefix_
                             ))
                 return
