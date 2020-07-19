@@ -1,7 +1,7 @@
 import random
 import re
 
-from base_filter import BaseFilter
+from .base_filter import BaseFilter
 
 regex = re.compile(
         '(<@![0-9]+>.*?){4,}')

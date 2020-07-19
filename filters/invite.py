@@ -1,7 +1,7 @@
 import random
 import re
 
-from base_filter import BaseFilter
+from .base_filter import BaseFilter
 
 regex = re.compile(
         'discord((app)?\.com/invite\/[^ ]|\.gg\/[^ ])')
