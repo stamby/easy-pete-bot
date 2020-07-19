@@ -1,12 +1,13 @@
 class BaseFilter:
-    def __init__(self, db_field, db):
+    def __init__(self, s_id, db_field, db):
         c = db.cursor()
 
         c.execute(
                     '''
-select {} from servers where s_id = %s
-                    '''.format(db_field),
-                    (message.guild.id,))
+select %s from servers where s_id = %d
+                    ''' % (
+                        db_field,
+                        s_id))
 
         value = c.fetchone()[0]
 

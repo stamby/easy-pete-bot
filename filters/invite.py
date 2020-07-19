@@ -7,7 +7,7 @@ regex = re.compile(
         'discord((app)?\.com/invite\/[^ ]|\.gg\/[^ ])')
 
 async def run(message, db):
-    filter_ = BaseFilter('filter_invite', db)
+    filter_ = BaseFilter('filter_invite', message.guild.id, db)
 
     if filter_.warning:
         await message.channel.send(

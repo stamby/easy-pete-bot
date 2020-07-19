@@ -7,7 +7,7 @@ regex = re.compile(
         '(<@![0-9]+>.*?){4,}')
 
 async def run(message, db):
-    filter_ = BaseFilter('filter_mass_mention', db)
+    filter_ = BaseFilter('filter_mass_mention', message.guild.id, db)
 
     if filter_.warning:
         await message.channel.send(
