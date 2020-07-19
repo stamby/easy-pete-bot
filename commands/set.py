@@ -25,7 +25,7 @@ The _%sset_ command may be run only by someone having the _Manage Server_ permis
                 '''
 select c_greeting, c_iam, c_meme, c_song, c_updates,
 welcome, farewell, max_deletions, role_create,
-role_cleanup, someone, meme_filter, filter_action,
+role_cleanup, someone, meme_filter,
 filter_profanity, filter_mass_mention, filter_invite
 from servers where s_id = %s
                 ''',
@@ -34,8 +34,7 @@ from servers where s_id = %s
         c_greeting, c_iam, c_meme, c_song, c_updates, \
                 welcome, farewell, max_deletions, role_create, \
                 role_cleanup, someone, meme_filter, \
-                filter_action, filter_profanity, \
-                filter_mass_mention, filter_invite, \
+                filter_profanity, filter_mass_mention, filter_invite, \
                     = c.fetchone()
 
         # Just print everything
@@ -59,7 +58,6 @@ Syntax: _%senable greeting_ (and/or _iam, meme,_ etc.)
 **role_cleanup**: _%s_
 **someone**: _%s_
 **meme_filter**: _%s_
-**filter_action**: _%s_
 **filter_profanity**: _%s_
 **filter_mass_mention**: _%s_
 **filter_invite**: _%s_
@@ -100,22 +98,22 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                         'True (memes can be seen by all audiences)'
                     )[int(meme_filter)],
                     (
-                        '0 (off)',
+                        '0 (not moderated)',
                         '1 (warning, not deleting)',
                         '2 (warning and deleting)',
                         '3 (deleting without warning)'
-                    )[filter_action],
-                    (
-                        'False (not moderated)',
-                        'True (swear words reached by filter)'
                     )[int(filter_profanity)],
                     (
-                        'False (not moderated)',
-                        'True (mass mentioning reached by filter)'
+                        '0 (not moderated)',
+                        '1 (warning, not deleting)',
+                        '2 (warning and deleting)',
+                        '3 (deleting without warning)'
                     )[int(filter_mass_mention)],
                     (
-                        'False (not moderated)',
-                        'True (Discord invites reached by filter)'
+                        '0 (not moderated)',
+                        '1 (warning, not deleting)',
+                        '2 (warning and deleting)',
+                        '3 (deleting without warning)'
                     )[int(filter_invite)],
                     prefix_,
                     prefix_,
@@ -214,35 +212,20 @@ update servers set max_deletions = %s where s_id = %s
                     'Invalid amount. The limit is currently 100.')
             return
 
-    elif command == 'filter_action':
+    elif command in (
+            'filter_profanity',
+            'filter_mass_mention',
+            'filter_invite'):
         if re.match('^[0-3]$', value):
             c.execute(
                     '''
-update servers set filter_action = %s where s_id = %s
-                    ''',
-                    (int(value), message.guild.id))
+update servers set %s = %d where s_id = %d
+                    ''' % (
+                        command,
+                        int(value),
+                        message.guild.id))
 
             db.commit()
-
-            if value != '0':
-                c.execute(
-                        '''
-select filter_profanity, filter_mass_mention, filter_invite
-from servers where s_id = %s
-                        ''',
-                        (message.guild.id,))
-
-                filter_profanity, filter_mass_mention, filter_invite = \
-                        c.fetchone()
-
-                if not filter_profanity \
-                        and not filter_mass_mention \
-                        and not filter_invite:
-                    await message.channel.send(
-                            '''
-Settings saved. Remember to enable one of the available filters by running _%sset,_ followed by _filter\_profanity, filter\_mass\_mention_ or _filter\_invite,_ followed by _true_ or _false._
-                            ''' % prefix_)
-                    return
 
         else:
             await message.channel.send(
@@ -253,10 +236,7 @@ Settings saved. Remember to enable one of the available filters by running _%sse
             'role_create',
             'role_cleanup',
             'someone',
-            'meme_filter',
-            'filter_profanity',
-            'filter_mass_mention',
-            'filter_invite'):
+            'meme_filter'):
         if re.match(
                 '^([Tt][Rr][Uu][Ee]|[Ff][Aa][Ll][Ss][Ee])$',
                 value):
@@ -272,20 +252,6 @@ update servers set {} = %s where s_id = %s
                     ))
 
             db.commit()
-
-            if command[0] == 'f' and value:
-                c.execute(
-                        '''
-select filter_action from servers where s_id = %s
-                        ''',
-                        (message.guild.id,))
-
-                if not c.fetchone()[0]:
-                    await message.channel.send(
-                            '''
-Setting saved. Please make sure to also run _%sset filter\_action_ followed by _1_ to send warnings to those whose messages are being filtered, _2_ to warn and also delete their messages and _3_ to delete without warning. The current setting is _0,_ which does nothing.
-                            ''' % prefix_)
-                    return
 
             if command[0] == 'm' and not value:
                 # We are setting meme_filter to 0, so validate that the

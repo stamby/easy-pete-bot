@@ -68,13 +68,11 @@ Example: _%sset role\_create false_
 **role\_cleanup**: Whether the bot should remove any unused roles. _True_ or _false._ Default value: _false._
 **someone**: Whether _@someone_ is allowed. _True_ or _false._ Default: _true._
 **meme\_filter**: Filter memes sent by _%smeme._ _True_ or _false._ Default: _true._
-**filter\_profanity**: Filter swearing. _True_ or _false._ Default: _false._
-Example: _%sset filter\_profanity true_
-**filter\_invite**: Filter server invites. _True_ or _false._ Default: _false._
-**filter\_mass\_mention**: Filter mass mentions. _True_ or _false._ Default: _false._
-**filter\_action**: Choose an action for when the filter is activated. Valid values:
+**filter\_profanity**: Filter swearing. Available options:
 0: Take no action, 1: Drop a warning, 2: Warn, then delete message, 3: Delete message. Default value: _0._
-Example: _%sset filter\_action 3_
+Example: _%sset filter\_profanity 3_
+**filter\_invite**: Filter server invites. Same options as _filter\_profanity._
+**filter\_mass\_mention**: Filter mass mentions. Same options as _filter\_profanity._
 
 For more information, please write _%sabout._
             ''' % (

@@ -1,27 +1,15 @@
 import random
 import re
 
+from base_filter import BaseFilter
+
 regex = re.compile(
         r'\b([Ss][Uu][Cc][CcKk][Ee][Rr]|([Ss][Uu][Cc][Kk].*[Dd]|d)[Ii][Cc][Kk]|[Dd][Ii][Cc][Kk][Hh][Ee][Aa][Dd]|[Ff][Uu][Cc][CcKk]|[Ff][Aa][Gg]{2}[Oo][Tt]|[Nn][Ii][Gg]{2}([Aa]|[Ee][Rr])|[Rr][Ee][Tt][Aa][Rr][Dd]|[Ii][Dd][Ii][Oo][Tt]|[Ss][Tt][Uu][Pp][Ii][Dd]|([Aa][Rr][Ss][Ee]|[Aa][Ss]{2})([Hh][Oo][Ll][Ee]|[Hh][Aa][Tt]|[Cc][Hh][Ee]{2}[Kk])|[Cc][Oo][Cc][CcKk]|[Dd][Aa][RrMm][Nn]|[Cc][Uu][Nn][Tt]|[Cc][Rr][Aa][Pp]|[Bb][Uu][Gg]{2}[Ee][Rr]|[Bb][Ii][Tt][Cc][Hh]|[Bb][Uu][Ll]{2}[Ss][Hh][Ii][Tt]|[Pp][Rr][Ii][Cc][Kk]|[Pp][Uu][Nn]{1,2}[Aa][Nn][IiYy]|[Pp][Uu][Ss]{2}[Yy]|[Ss][Nn][Aa][Tt][Cc][Hh]|[Ss][Hh][Aa][Gg]|[Hh][Oo][Ee]|[Ww][Hh][Oo][Rr][Ee])')
 
 async def run(message, db):
-    c = db.cursor()
+    filter_ = BaseFilter('filter_profanity', db)
 
-    c.execute(
-                '''
-select filter_profanity, filter_action from servers where s_id = %s
-                ''',
-                (message.guild.id,))
-
-    filter_profanity, filter_action = c.fetchone()
-
-    if not filter_profanity or not filter_action:
-        return
-
-    warning = filter_action == 1 or filter_action == 2
-    deleting = filter_action == 2 or filter_action == 3
-
-    if warning:
+    if filter_.warning:
         await message.channel.send(
                 random.choice((
                     '''
@@ -41,6 +29,6 @@ Please make sure you don't use any swear words, <@!%d>.
                     ''')) \
                             % message.author.id)
 
-    if deleting:
+    if filter_.deleting:
         await message.delete()
 
