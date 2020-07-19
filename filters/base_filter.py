@@ -1,5 +1,5 @@
 class BaseFilter:
-    def __init__(self, s_id, db_field, db):
+    def __init__(self, db_field, s_id, db):
         c = db.cursor()
 
         c.execute(
