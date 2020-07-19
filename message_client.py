@@ -23,11 +23,10 @@ import filters.invite
 import filters.mass_mention
 import filters.profanity
 
-import prefix
+import misc.prefix
+import misc.status
 
 import reactions.song
-
-import status
 
 class MessageClient(BaseClient):
     def __init__(self):
@@ -41,7 +40,7 @@ class MessageClient(BaseClient):
 
         self.mention = '<@!%d>' % self.user.id
 
-        await status.load(self)
+        await misc.status.load(self)
 
     async def on_message(self, message):
         if message.author.bot or not message.guild:
@@ -61,12 +60,12 @@ class MessageClient(BaseClient):
 
         elif message.content == self.mention:
             prefix_ = discord.utils.escape_markdown(
-                    prefix.get(message.guild.id, self.db))
+                    misc.prefix.get(message.guild.id, self.db))
 
             await commands.mention.run(prefix_, message)
 
         else:
-            prefix_ = prefix.get(message.guild.id, self.db)
+            prefix_ = misc.prefix.get(message.guild.id, self.db)
 
             if message.content.startswith(prefix_):
                 prefix_ = discord.utils.escape_markdown(prefix_)
@@ -137,7 +136,7 @@ class MessageClient(BaseClient):
                         await commands.update.run(message, self)
 
                     elif message.content.startswith('.status'):
-                        await status.change(message, self)
+                        await misc.status.change(message, self)
 
                     elif message.content == '.stop':
                         print(
