@@ -11,10 +11,12 @@ from tokens import TOKEN
 
 def launch_guild_client():
     g = GuildClient()
+
     g.run(TOKEN)
 
 def launch_message_client():
     m = MessageClient()
+
     m.run(TOKEN)
 
 def launch_member_update_client():
@@ -35,4 +37,6 @@ if __name__ == '__main__':
     message_client_process.start()
 
     launch_member_update_client()
+    message_client_process.join()
+    guild_client_process.join()
 
