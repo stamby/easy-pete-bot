@@ -5,8 +5,6 @@ regex = re.compile(
         '.[Dd][Ii][Ss][Aa][Bb][Ll][Ee]( |$)')
 
 async def run(prefix_, message, db):
-    c = db.cursor()
-
     # Check whether the user has the appropriate permissions
     if not message.channel.permissions_for(
             message.author).manage_channels:
@@ -16,13 +14,15 @@ The _%sdisable_ command has to come from someone having the _Manage Channels_ pe
                 ''' % prefix_)
         return
 
-    commands = re.findall(
-            '[^ ]+', message.content[9:].lower())
+    commands = re.split(
+            ' +', message.content[9:].lower())
 
     if len(commands) == 0:
         await message.channel.send(
                 'Which command would you like to disable?')
         return
+
+    c = db.cursor()
 
     c.execute(
             '''
