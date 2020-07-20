@@ -21,7 +21,8 @@ async def run(message, db):
                 message.guild.members)
 
         if random_member.id != message.id \
-                and not random_member.bot:
+                and not random_member.bot \
+                or len(message.guild.members) == 2:
             break
 
     await message.channel.send(
