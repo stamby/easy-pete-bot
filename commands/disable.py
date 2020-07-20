@@ -14,7 +14,7 @@ The _%sdisable_ command has to come from someone having the _Manage Channels_ pe
                 ''' % prefix_)
         return
 
-    commands = re.split(
+    commands = re.findall(
             '[^ ]+', message.content[9:].lower())
 
     if len(commands) == 0:
