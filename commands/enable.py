@@ -14,8 +14,8 @@ The _%senable_ command has to come from someone having the _Manage Channels_ per
                 ''' % prefix_)
         return
 
-    commands = re.split(
-            ' +', message.content[8:].lower())
+    commands = re.findall(
+            '[^ ]+', message.content[8:].lower())
 
     if len(commands) == 0:
         await message.channel.send(

@@ -15,7 +15,7 @@ The _%sdisable_ command has to come from someone having the _Manage Channels_ pe
         return
 
     commands = re.split(
-            ' +', message.content[9:].lower())
+            '[^ ]+', message.content[9:].lower())
 
     if len(commands) == 0:
         await message.channel.send(
