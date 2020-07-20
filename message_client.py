@@ -1,9 +1,4 @@
 import discord
-import re
-
-from base_client import BaseClient
-
-import credentials
 
 import commands.about
 import commands.admin
@@ -27,6 +22,10 @@ import misc.prefix
 import misc.status
 
 import reactions.song
+
+import credentials
+
+from base_client import BaseClient
 
 class MessageClient(BaseClient):
     def __init__(self):

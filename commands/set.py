@@ -102,19 +102,19 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                         '1 (warning, not deleting)',
                         '2 (warning and deleting)',
                         '3 (deleting without warning)'
-                    )[int(filter_profanity)],
+                    )[filter_profanity)],
                     (
                         '0 (not moderated)',
                         '1 (warning, not deleting)',
                         '2 (warning and deleting)',
                         '3 (deleting without warning)'
-                    )[int(filter_mass_mention)],
+                    )[filter_mass_mention)],
                     (
                         '0 (not moderated)',
                         '1 (warning, not deleting)',
                         '2 (warning and deleting)',
                         '3 (deleting without warning)'
-                    )[int(filter_invite)],
+                    )[filter_invite)],
                     prefix_,
                     prefix_,
                     prefix_,
