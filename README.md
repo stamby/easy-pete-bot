@@ -30,9 +30,9 @@ The default dot prefix can be changed through _.set._
 - [See the guide](https://bot.molteni.im)
 - [Join our community](https://discord.gg/VkvRqrv)
 
-## How to run
+## How to test
 
-Define all tokens under a file that should be called `environment.sh` with the following variables:
+Create a file called `environment.sh` with the following variables defined in it:
 
 - DB_NAME
 - DB_PASSWORD
