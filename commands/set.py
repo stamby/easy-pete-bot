@@ -244,9 +244,9 @@ update servers set %s = %d where s_id = %d
 
             c.execute(
                     '''
-update servers set {} = %s where s_id = %s
-                    '''.format(command),
-                    (
+update servers set %s = %s where s_id = %s
+                    ''' % (
+                        command,
                         value,
                         message.guild.id
                     ))

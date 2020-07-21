@@ -1,4 +1,4 @@
-import discord
+from discord.utils import escape_markdown
 
 import commands.about
 import commands.admin
@@ -58,8 +58,10 @@ class MessageClient(BaseClient):
             await commands.someone.run(message, self.db)
 
         elif message.content == self.mention:
-            prefix_ = discord.utils.escape_markdown(
-                    misc.prefix.get(message.guild.id, self.db))
+            prefix_ = escape_markdown(
+                    misc.prefix.get(
+                        message.guild.id,
+                        self.db))
 
             await commands.mention.run(prefix_, message)
 
@@ -67,7 +69,7 @@ class MessageClient(BaseClient):
             prefix_ = misc.prefix.get(message.guild.id, self.db)
 
             if message.content.startswith(prefix_):
-                prefix_ = discord.utils.escape_markdown(prefix_)
+                prefix_ = escape_markdown(prefix_)
 
                 if commands.meme.regex.match(message.content):
                     await commands.meme.run(
@@ -146,6 +148,7 @@ class MessageClient(BaseClient):
                                         ))
 
                         self.db.close()
+
                         await self.close()
 
     async def on_raw_reaction_add(self, payload):
