@@ -72,7 +72,8 @@ Example: _%sset role\_create false_
 0: Take no action, 1: Drop a warning, 2: Warn, then delete message, 3: Delete message. Default value: _0._
 Example: _%sset filter\_profanity 3_
 **filter\_invite**: Filter server invites. Same options as above.
-**filter\_mass\_mention**: Filter mass mentions. Same options as above.
+**filter\_mass\_mention**: Filter mass mentions. " " as above.
+**prefix**: Change the prefix. Default: _._
 
 For more information, please write _%sabout._
             ''' % (
