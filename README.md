@@ -34,9 +34,9 @@ The default dot prefix can be changed through _.set._
 
 Define all tokens under a file that should be called `environment.sh` with the following variables:
 
-DB_NAME=
-DB_PASSWORD=
-DB_USER=
-TOKEN=
-TOKEN_BOTS_ON_DISCORD=
-TOKEN_TOP_GG=
+- DB_NAME
+- DB_PASSWORD
+- DB_USER
+- TOKEN
+- TOKEN_BOTS_ON_DISCORD
+- TOKEN_TOP_GG
