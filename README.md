@@ -29,3 +29,14 @@ The default dot prefix can be changed through _.set._
 - [Add to Discord](https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot)
 - [See the guide](https://bot.molteni.im)
 - [Join our community](https://discord.gg/VkvRqrv)
+
+## How to run
+
+Define all tokens under a file that should be called `environment.sh` with the following variables:
+
+DB_NAME=
+DB_PASSWORD=
+DB_USER=
+TOKEN=
+TOKEN_BOTS_ON_DISCORD=
+TOKEN_TOP_GG=
