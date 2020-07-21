@@ -1,17 +1,16 @@
 import re
+from os import getenv
 #from dbl import DBLClient
 from requests import post
 
 from base_client import BaseClient
-
-from tokens import TOKEN_TOP_GG, TOKEN_BOTS_ON_DISCORD
 
 class BotsOnDiscordHandler:
     def __init__(self):
         self.url = None
         
         self.headers = {
-                'Authorization': TOKEN_BOTS_ON_DISCORD
+                'Authorization': getenv('TOKEN_BOTS_ON_DISCORD')
         }
 
     async def set_id(self, id_):
@@ -27,7 +26,7 @@ class GuildClient(BaseClient):
 
 #        self.top_gg = DBLClient(
 #                self,
-#                TOKEN_TOP_GG,
+#                getenv('TOKEN_TOP_GG'),
 #                webhook_path='/dblwebhook',
 #                webhook_auth='password',
 #                webhook_port=5000)
@@ -55,7 +54,8 @@ class GuildClient(BaseClient):
                             guild,
                             guild.id,
                             len(guild.members),
-                            len(guild.channels)))
+                            len(guild.channels
+                        )))
 
         c = self.db.cursor()
 
@@ -78,7 +78,8 @@ class GuildClient(BaseClient):
                 'Leaving \'%s\' (%d).' \
                         % (
                             guild,
-                            guild.id))
+                            guild.id
+                        ))
 
         c = self.db.cursor()
 

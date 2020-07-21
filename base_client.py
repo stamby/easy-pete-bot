@@ -1,8 +1,6 @@
 import discord
 import psycopg2
 
-from tokens import DB_NAME, DB_USER, DB_PASSWORD
-
 class BaseClient(discord.Client):
     def __init__(self, name):
         discord.Client.__init__(self)

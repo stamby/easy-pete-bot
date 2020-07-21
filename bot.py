@@ -1,30 +1,28 @@
 #!/usr/bin/python3
 
 from multiprocessing import Process
-from os import nice
+from os import getenv, nice
 
 from guild_client import GuildClient
 from message_client import MessageClient
 from member_update_client import MemberUpdateClient
 
-from tokens import TOKEN
-
 def launch_guild_client():
     g = GuildClient()
 
-    g.run(TOKEN)
+    g.run(getenv('TOKEN'))
 
 def launch_message_client():
     m = MessageClient()
 
-    m.run(TOKEN)
+    m.run(getenv('TOKEN'))
 
 def launch_member_update_client():
     r = MemberUpdateClient()
 
     nice(19)
 
-    r.run(TOKEN)
+    r.run(getenv('TOKEN'))
 
 if __name__ == '__main__':
     guild_client_process = Process(

@@ -17,6 +17,7 @@ Before=shutdown.target
 [Service]
 Type=simple
 User=bot
+EnvironmentFile=/srv/easy-pete-bot/environment.sh
 ExecStart=/usr/bin/python3 -u /srv/easy-pete-bot/bot.py
 StandardOutput=journal+console
 StandardError=journal+console
