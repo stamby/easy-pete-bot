@@ -71,8 +71,8 @@ Example: _%sset role\_create false_
 **filter\_profanity**: Filter swearing. Available options:
 0: Take no action, 1: Drop a warning, 2: Warn, then delete message, 3: Delete message. Default value: _0._
 Example: _%sset filter\_profanity 3_
-**filter\_invite**: Filter server invites. Same options as _filter\_profanity._
-**filter\_mass\_mention**: Filter mass mentions. Same options as _filter\_profanity._
+**filter\_invite**: Filter server invites. Same options as above.
+**filter\_mass\_mention**: Filter mass mentions. Same options as above.
 
 For more information, please write _%sabout._
             ''' % (
