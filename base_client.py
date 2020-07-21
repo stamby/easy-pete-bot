@@ -1,6 +1,8 @@
 import discord
 import psycopg2
 
+from os import getenv
+
 class BaseClient(discord.Client):
     def __init__(self, name):
         discord.Client.__init__(self)
@@ -11,9 +13,9 @@ class BaseClient(discord.Client):
                 % name)
 
         self.db = psycopg2.connect(
-                dbname=DB_NAME,
-                user=DB_USER,
-                password=DB_PASSWORD)
+                dbname=getenv('DB_NAME'),
+                user=getenv('DB_USER'),
+                password=getenv('DB_PASSWORD'))
 
         print(
                 "Starting '%s'..." \
