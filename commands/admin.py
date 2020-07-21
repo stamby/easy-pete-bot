@@ -86,7 +86,6 @@ For more information, please write _%sabout._
                     prefix_,
                     prefix_,
                     prefix_,
-                    prefix_,
                     prefix_
                 )))
 
