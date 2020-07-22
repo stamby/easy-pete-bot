@@ -18,8 +18,7 @@ async def run(prefix_, message, db, credentials):
 
     c_meme, meme_filter = c.fetchone()
 
-    if not c_meme and message.channel.permissions_for(
-            message.author).manage_channels:
+    if not c_meme:
         await message.channel.send(
                 'To enable this command, type _%senable meme._' \
                         % prefix_)

@@ -22,8 +22,7 @@ select c_iam, role_create from servers where s_id = %s
 
     c_iam, role_create = c.fetchone()
 
-    if not c_iam and message.channel.permissions_for(
-            message.author).manage_channels:
+    if not c_iam:
         await message.channel.send(
                 '''
 The command _%siam%s_ is not available. An admin may enable it by entering _%senable iam._

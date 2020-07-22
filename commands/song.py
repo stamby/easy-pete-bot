@@ -16,11 +16,10 @@ async def run(prefix_, message, db, credentials):
 
     c_song = c.fetchone()[0]
 
-    if not c_song and message.channel.permissions_for(
-            message.author).manage_channels:
+    if not c_song:
         await message.channel.send(
                 '''
-Please enable this command by means of _%senable song._
+Please ask an admin to enable this command by means of _%senable song._
                 ''' % prefix_)
         return
 

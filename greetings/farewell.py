@@ -1,7 +1,7 @@
 import re
 
-async def run(member):
-    c = self.db.cursor()
+async def run(member, db):
+    c = db.cursor()
 
     c.execute(
             '''

@@ -13,10 +13,10 @@ class MemberUpdateClient(BaseClient):
         print('Member Update has started.')
 
     async def on_member_join(self, member):
-        await greetings.welcome.run(member)
+        await greetings.welcome.run(member, self.db)
 
     async def on_member_remove(self, member):
-        await greetings.farewell.run(member)
+        await greetings.farewell.run(member, self.db)
 
         await misc.role_cleanup.run(member, self.db)
 
