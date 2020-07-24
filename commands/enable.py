@@ -46,9 +46,9 @@ and column_name like 'c\_%'
     for command in commands:
         c.execute(
                 '''
-update servers set c_{} = %s where s_id = %s
-                '''.format(command),
-                (
+update servers set c_%s = %d where s_id = %d
+                ''' % (
+                    command,
                     message.channel.id,
                     message.guild.id
                 ))

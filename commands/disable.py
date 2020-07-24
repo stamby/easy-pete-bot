@@ -48,9 +48,11 @@ _%s_ is not valid. Please type _%sadmin_ to see which commands may be disabled.
     for command in commands:
         c.execute(
                 '''
-update servers set c_{} = null where s_id = %s
-                '''.format(command),
-                (message.guild.id,))
+update servers set c_%s = null where s_id = %d
+                ''' % (
+                    command,
+                    message.guild.id
+                ))
 
     db.commit()
 
