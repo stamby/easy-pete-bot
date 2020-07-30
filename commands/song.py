@@ -6,7 +6,7 @@ import re
 regex = re.compile(
         '.[Ss][Oo][Nn][Gg]( |$)')
 
-async def run(prefix_, message, db, credentials):
+async def run(escaped_prefix, message, db, credentials):
     c = db.cursor()
 
     # Check whether it is enabled for this channel
@@ -20,7 +20,7 @@ async def run(prefix_, message, db, credentials):
         await message.channel.send(
                 '''
 Please ask an admin to enable this command by means of _%senable song._
-                ''' % prefix_)
+                ''' % escaped_prefix)
         return
 
     if message.channel.id != c_song:
@@ -97,7 +97,7 @@ The attached file contains all my songs.
 You can add to these songs by running _%ssong submit (Youtube URL)_ and search them through _%ssong search (artist, title or both)._
 
 This list changes often. It is up to date as of this very moment.
-                        ''' % (prefix_, prefix_)),
+                        ''' % (escaped_prefix, escaped_prefix)),
                     file=discord.File(
                         fp=f,
                         filename='%s_songs.html' \
@@ -175,7 +175,7 @@ order by random() limit 1
             await message.channel.send(
                     '''
 No matches. Submit a URL by typing _%ssong submit (Youtube URL)._
-                    ''' % prefix_)
+                    ''' % escaped_prefix)
 
     elif command.startswith('genre'):
         requested_genre = command[6:]
@@ -212,11 +212,11 @@ order by random() limit 1
             await message.channel.send(
                     '''
 No matches. Type _%ssong genre_ to see all available music genres.
-                    ''' % prefix_)
+                    ''' % escaped_prefix)
             return
 
     else:
         await message.channel.send(
                 '''
 An invalid command has been supplied. Please type _%shelp_ to see valid options to the _%ssong_ command.
-                ''' % (prefix_, prefix_))
+                ''' % (escaped_prefix, escaped_prefix))

@@ -4,14 +4,14 @@ import re
 regex = re.compile(
         '.[Dd][Ii][Ss][Aa][Bb][Ll][Ee]( |$)')
 
-async def run(prefix_, message, db):
+async def run(escaped_prefix, message, db):
     # Check whether the user has the appropriate permissions
     if not message.channel.permissions_for(
             message.author).manage_channels:
         await message.channel.send(
                 '''
 The _%sdisable_ command has to come from someone having the _Manage Channels_ permission for this channel.
-                ''' % prefix_)
+                ''' % escaped_prefix)
         return
 
     commands = re.findall(
@@ -41,7 +41,7 @@ _%s_ is not valid. Please type _%sadmin_ to see which commands may be disabled.
                             % (
                                 discord.utils.escape_markdown(
                                     command),
-                                prefix_
+                                escaped_prefix
                             ))
             return
 

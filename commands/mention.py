@@ -1,6 +1,6 @@
 import random
 
-async def run(prefix_, message):
+async def run(escaped_prefix, message):
     await message.channel.send(
             random.choice((
                 '<@!%d>: What is your command? Don\'t they begin with _%s?_',
@@ -9,5 +9,5 @@ async def run(prefix_, message):
                 'Do you need anything, <@!%d>? _%s_ is the current prefix.',
                 'How may I help you, <@!%d>? Maybe check _%shelp?_',
                 'Ready when you are, <@!%d>. Just type _%shelp._')) \
-                        % (message.author.id, prefix_))
+                        % (message.author.id, escaped_prefix))
 

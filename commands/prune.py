@@ -3,7 +3,7 @@ import re
 regex = re.compile(
         '.[Pp][Rr][Uu][Nn][Ee]( |$)')
 
-async def run(prefix_, message, db):
+async def run(escaped_prefix, message, db):
     c = db.cursor()
 
     # Parse the message
@@ -23,14 +23,14 @@ async def run(prefix_, message, db):
         await message.channel.send(
                 '''
 The _%sprune_ command has to come from someone having the _Manage Messages_ permission for this channel.
-                ''' % prefix_)
+                ''' % escaped_prefix)
         return
 
     if max_deletions == 0:
         await message.channel.send(
                 '''
 The _%sprune_ command has been disabled. An admin may type _%sset max\_deletions (number)_ to change this.
-                ''' % (prefix_, prefix_))
+                ''' % (escaped_prefix, escaped_prefix))
         return
 
     if requested_amount_str != '':
@@ -70,9 +70,9 @@ The _%sprune_ command has been disabled. An admin may type _%sset max\_deletions
                     '''
 For security reasons, only up to %d messages may be deleted. Type _%sset max\_deletions (number)_ to change this.
                     ''' \
-                            % (max_deletions, prefix_))
+                            % (max_deletions, escaped_prefix))
 
     else:
         await message.channel.send(
-                'Invalid syntax for the _%sprune_ command.' % prefix_)
+                'Invalid syntax for the _%sprune_ command.' % escaped_prefix)
 

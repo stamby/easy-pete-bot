@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         '.[Ss][Ee][Tt]( |$)')
 
-async def run(prefix_, message, db):
+async def run(escaped_prefix, message, db):
     c = db.cursor()
 
     # Check whether the user has the appropriate permissions
@@ -13,7 +13,7 @@ async def run(prefix_, message, db):
         await message.channel.send(
                 '''
 The _%sset_ command may be run only by someone having the _Manage Server_ permission.
-                ''' % prefix_)
+                ''' % escaped_prefix)
         return
 
     trailing_space, command, value = re.findall(
@@ -77,7 +77,7 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                             or 'Disabled',
                     c_updates and '<#%d>' % c_updates \
                             or 'Disabled',
-                    prefix_, # This will be already 'escaped'
+                    escaped_prefix, # This will be already 'escaped'
                     discord.utils.escape_markdown(welcome),
                     discord.utils.escape_markdown(farewell),
                     max_deletions,
@@ -115,12 +115,12 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                         '2 (warning and deleting)',
                         '3 (deleting without warning)'
                     )[filter_invite],
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix
                 )
 
         await message.channel.send(
@@ -134,7 +134,7 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
         await message.channel.send(
                 '''
 Missing value. Type _%sadmin_ to find out what the properties and its possible values are.
-                ''' % prefix_)
+                ''' % escaped_prefix)
         return
 
     command = command.casefold()
@@ -191,7 +191,7 @@ update servers set {} = %s where s_id = %s
         await message.channel.send(
                 '''
 Message saved. If you haven't, remember to enable it on the desired channel by writing _%senable greeting._
-                ''' % prefix_)
+                ''' % escaped_prefix)
         return
 
     elif command == 'max_deletions':
@@ -279,8 +279,8 @@ Meme filter has been turned off. Warning: Some memes may be offensive and even d
                         ''' % (
                                 c_meme and '' \
                                 or ' To enable the command, run _%senable meme._' \
-                                    % prefix_,
-                                prefix_
+                                    % escaped_prefix,
+                                escaped_prefix
                             ))
                 return
 
@@ -292,7 +292,7 @@ Meme filter has been turned off. Warning: Some memes may be offensive and even d
     else:
         await message.channel.send(
                 'Please write _%sadmin_ to see how to run this command.' \
-                        % prefix_)
+                        % escaped_prefix)
         return
 
     await message.channel.send(

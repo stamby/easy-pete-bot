@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         '.[Hh][Ee][Ll][Pp]( |$)')
 
-async def run(prefix_, message, db):
+async def run(escaped_prefix, message, db):
     c = db.cursor()
 
     c.execute(
@@ -23,20 +23,20 @@ select c_iam, c_meme, c_song, someone from servers where s_id = %s
 %s
             ''' % \
             (
-                    prefix_,
+                    escaped_prefix,
                     c_iam and '''
 **%siam** (role name): Assign yourself a role. If the role doesn't exist, it may be created depending on settings.
 
 **%siamnot** (role name): Remove a role from your user. If no users have the role anymore, the role may be removed depending on settings.
                     ''' % (
-                        prefix_,
-                        prefix_
+                        escaped_prefix,
+                        escaped_prefix
                     ) or '',
                     c_meme and '''
 **%smeme**: Send a random meme, straight from our repositories. Submit a meme by writing _%smeme submit._
                     ''' % (
-                        prefix_,
-                        prefix_
+                        escaped_prefix,
+                        escaped_prefix
                     ) or '',
                     c_song and '''
 **%ssong**: Send a good song for your happy ears.
@@ -47,16 +47,16 @@ Optionally:
 **%ssong submit** (Youtube URL)
 **%ssong all**
                     ''' % (
-                        prefix_,
-                        prefix_,
-                        prefix_,
-                        prefix_,
-                        prefix_
+                        escaped_prefix,
+                        escaped_prefix,
+                        escaped_prefix,
+                        escaped_prefix,
+                        escaped_prefix
                     ) or '',
                     someone and '''
 **@someone**: Randomly mention someone on the server.
                     ''' or '',
-                    prefix_,
+                    escaped_prefix,
                     (
                         not c_iam \
                         or not c_meme \
@@ -65,9 +65,9 @@ Optionally:
                     ) and '''
 More commands can be enabled. Admins may add them by use of _%senable_ and _%sset,_ described in _%sadmin._
                     ''' % (
-                        prefix_,
-                        prefix_,
-                        prefix_
+                        escaped_prefix,
+                        escaped_prefix,
+                        escaped_prefix
                     ) or ''
             )
 

@@ -6,7 +6,7 @@ import re
 regex = re.compile(
         '.[Mm][Ee][Mm][Ee]( |$)')
 
-async def run(prefix_, message, db, credentials):
+async def run(escaped_prefix, message, db, credentials):
     c = db.cursor()
 
     # Check whether it is enabled for this channel
@@ -21,7 +21,7 @@ async def run(prefix_, message, db, credentials):
     if not c_meme:
         await message.channel.send(
                 'To enable this command, type _%senable meme._' \
-                        % prefix_)
+                        % escaped_prefix)
         return
 
     if message.channel.id != c_meme:
@@ -39,7 +39,7 @@ async def run(prefix_, message, db, credentials):
         await message.channel.send(
                 '''
     The only valid option to the _%smeme_ command is the word _submit._
-                ''' % prefix_)
+                ''' % escaped_prefix)
         return
 
     if command != '':

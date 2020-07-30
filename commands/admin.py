@@ -4,7 +4,7 @@ import re
 regex = re.compile(
         '.[Aa][Dd][Mm][Ii][Nn]( |$)')
 
-async def run(prefix_, message, db):
+async def run(escaped_prefix, message, db):
     c = db.cursor()
 
     permissions = message.channel.permissions_for(
@@ -16,7 +16,7 @@ async def run(prefix_, message, db):
         await message.channel.send(
                 '''
 The _%sadmin_ message is directed towards people who have _Manage Channels, Manage Messages_ or _Manage Server_ permission.
-                ''' % prefix_)
+                ''' % escaped_prefix)
         return
 
     await message.channel.send(
@@ -26,7 +26,7 @@ The _%sadmin_ message is directed towards people who have _Manage Channels, Mana
                 description='''
 **%sprune** (amount) or **%sprune** (user) (amount): Requires _Manage Messages_ permission. Delete messages from a channel, starting by the latest. If a user precedes the amount, delete messages from that user only.
 Example: _%sprune @a user I don't like 100_
-            ''' % (prefix_, prefix_, prefix_)))
+            ''' % (escaped_prefix, escaped_prefix, escaped_prefix)))
 
     await message.channel.send(
             embed=discord.Embed(
@@ -42,13 +42,13 @@ Example: _%sprune @a user I don't like 100_
 All of them are disabled by default. Note that this means that they will not work, unless enabled.
 Example: _%senable greeting iam_
             ''' % (
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix
                 )))
 
     await message.channel.send(
@@ -77,16 +77,16 @@ Example: _%sset filter\_profanity 3_
 
 For more information, please write _%sabout._
             ''' % (
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_,
-                    prefix_
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix,
+                    escaped_prefix
                 )))
 
