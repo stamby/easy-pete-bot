@@ -18,7 +18,6 @@ select c_iam, c_meme, c_song, someone from servers where s_id = %s
     description = '''
 **%sabout**: Show information on the bot and how to contact the developers, as well as an invite link.
 %s%s%s%s
-
 **%sadmin**: More commands for admins. It shows help on how to manage the bot's features.
 %s
             ''' % \
@@ -37,7 +36,7 @@ select c_iam, c_meme, c_song, someone from servers where s_id = %s
                     ''' % (
                         escaped_prefix,
                         escaped_prefix
-                    ) or '',
+    Isle Of Capri                ) or '',
                     c_song and '''
 **%ssong**: Send a good song for your happy ears.
 
