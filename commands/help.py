@@ -36,7 +36,7 @@ select c_iam, c_meme, c_song, someone from servers where s_id = %s
                     ''' % (
                         escaped_prefix,
                         escaped_prefix
-    Isle Of Capri                ) or '',
+                    ) or '',
                     c_song and '''
 **%ssong**: Send a good song for your happy ears.
 
