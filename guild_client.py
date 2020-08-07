@@ -68,11 +68,12 @@ class GuildClient(BaseClient):
         await self.bots_on_discord.post_guild_count()
 
         # Send help to owners, this might fail if the server is too big
-        try:
-            await guild.owner.send(
-                    embed=Embed(
-                        colour=discord.Colour.gold(),
-                        description='''
+        if guild.owner:
+            try:
+                await guild.owner.send(
+                        embed=discord.Embed(
+                            colour=discord.Colour.gold(),
+                            description='''
 Hello, I was just invited to your server.
 
 This is just to let you know the basics of this bot.
@@ -83,11 +84,14 @@ This is just to let you know the basics of this bot.
 4) An invite link in case you'd like to use it: https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot
 
 Have fun!
-                    '''))
+                        '''))
 
-        except:
-            print(
-                    'Attempted to message server owner for %s (%d): no success.')
+            except:
+                print(
+                        'Attempted to message server owner for %s (%d): no success.' \
+                                % (
+                                    guild.owner.id,
+                                    guild.id))
 
     async def on_guild_remove(self, guild):
         print(
