@@ -5,7 +5,6 @@ from os import getenv
 
 from guild_client import GuildClient
 from message_client import MessageClient
-from member_update_client import MemberUpdateClient
 
 def launch_guild_client():
     g = GuildClient()
