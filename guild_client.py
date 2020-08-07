@@ -1,3 +1,4 @@
+import discord
 import re
 
 from dbl import DBLClient
@@ -66,6 +67,28 @@ class GuildClient(BaseClient):
 
         await self.bots_on_discord.post_guild_count()
 
+        # Send help to owners, this might fail if the server is too big
+        try:
+            await guild.owner.send(
+                    embed=Embed(
+                        colour=discord.Colour.gold(),
+                        description='''
+Hello, I was just invited to your server.
+
+This is just to let you know the basics of this bot.
+
+1) The commands _.help_ and _.admin_ offer a short summary of all the bot's features. _.Help_ will only show those features which have been activated.
+2) Everything can be set up by the use of two commands: _.enable_ and _.set._ These are all you'll need to use to make the most out of this bot. They are explained in _.admin._
+3) Should you need any help, you can always turn to our support server and a human being will gladly get back to you: https://discord.gg/shvcbR2
+4) An invite link in case you'd like to use it: https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot
+
+Have fun!
+                    '''))
+
+        except:
+            print(
+                    'Attempted to message server owner for %s (%d): no success.')
+
     async def on_guild_remove(self, guild):
         print(
                 'Leaving \'%s\' (%d).' \
@@ -83,4 +106,5 @@ class GuildClient(BaseClient):
         self.db.commit()
 
         await self.top_gg.post_guild_count()
+
         await self.bots_on_discord.post_guild_count()
