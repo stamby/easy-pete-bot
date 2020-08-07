@@ -14,6 +14,11 @@ import commands.someone
 import commands.song
 import commands.update
 
+import greetings.farewell
+import greetings.welcome
+
+import misc.role_cleanup
+
 import filters.invite
 import filters.mass_mention
 import filters.profanity
@@ -188,4 +193,16 @@ class MessageClient(BaseClient):
                     message,
                     payload,
                     self.db)
+
+    async def on_member_join(self, member):
+        await greetings.welcome.run(member, self.db)
+
+    async def on_member_remove(self, member):
+        await greetings.farewell.run(member, self.db)
+
+        await misc.role_cleanup.run(member, self.db)
+
+    async def on_member_update(self, before, after):
+        if len(before.roles) > len(after.roles):
+            await misc.role_cleanup.run(before, self.db)
 
