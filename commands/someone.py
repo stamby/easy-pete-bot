@@ -3,7 +3,7 @@ import random
 import re
 
 regex = re.compile(
-        '@[Ss][Oo][Mm][Ee][Oo][Nn][Ee]')
+        r'\?@[Ss][Oo][Mm][Ee][Oo][Nn][Ee]')
 
 async def run(message, db):
     c = db.cursor()
