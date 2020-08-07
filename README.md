@@ -22,7 +22,7 @@ Example: _.prune @a user I don't like 100_
 
 All features can be enabled, disabled or made to your preference with the help of _.enable,_ _.disable_ and _.set._ Additionally, the bot can welcome users and clean up unused roles, which may be coupled with the _.iam_ command for smoother role management.
 
-A word filter may be enabled by means of _.set filter_profanity, .set filter_mass_mention and .set filter_invite_ followed by _1, 2_ or _3._ Please refer to the guide below to see how to set it up.
+A word filter may be enabled by means of _.set filter_profanity, .set filter_mass_mention and .set filter_invite_ followed by _1, 2_ or _3._ Please refer to the guide below to see what those mean.
 
 The default dot prefix can be changed through _.set._
 
@@ -32,7 +32,7 @@ The default dot prefix can be changed through _.set._
 - [See the guide](https://bot.molteni.im)
 - [Join our community](https://discord.gg/VkvRqrv)
 
-## How to test
+## How to host this bot
 
 Create a file called `environment.sh` with the following variables defined in it:
 
