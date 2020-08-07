@@ -1,6 +1,7 @@
 import re
+
+from dbl import DBLClient
 from os import getenv
-#from dbl import DBLClient
 from requests import post
 
 from base_client import BaseClient
@@ -24,12 +25,12 @@ class GuildClient(BaseClient):
     def __init__(self):
         BaseClient.__init__(self, 'Guild Client')
 
-#        self.top_gg = DBLClient(
-#                self,
-#                getenv('TOKEN_TOP_GG'),
-#                webhook_path='/dblwebhook',
-#                webhook_auth='password',
-#                webhook_port=5000)
+        self.top_gg = DBLClient(
+                self,
+                getenv('TOKEN_TOP_GG'),
+                webhook_path='/dblwebhook',
+                webhook_auth='password',
+                webhook_port=5000)
 
         self.bots_on_discord = BotsOnDiscordHandler()
 
@@ -37,15 +38,11 @@ class GuildClient(BaseClient):
         print("'%s' has connected to Discord!" \
                 % self.name)
 
-#        await self.top_gg.post_guild_count()
-
-#        print("Server count sent to 'top.gg'.")
+        await self.top_gg.post_guild_count()
 
         await self.bots_on_discord.set_id(self.user.id)
 
         await self.bots_on_discord.post_guild_count()
-
-        print("Server count sent to 'bots.ondiscord.xyz'.")
 
     async def on_guild_join(self, guild):
         print(
@@ -65,13 +62,9 @@ class GuildClient(BaseClient):
 
         self.db.commit()
 
-#        await self.top_gg.post_guild_count()
-
-#        print("Server count sent to 'top.gg'.")
+        await self.top_gg.post_guild_count()
 
         await self.bots_on_discord.post_guild_count()
-
-        print("Server count sent to 'bots.ondiscord.xyz'.")
 
     async def on_guild_remove(self, guild):
         print(
@@ -89,10 +82,5 @@ class GuildClient(BaseClient):
 
         self.db.commit()
 
-#        await self.top_gg.post_guild_count()
-
-#        print("Server count sent to 'top.gg'.")
-
+        await self.top_gg.post_guild_count()
         await self.bots_on_discord.post_guild_count()
-
-        print("Server count sent to 'bots.ondiscord.xyz'.")
