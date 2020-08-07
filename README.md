@@ -1,10 +1,10 @@
 EASY PETE BOT
 =============
 
-<!-- <p align="center"><a href="https://top.gg/bot/700307494580256768">
+<p align="center"><a href="https://top.gg/bot/700307494580256768">
   <img src="https://top.gg/api/widget/700307494580256768.svg" alt="Easy Pete Bot" />
-</a>
-</p> -->
+</a></p>
+
 A general-purpose bot for Discord with the following commands:
 
 **.iam** (role name): Assign yourself a role. If the role doesn't exist, it may be created depending on settings.
@@ -21,6 +21,8 @@ A general-purpose bot for Discord with the following commands:
 Example: _.prune @a user I don't like 100_
 
 All features can be enabled, disabled or made to your preference with the help of _.enable,_ _.disable_ and _.set._ Additionally, the bot can welcome users and clean up unused roles, which may be coupled with the _.iam_ command for smoother role management.
+
+A word filter may be enabled by means of _.set filter_profanity, .set filter_mass_mention and .set filter_invite_ followed by _1, 2_ or _3._ Please refer to the guide below to see how to set it up.
 
 The default dot prefix can be changed through _.set._
 
