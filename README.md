@@ -6,11 +6,6 @@ EASY PETE BOT
     <img src="https://top.gg/api/widget/700307494580256768.svg" alt="Easy Pete Bot" />
   </a>
 </p>
-<p align="center">
-  <a href="https://discord.gg/shvcbR2">
-    <img src="https://discord.com/api/guilds/716171149440057394/embed.png"/>
-  </a>
-</p>
 
 A general-purpose bot for Discord with the following commands:
 
