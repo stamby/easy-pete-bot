@@ -7,8 +7,8 @@ EASY PETE BOT
   </a>
 </p>
 <p align="center">
-  <a href="https://discord.gg/58My2dM">
-    <img src="https://discordapp.com/api/guilds/716171149440057394/embed.png"/>
+  <a href="https://discord.gg/shvcbR2">
+    <img src="https://discord.com/api/guilds/716171149440057394/embed.png"/>
   </a>
 </p>
 
