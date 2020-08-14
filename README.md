@@ -31,7 +31,7 @@ The default dot prefix can be changed through _.set._
 ## More links
 
 - [Add to Discord](https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot)
-- [See the guide](https://bot.molteni.im)
+- [See the guide](https://stamby.github.io/easy-pete)
 - [Join our community](https://discord.gg/VkvRqrv)
 
 ## How to host this bot
