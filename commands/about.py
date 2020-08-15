@@ -10,7 +10,7 @@ async def run(message, credentials):
                 title='ABOUT %s' % credentials.BOT_NAME.upper(),
                 colour=discord.Colour.gold(),
                 description='''
-Website: https://stamby.github.io/easy-pete
+Website: https://stamby.github.io/easy-pete-bot
 
 Invite: https://discord.com/oauth2/authorize?client_id=700307494580256768&permissions=268561408&scope=bot
 
