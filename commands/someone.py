@@ -20,10 +20,9 @@ async def run(message, db):
         random_member = random.choice(
                 message.guild.members)
 
-        if not random_member.bot && \
-                (
-                    random_member.id != message.author.id \
-                    or len(message.guild.members) < 10
+        if not random_member.bot and (
+                random_member.id != message.author.id \
+                        or len(message.guild.members) < 10
                 ):
             break
 
