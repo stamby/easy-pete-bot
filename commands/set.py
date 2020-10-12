@@ -48,7 +48,7 @@ from servers where s_id = %s
 **song**: %s
 **updates**: %s
 
-Syntax: _%s%s %s_
+Random example: _%s%s %s_
 
 **PROPERTIES**
 
@@ -64,7 +64,7 @@ Syntax: _%s%s %s_
 **filter_invite**: _%s_
 **prefix**: _%s_
 
-Syntax: _%sset %s_
+Random example: _%sset %s_
 
 Channels may be changed through _%senable_ and _%sdisable,_ while properties require the use of _%sset._ For more information, see _%sadmin._
             ''' % (
