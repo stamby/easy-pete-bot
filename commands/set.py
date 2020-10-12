@@ -78,6 +78,7 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                             or 'Disabled',
                     c_updates and '<#%d>' % c_updates \
                             or 'Disabled',
+                    escaped_prefix, # This will be already `escaped'
                     random.choice((
                         'enable',
                         'disable'
@@ -89,7 +90,6 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                         'song',
                         'updates'
                     )),
-                    escaped_prefix, # This will be already `escaped'
                     discord.utils.escape_markdown(welcome),
                     discord.utils.escape_markdown(farewell),
                     max_deletions,
