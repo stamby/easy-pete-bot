@@ -129,37 +129,36 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                     )[filter_invite],
                     escaped_prefix,
                     random.choice((
-                        'welcome ' + random.choice((
-                            'Someone has joined us! Hi, @@USER@@ (@@TAG@@)!',
-                            'Welcome, @@USER@@! (default)'
-                            'Welcome, @@USER@@! Feel free to introduce yourself.',
-                            'Welcome, @@USER@@!',
-                        )),
-                        'farewell ' + random.choice((
-                            'Finally, @@TAG@@ has left',
-                            'Goodbye, @@TAG@@!',
-                            'See you, @@TAG@@',
-                            'Unfortunately, @@TAG@@ has left.'
-                            '\*\*@@TAG@@\*\* has left the server. (default)',
-                        )),
-                        'max_deletions ' + random.choice(
-                            ('true', 'false')),
-                        'role_create ' + random.choice(
-                            ('true', 'false')),
-                        'role_cleanup ' + random.choice(
-                            ('true', 'false')),
-                        'someone ' + random.choice(
-                            ('true', 'false')),
-                        'meme_filter ' + random.choice(
-                            ('true', 'false')),
-                        'filter_profanity ' + random.choice(
-                            ('true', 'false')),
-                        'filter_mass_mention ' + random.choice(
-                            ('true', 'false')),
-                        'filter_invite ' + random.choice(
-                            ('true', 'false')),
-                        'prefix'
-                    ))
+                        'welcome Someone has joined us! Hi, @@USER@@ (@@TAG@@)!',
+                        'welcome Welcome, @@USER@@! (default)',
+                        'welcome Welcome, @@USER@@! Feel free to introduce yourself.',
+                        'welcome Welcome, @@USER@@!',
+                        'farewell Finally, @@TAG@@ has left',
+                        'farewell Goodbye, @@TAG@@!',
+                        'farewell See you, @@TAG@@',
+                        'farewell Unfortunately, @@TAG@@ has left.',
+                        'farewell \*\*@@TAG@@\*\* has left the server. (default)',
+                        'filter_invite false',
+                        'filter_invite true',
+                        'filter_mass_mention false',
+                        'filter_mass_mention true',
+                        'filter_profanity false',
+                        'filter_profanity true',
+                        'max_deletions false',
+                        'max_deletions true',
+                        'meme_filter false',
+                        'meme_filter true',
+                        'role_cleanup false',
+                        'role_cleanup true',
+                        'role_create false',
+                        'role_create true',
+                        'someone false',
+                        'someone true',
+                        'prefix .',
+                        'prefix ,',
+                        'prefix }',
+                        'prefix >'
+                    )),
                     escaped_prefix,
                     escaped_prefix,
                     escaped_prefix,
