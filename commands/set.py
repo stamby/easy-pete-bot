@@ -128,6 +128,7 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                         '3 (deleting without warning)'
                     )[filter_invite],
                     escaped_prefix,
+                    escaped_prefix,
                     random.choice((
                         'welcome Someone has joined us! Hi, @@USER@@ (@@TAG@@)!',
                         'welcome Welcome, @@USER@@! (default)',
@@ -159,7 +160,6 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                         'prefix }',
                         'prefix >'
                     )),
-                    escaped_prefix,
                     escaped_prefix,
                     escaped_prefix,
                     escaped_prefix,
