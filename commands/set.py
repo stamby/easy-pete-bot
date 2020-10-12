@@ -48,7 +48,7 @@ from servers where s_id = %s
 **song**: %s
 **updates**: %s
 
-Syntax: _%senable %s_
+Syntax: _%s%s %s_
 
 **PROPERTIES**
 
@@ -64,7 +64,7 @@ Syntax: _%senable %s_
 **filter_invite**: _%s_
 **prefix**: _%s_
 
-Syntax: _%sset someone false_ (or any other property for that matter)
+Syntax: _%sset %s_
 
 Channels may be changed through _%senable_ and _%sdisable,_ while properties require the use of _%sset._ For more information, see _%sadmin._
             ''' % (
@@ -78,6 +78,10 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                             or 'Disabled',
                     c_updates and '<#%d>' % c_updates \
                             or 'Disabled',
+                    random.choice((
+                        'enable',
+                        'disable'
+                    )),
                     random.choice((
                         'greeting',
                         'iam',
@@ -124,6 +128,38 @@ Channels may be changed through _%senable_ and _%sdisable,_ while properties req
                         '3 (deleting without warning)'
                     )[filter_invite],
                     escaped_prefix,
+                    random.choice((
+                        'welcome ' + random.choice((
+                            'Someone has joined us! Hi, @@USER@@ (@@TAG@@)!',
+                            'Welcome, @@USER@@! (default)'
+                            'Welcome, @@USER@@! Feel free to introduce yourself.',
+                            'Welcome, @@USER@@!',
+                        )),
+                        'farewell ' + random.choice((
+                            'Finally, @@TAG@@ has left',
+                            'Goodbye, @@TAG@@!',
+                            'See you, @@TAG@@',
+                            'Unfortunately, @@TAG@@ has left.'
+                            '\*\*@@TAG@@\*\* has left the server. (default)',
+                        )),
+                        'max_deletions ' + random.choice(
+                            ('true', 'false')),
+                        'role_create ' + random.choice(
+                            ('true', 'false')),
+                        'role_cleanup ' + random.choice(
+                            ('true', 'false')),
+                        'someone ' + random.choice(
+                            ('true', 'false')),
+                        'meme_filter ' + random.choice(
+                            ('true', 'false')),
+                        'filter_profanity ' + random.choice(
+                            ('true', 'false')),
+                        'filter_mass_mention ' + random.choice(
+                            ('true', 'false')),
+                        'filter_invite ' + random.choice(
+                            ('true', 'false')),
+                        'prefix'
+                    ))
                     escaped_prefix,
                     escaped_prefix,
                     escaped_prefix,
