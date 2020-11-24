@@ -4,8 +4,8 @@ import psycopg2
 from os import getenv
 
 class BaseClient(discord.Client):
-    def __init__(self, name):
-        discord.Client.__init__(self)
+    def __init__(self, name, intents):
+        discord.Client.__init__(self, intents=intents)
 
         self.name = name
 

@@ -23,8 +23,9 @@ class BotsOnDiscordHandler:
         post(self.url, headers=self.headers)
 
 class GuildClient(BaseClient):
-    def __init__(self):
-        BaseClient.__init__(self, 'Guild Client')
+    def __init__(self, intents):
+        BaseClient.__init__(
+                self, 'Guild Client', intents)
 
         self.top_gg = DBLClient(
                 self,
@@ -47,13 +48,11 @@ class GuildClient(BaseClient):
 
     async def on_guild_join(self, guild):
         print(
-                'Joined \'%s\' (%d): %d members, %d channels.' \
+                'Joined \'%s\' (%d).' \
                         % (
                             guild,
-                            guild.id,
-                            len(guild.members),
-                            len(guild.channels
-                        )))
+                            guild.id
+                        ))
 
         c = self.db.cursor()
 

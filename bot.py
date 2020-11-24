@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from discord import Intents
 from multiprocessing import Process
 from os import getenv
 
@@ -7,12 +8,22 @@ from guild_client import GuildClient
 from message_client import MessageClient
 
 def launch_guild_client():
-    g = GuildClient()
+    intents = Intents()
+
+    intents.guilds = True
+
+    g = GuildClient(intents)
 
     g.run(getenv('TOKEN'))
 
 def launch_message_client():
-    m = MessageClient()
+    intents = Intents()
+
+    intents.messages = True
+    intents.members = True
+    intents.reactions = True
+
+    m = MessageClient(intents)
 
     m.run(getenv('TOKEN'))
 
