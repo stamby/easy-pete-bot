@@ -14,7 +14,10 @@ select c_greeting, welcome from servers where s_id = %s
     if c_greeting:
         await member.guild.get_channel(c_greeting).send(
                 re.sub(
-                    '@@[Uu][Ss][Ee][Rr]@@',
-                    '<@!%d>' % member.id,
-                    welcome))
+                    '@@[Tt][Aa][Gg]@@',
+                    str(member),
+                    re.sub(
+                        '@@[Uu][Ss][Ee][Rr]@@',
+                        '<@!%d>' % member.id,
+                        welcome)))
 
