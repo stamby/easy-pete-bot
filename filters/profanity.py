@@ -1,5 +1,6 @@
 import random
 import re
+from time import sleep
 
 from .base_filter import BaseFilter
 
@@ -9,8 +10,11 @@ regex = re.compile(
 async def run(message, db):
     filter_ = BaseFilter('filter_profanity', message.guild.id, db)
 
+    if filter_.deleting:
+        await message.delete()
+
     if filter_.warning:
-        await message.channel.send(
+        message_ = await message.channel.send(
                 random.choice((
                     '''
 <@!%d>, our server has been set up to discourage the use of swearing. Please be nice.
@@ -29,6 +33,7 @@ Please make sure you don't use any swear words, <@!%d>.
                     ''')) \
                             % message.author.id)
 
-    if filter_.deleting:
-        await message.delete()
+        sleep(3)
+
+        await message_.delete()
 

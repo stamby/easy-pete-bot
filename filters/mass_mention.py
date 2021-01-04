@@ -1,5 +1,6 @@
 import random
 import re
+from time import sleep
 
 from .base_filter import BaseFilter
 
@@ -9,8 +10,11 @@ regex = re.compile(
 async def run(message, db):
     filter_ = BaseFilter('filter_mass_mention', message.guild.id, db)
 
+    if filter_.deleting:
+        await message.delete()
+
     if filter_.warning:
-        await message.channel.send(
+        message_ = await message.channel.send(
                 random.choice((
                     '''
 <@!%d>: Up to three mentions may be sent per message.
@@ -29,5 +33,6 @@ Please don't send so many mentions, <@!%d>.
                     ''')) \
                             % message.author.id)
 
-    if filter_.deleting:
-        await message.delete()
+        sleep(3)
+
+        await message_.delete()
