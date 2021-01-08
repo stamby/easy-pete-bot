@@ -4,7 +4,7 @@ import psycopg2
 from os import getenv
 
 class BaseClient(discord.Client):
-    def __init__(self, name, intents):
+    def __init__(self, name):
         intents = discord.Intents()
         intents.guilds = True
         intents.members = True

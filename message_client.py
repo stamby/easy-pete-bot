@@ -33,9 +33,9 @@ import credentials
 from base_client import BaseClient
 
 class MessageClient(BaseClient):
-    def __init__(self, intents):
+    def __init__(self):
         BaseClient.__init__(
-                self, 'Message Client', intents)
+                self, 'Message Client')
 
         self.mention = None
 

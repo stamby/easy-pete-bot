@@ -23,9 +23,9 @@ class BotsOnDiscordHandler:
         post(self.url, headers=self.headers)
 
 class GuildClient(BaseClient):
-    def __init__(self, intents):
+    def __init__(self):
         BaseClient.__init__(
-                self, 'Guild Client', intents)
+                self, 'Guild Client')
 
         self.top_gg = DBLClient(
                 self,
