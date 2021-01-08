@@ -5,6 +5,12 @@ from os import getenv
 
 class BaseClient(discord.Client):
     def __init__(self, name, intents):
+        intents = discord.Intents()
+        intents.guilds = True
+        intents.members = True
+        intents.messages = True
+        intents.reactions = True
+
         discord.Client.__init__(self, intents=intents)
 
         self.name = name
