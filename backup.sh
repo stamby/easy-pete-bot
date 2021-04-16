@@ -3,16 +3,12 @@
 ### Easy Pete Bot: back up & purge
 
 BACKUP_DIR=/srv/easy-pete-backup/backup
-BACKUP_FILE=$BACKUP_DIR/`date +%F`-easy-pete.bak
+BACKUP_FILE=$BACKUP_DIR/`date +%F-%H`-easy-pete.bak
 
 BACKUP_LOG_DIR=/srv/easy-pete-backup/log
-BACKUP_LOG=$BACKUP_LOG_DIR/`date +%F`-easy-pete.log
+BACKUP_LOG=$BACKUP_LOG_DIR/`date +%F-%H`-easy-pete.log
 
 exec 2>&1 > $BACKUP_LOG
-
-back_up() {
-    pg_dumpall > $BACKUP_FILE
-}
 
 # $1 = Number of files, $2 = Oldest file without directory name 
 purge() {
@@ -26,6 +22,10 @@ purge() {
 
 }
 
-back_up
+back_up() {
+    pg_dumpall > $BACKUP_FILE
+}
+
 purge `ls -t $BACKUP_DIR | sed -n '${=;p}'`
+back_up
 
