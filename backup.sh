@@ -19,7 +19,7 @@ purge() {
         rm -v "$BACKUP_DIR/$2"
 
         # Also remove its log file
-        rm -v "$BACKUP_LOG_DIR/`printf '%s' $2 | sed 's/\.bak$//'`"
+        rm -v $BACKUP_LOG_DIR/`printf '%s' $2 | sed 's/\.bak$/.log/'`
     fi
 }
 
