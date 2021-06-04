@@ -53,12 +53,9 @@ The _%sprune_ command has been disabled. An admin may type _%sset max\_deletions
 
             await message.delete()
 
-            def is_user(m):
-                effective_amount -= 1
-                return effective_amount > -1 and m.author.id == user
-
             await message.channel.purge(
-                    check=is_user)
+                    limit=effective_amount,
+                    check=(lambda m: m.author.id == user))
 
         if requested_amount > max_deletions:
             await message.channel.send(
