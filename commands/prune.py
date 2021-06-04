@@ -46,18 +46,19 @@ The _%sprune_ command has been disabled. An admin may type _%sset max\_deletions
             effective_amount += 1
 
             await message.channel.delete_messages(
-                    message.channel.history(limit=effective_amount))
+                    [m.id async for m in message.channel.history(
+                        limit=effective_amount)])
 
         else:
             user = int(re.findall('[0-9]+', user_str)[0])
 
-            message_list = [message]
+            message_list = [message.id]
 
             count = 0
 
             async for line in message.channel.history():
                 if user == line.author.id:
-                    message_list.append(line)
+                    message_list.append(line.id)
 
                     count += 1
 
