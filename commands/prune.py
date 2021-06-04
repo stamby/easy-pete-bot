@@ -55,7 +55,7 @@ The _%sprune_ command has been disabled. An admin may type _%sset max\_deletions
 
             def is_user(m):
                 effective_amount -= 1
-                return effective_amount > -1 && m.author.id == user
+                return effective_amount > -1 and m.author.id == user
 
             await message.channel.purge(
                     check=is_user)
