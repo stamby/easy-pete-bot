@@ -15,7 +15,7 @@ A general-purpose bot for Discord with the following commands:
 
 **.meme**: Send a random meme, straight from our repositories.
 
-**.song**: Send a random song from our list of old-fashioned songs.
+**.song**: Send a random song from our list of user-submitted songs.
 
 **@someone**: Randomly mention someone on the server.
 
