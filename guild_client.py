@@ -25,12 +25,12 @@ class BotHandler:
         post(self.url, headers=self.headers, json=json_)
 
 class DiscordBotsHandler(BotHandler):
-    async def set_id(self):
+    async def set_url(self):
         self.url = 'https://discord.bots.gg/api/v1/bots/%d/stats' \
                 % self.bot.user.id
 
 class BotsOnDiscordHandler(BotHandler):
-    async def set_id(self):
+    async def set_url(self):
         self.url = 'https://bots.ondiscord.xyz/bot-api/bots/%d/guilds' \
                 % self.bot.user.id
 
