@@ -7,20 +7,32 @@ from requests import post
 
 from base_client import BaseClient
 
-class BotsOnDiscordHandler:
-    def __init__(self):
+class BotHandler:
+    def __init__(self, bot, token):
         self.url = None
-        
+        self.bot = bot
+
         self.headers = {
-                'Authorization': getenv('TOKEN_BOTS_ON_DISCORD')
+                'Authorization': token,
+                'Content-Type': 'application/json'
         }
 
-    async def set_id(self, id_):
-        self.url = 'https://bots.ondiscord.xyz/bot-api/bots/%d/guilds' \
-                % id_
-
     async def post_guild_count(self):
-        post(self.url, headers=self.headers)
+        json_ = {
+                'guildCount': len(self.bot.guilds)
+        }
+
+        post(self.url, headers=self.headers, json=json_)
+
+class DiscordBotsHandler(BotHandler):
+    async def set_id(self):
+        self.url = 'https://discord.bots.gg/api/v1/bots/%d/stats' \
+                % self.bot.user.id
+
+class BotsOnDiscordHandler(BotHandler):
+    async def set_id(self):
+        self.url = 'https://bots.ondiscord.xyz/bot-api/bots/%d/guilds' \
+                % self.bot.user.id
 
 class GuildClient(BaseClient):
     def __init__(self):
@@ -34,17 +46,18 @@ class GuildClient(BaseClient):
                 webhook_auth='password',
                 webhook_port=5000)
 
-        self.bots_on_discord = BotsOnDiscordHandler()
+        self.bots_on_discord = BotsOnDiscordHandler(self, token)
+
+        self.discord_bots = DiscordBotsHandler(self, token)
 
     async def on_ready(self):
         print("'%s' has connected to Discord!" \
                 % self.name)
 
-        await self.top_gg.post_guild_count()
+        await self.bots_on_discord.set_url()
+        await self.discord_bots.set_url()
 
-        await self.bots_on_discord.set_id(self.user.id)
-
-        await self.bots_on_discord.post_guild_count()
+        await self.announce()
 
     async def on_guild_join(self, guild):
         print(
@@ -62,9 +75,7 @@ class GuildClient(BaseClient):
 
         self.db.commit()
 
-        await self.top_gg.post_guild_count()
-
-        await self.bots_on_discord.post_guild_count()
+        await self.announce()
 
         # Send help to owners, this might fail if the server is too big
         if guild.owner:
@@ -108,6 +119,18 @@ Have fun!
 
         self.db.commit()
 
-        await self.top_gg.post_guild_count()
+        self.announce()
 
-        await self.bots_on_discord.post_guild_count()
+    async def announce(self):
+        try:
+            await self.bots_on_discord.post_guild_count()
+        except:
+            pass
+        try:
+            await self.discord_bots.post_guild_count()
+        except:
+            pass
+        try:
+            await self.top_gg.post_guild_count()
+        except:
+            pass

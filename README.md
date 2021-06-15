@@ -43,4 +43,5 @@ Create a file called `environment.sh` with the following variables defined in it
 - DB_USER
 - TOKEN
 - TOKEN_BOTS_ON_DISCORD
+- TOKEN_DISCORD_BOTS
 - TOKEN_TOP_GG
