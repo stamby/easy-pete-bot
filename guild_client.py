@@ -46,9 +46,11 @@ class GuildClient(BaseClient):
                 webhook_auth='password',
                 webhook_port=5000)
 
-        self.bots_on_discord = BotsOnDiscordHandler(self, token)
+        self.bots_on_discord = BotsOnDiscordHandler(
+                self, getenv('TOKEN_BOTS_ON_DISCORD'))
 
-        self.discord_bots = DiscordBotsHandler(self, token)
+        self.discord_bots = DiscordBotsHandler(
+                self, getenv('TOKEN_DISCORD_BOTS'))
 
     async def on_ready(self):
         print("'%s' has connected to Discord!" \
