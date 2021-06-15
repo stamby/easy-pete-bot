@@ -121,7 +121,7 @@ Have fun!
 
         self.db.commit()
 
-        self.announce()
+        await self.announce()
 
     async def announce(self):
         try:
