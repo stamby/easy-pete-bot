@@ -127,12 +127,12 @@ Have fun!
         try:
             await self.bots_on_discord.post_guild_count()
         except:
-            pass
+            print('Could not submit data to Bots on Discord.')
         try:
             await self.discord_bots.post_guild_count()
         except:
-            pass
+            print('Could not submit data to Discord Bots.')
         try:
             await self.top_gg.post_guild_count()
         except:
-            pass
+            print('Could not submit data to Top GG.')
