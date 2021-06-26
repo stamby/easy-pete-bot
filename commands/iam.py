@@ -154,7 +154,7 @@ The role _%s_ doesn't exist and cannot be created due to bot settings for this s
         elif existing_role.permissions.value != 0:
             await message.channel.send(
                     '''
-_%s_ is an already-existing role with additional permissions. Please ask an admin to remove all permissions from the role before you may add it.
+_%s_ is an already existing role with additional permissions. Please ask an admin to remove all permissions from the role before you may add it.
                     ''' \
                             % discord.utils.escape_markdown(
                                 existing_role.name))
